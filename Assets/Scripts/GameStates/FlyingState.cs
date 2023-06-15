@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class FlyingState : GameStateBase
 {
-    [SerializeField] PlayerShip playerShip;
+    [SerializeField] EnemyBase[] enemyTypesToSpawn = new EnemyBase[2];
+    List<EnemyBase> enemiesInScene = new List<EnemyBase>();
 
     //Input buttons
     const string MOVE_LEFT = "MoveLeft";
@@ -32,30 +33,35 @@ public class FlyingState : GameStateBase
 
     void TrackPlayerWithCamera()
     {
-        CameraController.Instance.UpdatePosition(playerShip.transform.position, TrackAxis.X_AXIS);
+        CameraController.Instance.UpdatePosition(PlayerShip.Instance.transform.position, TrackAxis.X_AXIS);
     }
 
     void GetInput()
     {
         if (Input.GetButton(MOVE_UP))
         {
-            playerShip.UpdatePosition(MoveDirection.UP);
+            PlayerShip.Instance.UpdatePosition(MoveDirection.UP);
         }
         if (Input.GetButton(MOVE_DOWN))
         {
-            playerShip.UpdatePosition(MoveDirection.DOWN);
+            PlayerShip.Instance.UpdatePosition(MoveDirection.DOWN);
         }
         if (Input.GetButton(MOVE_LEFT))
         {
-            playerShip.UpdatePosition(MoveDirection.LEFT);
+            PlayerShip.Instance.UpdatePosition(MoveDirection.LEFT);
         }
         if (Input.GetButton(MOVE_RIGHT))
         {
-            playerShip.UpdatePosition(MoveDirection.RIGHT);
+            PlayerShip.Instance.UpdatePosition(MoveDirection.RIGHT);
         }
         if (Input.GetButton(FIRE))
         {
-            playerShip.FireProjectile();
+            PlayerShip.Instance.FireProjectile();
         }
+    }
+
+    void SpawnEnemies()
+    {
+        
     }
 }

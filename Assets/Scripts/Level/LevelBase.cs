@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class LevelBase : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] int enemiesPerLevel;
+
+
+
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         

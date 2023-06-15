@@ -10,9 +10,10 @@ public class EnemyBase : MonoBehaviour
         get { return enemyHealth; }
     }
 
-    void Start()
+    int scoreAddition = 5;
+    public int ScoreAddition
     {
-        
+        get { return scoreAddition; }
     }
 
     void OnTriggerEnter2D(Collider2D Collision)
@@ -20,6 +21,10 @@ public class EnemyBase : MonoBehaviour
         if(Collision.TryGetComponent(out LaserProjectile HitProjectile))
         {
             OnHit(HitProjectile.HitDamage);
+        }
+        else if(Collision.TryGetComponent(out PlayerShip _))
+        {
+            PlayerShip.Instance.OnCollisionWithEnemy();
         }
     }
 
@@ -36,7 +41,7 @@ public class EnemyBase : MonoBehaviour
 
     public virtual void OnDie()
     {
+        GameController.Instance.AddScore(scoreAddition);
         Destroy(gameObject);
-        GameController.Instance.AddScore();
     }
 }

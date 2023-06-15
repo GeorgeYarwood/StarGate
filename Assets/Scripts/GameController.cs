@@ -23,9 +23,19 @@ public class GameController : MonoBehaviour
         get { return currentScore; }
     }
 
-    const int SCORE_ADDITION_AMOUNT = 150; //Temp until per-enemy scores added
+    int currentLives;
+    public int CurrentLives
+    {
+        get { return currentLives; }
+    }
 
-    [SerializeField] GameStateBase flyingState; //Temp until dynamic state loading added
+    [SerializeField] int startingLives = 3;
+
+    //All available states
+    [SerializeField] FlyingState flyingState;
+    [SerializeField] EndGameState endGameState;
+
+    const float TIME_TO_WAIT_VFX = 2.0f;
 
     void Start()
     {
@@ -89,8 +99,30 @@ public class GameController : MonoBehaviour
         TickCurrentState();
     }
 
-    public void AddScore()
+    public void OnPlayerDeath()
     {
-        currentScore += SCORE_ADDITION_AMOUNT;
+        if(currentLives - 1 >= 0)
+        {
+            currentLives--;
+            return;
+        }
+
+        EndGame();
+    }
+
+    void EndGame()
+    {
+        StartCoroutine(WaitForDeathVfx());
+    }
+
+    IEnumerator WaitForDeathVfx()
+    {
+        yield return new WaitForSeconds(TIME_TO_WAIT_VFX);
+        GoToState(endGameState);
+    }
+
+    public void AddScore(int ScoreToAdd)
+    {
+        currentScore += ScoreToAdd;
     }
 }

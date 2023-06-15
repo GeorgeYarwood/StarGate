@@ -2,17 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovingEnemy : MonoBehaviour
+public class MovingEnemy : EnemyBase
 {
-    // Start is called before the first frame update
+    const float MOVE_SPEED = 1.5f;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        TrackPlayer();
+    }
+
+    void TrackPlayer()
+    {
+        float Step = MOVE_SPEED * Time.deltaTime;
+        transform.position = Vector2.MoveTowards(transform.position,
+            PlayerShip.Instance.GetPos, MOVE_SPEED * Time.deltaTime);
     }
 }

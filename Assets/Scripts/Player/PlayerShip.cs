@@ -9,6 +9,8 @@ public class PlayerShip : MonoBehaviour
 {
     [SerializeField] Transform projectileSpawn;
     [SerializeField] LaserProjectile projectilePrefab;
+    [SerializeField] ParticleSystem deathVfx;
+
     public Transform ProjectileSpawn
     {
         get { return projectileSpawn; }
@@ -22,6 +24,17 @@ public class PlayerShip : MonoBehaviour
     bool canFire = true;
 
     FacingDirection playerIsFacing;
+
+    static PlayerShip instance;
+    public static PlayerShip Instance
+    {
+        get { return instance; }
+    }
+
+    public Vector2 GetPos
+    {
+        get { return transform.position; }
+    }
 
     public void UpdatePosition(MoveDirection ThisDirection)
     {
@@ -92,6 +105,15 @@ public class PlayerShip : MonoBehaviour
 
     void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
         playerIsFacing = FacingDirection.RIGHT;
     }
 
@@ -100,6 +122,12 @@ public class PlayerShip : MonoBehaviour
         canFire = false;
         yield return new WaitForSeconds(FIRE_LOCKOUT_TIMER);
         canFire = true;
+    }
+
+    public void OnCollisionWithEnemy()
+    {
+        deathVfx.Play();
+        GameController.Instance.OnPlayerDeath();
     }
 
     void Update()
