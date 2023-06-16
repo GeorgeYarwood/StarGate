@@ -42,6 +42,7 @@ public class EnemyBase : MonoBehaviour
     public virtual void OnDie()
     {
         GameController.Instance.AddScore(scoreAddition);
+        GameController.Instance.FlyingStateInstance.RemoveEnemyFromList(this);
         Destroy(gameObject);
     }
 }

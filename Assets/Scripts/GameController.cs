@@ -17,25 +17,55 @@ public class GameController : MonoBehaviour
         get { return instance; }
     }
 
-    int currentScore = 0;
-    public int CurrentScore
+    static int currentLevel = 0;
+    public static int CurrentLevel
+    {
+        get { return currentLevel; }
+    }
+
+    static int currentScore = 0;
+    public static int CurrentScore
     {
         get { return currentScore; }
     }
 
-    int currentLives;
-    public int CurrentLives
+    static int currentLives;
+    public static int CurrentLives
     {
         get { return currentLives; }
+    }
+
+    public static float GetMapBoundsYVal
+    {
+        get { return MAX_Y_VAL; }
+    }
+
+    public static float GetMapBoundsXVal
+    {
+        get { return MAX_X_VAL; }
+    }
+
+    [SerializeField] List<LevelObject> allLevels = new List<LevelObject>();
+    public static List<LevelObject> AllLevels
+    {
+        get { return GameController.instance.allLevels; }
     }
 
     [SerializeField] int startingLives = 3;
 
     //All available states
     [SerializeField] FlyingState flyingState;
+    public FlyingState FlyingStateInstance
+    {
+        get { return flyingState; }
+    }
     [SerializeField] EndGameState endGameState;
+    [SerializeField] LevelCompleteState levelCompleteState;
 
     const float TIME_TO_WAIT_VFX = 2.0f;
+    //Map bounds
+    const float MAX_Y_VAL = 5.0f;
+    const float MAX_X_VAL = 20.0f;
 
     void Start()
     {
@@ -48,8 +78,23 @@ public class GameController : MonoBehaviour
             Destroy(this);
         }
 
+        ResetAllLevels();
+
         //Temp until menu/state loading is added
         GoToState(flyingState);
+    }
+
+    void ResetAllLevels()
+    {
+        //SO's have some persistance so reset each start
+        for(int l = 0; l < allLevels.Count; l++)
+        {
+            allLevels[l].EnemiesInScene = new List<EnemyBase>();
+            if (!allLevels[l].IsSubLevel)
+            {
+                allLevels[l].SubLevel.EnemiesInScene = new List<EnemyBase>();
+            }
+        }
     }
 
     public void GoToPreviousGameState()
@@ -68,7 +113,7 @@ public class GameController : MonoBehaviour
         if(gameStates.Count > 0)
         {
             ExitPrevState(gameStates.Peek());
-            gameStates.Pop();
+            //gameStates.Pop();
         }
        
         gameStates.Push(State);
@@ -113,6 +158,12 @@ public class GameController : MonoBehaviour
     void EndGame()
     {
         StartCoroutine(WaitForDeathVfx());
+    }
+
+    public void OnLevelComplete()
+    {
+        currentLevel++;
+        GoToState(levelCompleteState);
     }
 
     IEnumerator WaitForDeathVfx()

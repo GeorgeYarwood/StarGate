@@ -17,7 +17,7 @@ public class PlayerShip : MonoBehaviour
     }
 
     [SerializeField] float playerMoveSpeed = 10.0f;
-    const float MAX_Y_VAL = 5.0f;
+
     const float PROJECTILE_SPAWN_MODIFIER = 1.2f;
     const float FIRE_LOCKOUT_TIMER = 1.0f;
 
@@ -56,22 +56,34 @@ public class PlayerShip : MonoBehaviour
                 break;
         }
 
-        ClampPlayerHeight();
+        ClampPlayer();
     }
 
-    void ClampPlayerHeight()
+    void ClampPlayer()
     {
         float RawY = transform.position.y;
-        if (RawY > MAX_Y_VAL)
+        float RawX = transform.position.x;
+        if (RawY > GameController.GetMapBoundsYVal)
         {
-            transform.position = new(transform.position.x, MAX_Y_VAL);
-            return;
+            transform.position = new(transform.position.x, GameController.GetMapBoundsYVal);
         }
-        else if (RawY < -MAX_Y_VAL)
+        else if (RawY < -GameController.GetMapBoundsYVal)
         {
-            transform.position = new(transform.position.x, -MAX_Y_VAL);
-            return;
+            transform.position = new(transform.position.x, -GameController.GetMapBoundsYVal);
         }
+        if(RawX > GameController.GetMapBoundsXVal)
+        {
+            transform.position = new(GameController.GetMapBoundsXVal, transform.position.y);
+        }
+        else if(RawX < -GameController.GetMapBoundsXVal)
+        {
+            transform.position = new(-GameController.GetMapBoundsXVal, transform.position.y);
+        }
+    }
+
+    public void ResetPosition()
+    {
+        transform.position = Vector3.zero;
     }
 
     public void FireProjectile()
@@ -128,6 +140,12 @@ public class PlayerShip : MonoBehaviour
     {
         deathVfx.Play();
         GameController.Instance.OnPlayerDeath();
+    }
+
+    public void OnCollisionWithSubLevelEntrance()
+    {
+        //TODO Play VFX
+
     }
 
     void Update()
