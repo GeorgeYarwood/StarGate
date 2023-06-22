@@ -22,16 +22,21 @@ public class LevelObject : ScriptableObject
         get { return subLevel; }
     }
 
+    [SerializeField] LevelObject parentLevel;
+    public LevelObject ParentLevel
+    {
+        get { return parentLevel; }
+    }
+
+    public bool IsSubLevel
+    {
+        get { return parentLevel; } //If this level has a parent level, it is a sublevel
+    }
+
     List<EnemyBase> enemiesInScene = new List<EnemyBase>();
     public List<EnemyBase> EnemiesInScene
     {
         get { return enemiesInScene; }
         set {  enemiesInScene = value; }
-    }
-
-    [SerializeField] bool isSubLevel;
-    public bool IsSubLevel
-    {
-        get { return isSubLevel; }
     }
 }

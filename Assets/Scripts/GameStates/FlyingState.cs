@@ -14,9 +14,6 @@ public class FlyingState : GameStateBase
 
     const string ERROR_MESSAGE = "No levels added to FlyingState gameobject! Returning out";
 
-    //So we can restore the previous levels enemies on exit
-    List<EnemyBase> previousLevelStateEnemies = new List<EnemyBase>();
-
     public override void OnStateEnter()
     {
         if (GameController.AllLevels.Count == 0)
@@ -63,15 +60,8 @@ public class FlyingState : GameStateBase
         if (GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Contains(EnemyToRemove))
         {
             GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Remove(EnemyToRemove);
-            return;
         }
-
-        if (GameController.AllLevels[GameController.CurrentLevel].IsSubLevel)
-        {
-            return; //Currently only one sublevel per level is supported
-        }
-
-        if (GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Contains(EnemyToRemove))
+        else if (GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Contains(EnemyToRemove))
         {
             GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Remove(EnemyToRemove);
         }
@@ -103,16 +93,34 @@ public class FlyingState : GameStateBase
 
     public void LoadLevel(LevelObject LevelToLoad)
     {
-        if (LevelToLoad.EnemiesInScene.Count > 0)
+        if (LevelToLoad.EnemiesInScene.Count > 0 || GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count > 0)
         {
-            for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
+            int MaxIterator;
+            if (LevelToLoad.IsSubLevel) //We will never load a sublevel directly so we don't need to worry about it being the sublevel of a different level
             {
-                GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].gameObject.SetActive(false);
+                MaxIterator = GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count;
+            }
+            else
+            {
+                //Disable enemies in the level we're LEAVING
+                MaxIterator = GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count;
+            }
+            for (int e = 0; e < MaxIterator; e++)
+            {
+                if (LevelToLoad.IsSubLevel)
+                {
+                    GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].gameObject.SetActive(false);
+                }
+                else
+                {
+                    GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e].gameObject.SetActive(false);
+                }
             }
             for (int e = 0; e < LevelToLoad.EnemiesInScene.Count; e++)
             {
                 LevelToLoad.EnemiesInScene[e].gameObject.SetActive(true);
             }
+
             return;
         }
         //Initialise sublevel so we can check if all enemies are dead if it's never entered 
@@ -149,7 +157,6 @@ public class FlyingState : GameStateBase
 
         EnemyBase ThisEnemy = Instantiate(EnemyTypes[RandomEnemyType],
             RandomSpawnPosition, Quaternion.identity);
-
 
         ListToAddTo.Add(ThisEnemy);
     }

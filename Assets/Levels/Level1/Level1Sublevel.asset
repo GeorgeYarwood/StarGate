@@ -17,4 +17,4 @@ MonoBehaviour:
   - {fileID: 2449997915474525672, guid: e1aa7d01bc7c71c4ca1266ddfe7e8588, type: 3}
   - {fileID: 2294187218363598421, guid: 6857977e9ebda4b43b199e0d10bb98bd, type: 3}
   subLevel: {fileID: 0}
-  isSubLevel: 1
+  parentLevel: {fileID: 11400000, guid: 52da59a82bce1dc4ea2e950cab0e48b1, type: 2}

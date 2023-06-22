@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour
         get { return currentScore; }
     }
 
-    static int currentLives;
+    static int currentLives = 3;
     public static int CurrentLives
     {
         get { return currentLives; }
@@ -149,6 +149,7 @@ public class GameController : MonoBehaviour
         if(currentLives - 1 >= 0)
         {
             currentLives--;
+            //TODO respawn`
             return;
         }
 
