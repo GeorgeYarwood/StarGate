@@ -16,6 +16,10 @@ public class EnemyBase : MonoBehaviour
         get { return scoreAddition; }
     }
 
+    [SerializeField] ParticleSystem deathVfx;
+
+    bool waitingToDie = false;
+
     void OnTriggerEnter2D(Collider2D Collision)
     {
         if(Collision.TryGetComponent(out LaserProjectile HitProjectile))
@@ -43,6 +47,27 @@ public class EnemyBase : MonoBehaviour
     {
         GameController.Instance.AddScore(scoreAddition);
         GameController.Instance.FlyingStateInstance.RemoveEnemyFromList(this);
+        if (deathVfx)
+        {
+            deathVfx.Play();
+            waitingToDie = true;
+            return;
+        }
+
         Destroy(gameObject);
+    }
+
+    void Update()
+    {
+        Tick();
+        if (waitingToDie && !deathVfx.isPlaying)
+        {
+            Destroy(gameObject);
+        }
+    }
+    
+    public virtual void Tick()
+    {
+
     }
 }

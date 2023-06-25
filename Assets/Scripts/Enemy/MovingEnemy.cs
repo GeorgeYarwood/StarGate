@@ -6,12 +6,7 @@ public class MovingEnemy : EnemyBase
 {
     const float MOVE_SPEED = 1.5f;
 
-    void Start()
-    {
-        
-    }
-
-    void Update()
+    public override void Tick()
     {
         TrackPlayer();
     }
