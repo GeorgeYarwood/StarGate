@@ -89,6 +89,30 @@ public class FlyingState : GameStateBase
         {
             PlayerShip.Instance.FireProjectile();
         }
+
+        //Listen for release so we can coast
+
+        if (Input.anyKey)
+        {
+            return;
+        }
+
+        if (Input.GetButtonUp(MOVE_UP))
+        {
+            StartCoroutine(PlayerShip.Instance.CoastPlayer(MoveDirection.UP));
+        }
+        if (Input.GetButtonUp(MOVE_DOWN))
+        {
+            StartCoroutine(PlayerShip.Instance.CoastPlayer(MoveDirection.DOWN));
+        }
+        if (Input.GetButtonUp(MOVE_LEFT))
+        {
+            StartCoroutine(PlayerShip.Instance.CoastPlayer(MoveDirection.LEFT));
+        }
+        if (Input.GetButtonUp(MOVE_RIGHT))
+        {
+            StartCoroutine(PlayerShip.Instance.CoastPlayer(MoveDirection.RIGHT));
+        }
     }
 
     public void LoadLevel(LevelObject LevelToLoad)

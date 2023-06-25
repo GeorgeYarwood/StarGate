@@ -5,12 +5,14 @@ using UnityEngine;
 using System.Threading;
 using System;
 using System.Threading.Tasks;
+using UnityEngine.UIElements;
 
 public enum MoveDirection { UP, DOWN, LEFT, RIGHT }
 public enum FacingDirection { LEFT, RIGHT }
 
 public class PlayerShip : MonoBehaviour
 {
+    [SerializeField] GameObject shipSprite;
     [SerializeField] Transform projectileSpawn;
     [SerializeField] LaserProjectile projectilePrefab;
     [SerializeField] ParticleSystem deathVfx;
@@ -21,28 +23,18 @@ public class PlayerShip : MonoBehaviour
     }
 
     const float PLAYER_MOVE_SPEED = 10.0f;
-    const float PLAYER_COAST_SPEED = 2000.0f;
+    const float PLAYER_COAST_SPEED = 0.5f;
 
     const float PROJECTILE_SPAWN_MODIFIER = 1.2f;
     const float FIRE_LOCKOUT_TIMER = 1.0f;
-    const float PLAYER_COAST_TIMER = 3.5f; //How long the player will coast after releasing input
+    const float PLAYER_COAST_TIMER = 0.4f; //How long the player will coast after releasing input
+
+    const float LEFT_ROT_Y_VAL = 180.0f;
+    const float RIGHT_ROT_Y_VAL = 0.0f;
 
     bool canFire = true;
 
-    //Input tracking
-    bool inputWasDown = false;
-    bool inputIsDown = false;
-
-    bool coasting = false;
-
-    MoveDirection lastMoveDirection;
     FacingDirection playerIsFacing;
-
-    //Thread coastPlayerThread;
-
-    //static List<Action> actionsQueueForMainThread = new List<Action>();
-
-    Task coastPlayer;
 
     static PlayerShip instance;
     public static PlayerShip Instance
@@ -55,34 +47,39 @@ public class PlayerShip : MonoBehaviour
         get { return transform.position; }
     }
 
-    public void UpdatePosition(MoveDirection ThisDirection, float Speed = PLAYER_MOVE_SPEED)
+    public void UpdatePosition(MoveDirection? ThisDirection, bool Coasting = false)
     {
-        switch (ThisDirection)
+        float ActualSpeed = PLAYER_MOVE_SPEED;
+
+        if (Coasting)
         {
-            case MoveDirection.UP:
-                transform.Translate(new Vector2(0.0f, 1.0f) * Speed * Time.deltaTime);
-                break;
-            case MoveDirection.DOWN:
-                transform.Translate(new Vector2(0.0f, -1.0f) * Speed * Time.deltaTime);
-                break;
-            case MoveDirection.LEFT:
-                transform.Translate(new Vector2(-1.0f, 0.0f) * Speed * Time.deltaTime);
-                playerIsFacing = FacingDirection.LEFT;
-                break;
-            case MoveDirection.RIGHT:
-                transform.Translate(new Vector2(1.0f, 0.0f) * Speed * Time.deltaTime);
-                playerIsFacing = FacingDirection.RIGHT;
-                break;
-        }
-        if (!coasting)
-        {
-            inputIsDown = true;
-            lastMoveDirection = ThisDirection;
+            ActualSpeed = PLAYER_COAST_SPEED;
         }
         else
         {
-            Debug.Log("Coasting");
+            StopCoroutine(CoastPlayer(null));
         }
+
+        switch (ThisDirection)
+        {
+            case MoveDirection.UP:
+                transform.Translate(new Vector2(0.0f, 1.0f) * ActualSpeed * Time.deltaTime);
+                break;
+            case MoveDirection.DOWN:
+                transform.Translate(new Vector2(0.0f, -1.0f) * ActualSpeed * Time.deltaTime);
+                break;
+            case MoveDirection.LEFT:
+                transform.Translate(new Vector2(-1.0f, 0.0f) * ActualSpeed * Time.deltaTime);
+                playerIsFacing = FacingDirection.LEFT;
+                shipSprite.transform.rotation = Quaternion.Euler(new(shipSprite.transform.rotation.eulerAngles.x, LEFT_ROT_Y_VAL));
+                break;
+            case MoveDirection.RIGHT:
+                transform.Translate(new Vector2(1.0f, 0.0f) * ActualSpeed * Time.deltaTime);
+                playerIsFacing = FacingDirection.RIGHT;
+                shipSprite.transform.rotation = Quaternion.Euler(new(shipSprite.transform.rotation.eulerAngles.x, RIGHT_ROT_Y_VAL));
+                break;
+        }
+        
         ClampPlayer();
     }
 
@@ -152,10 +149,6 @@ public class PlayerShip : MonoBehaviour
         {
             Destroy(this);
         }
-
-        playerIsFacing = FacingDirection.RIGHT;
-        //coastPlayerThread = new Thread(new ThreadStart(CoastPlayer));
-        //coastPlayer = new Task(CoastPlayer);
     }
 
     IEnumerator FireLockOutTimer()
@@ -176,55 +169,15 @@ public class PlayerShip : MonoBehaviour
         //TODO Play VFX
     }
 
-    void CoastPlayer()
+    public IEnumerator CoastPlayer(MoveDirection? Direction)
     {
-        coasting = true;
         float ThisTimer = PLAYER_COAST_TIMER;
         while (ThisTimer > 0)
         {
-            if (inputIsDown)
-            {
-                coasting = false;
-                //return;
-            }
-
-            //Action NewActionForQueue = () =>
-            //{
-            //    UpdatePosition(lastMoveDirection, PLAYER_COAST_SPEED, Coasting: true);
-            //};
-            //actionsQueueForMainThread.Add(NewActionForQueue);
-
-            UpdatePosition(lastMoveDirection, PLAYER_COAST_SPEED);
+            UpdatePosition(Direction, Coasting: true);
 
             ThisTimer -= 1.0f * Time.deltaTime;
+            yield return null;
         }
-        coasting = false;
-        inputWasDown = false;
     }
-
-    void Update()
-    {
-        //ProcessActionsFromThreads();
-
-        if (!inputIsDown && inputWasDown && !coasting /*&& coastPlayerThread.ThreadState is not ThreadState.Running*/)
-        {
-            //coastPlayerThread.Start();
-            Task.Run(CoastPlayer);
-            inputWasDown = false;
-        }
-        else
-        {
-            inputWasDown = inputIsDown;
-        }
-        inputIsDown = false;
-    }
-
-    //void ProcessActionsFromThreads()
-    //{
-    //    foreach (var action in actionsQueueForMainThread)
-    //    {
-    //        action();
-    //        actionsQueueForMainThread.Remove(action);
-    //    }
-    //}
 }
