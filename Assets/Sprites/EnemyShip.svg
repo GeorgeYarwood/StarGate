@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg3540"
+   inkscape:export-filename="EnemyShip.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="EnemyShip.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview3542"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.8761364"
+     inkscape:cx="218.00121"
+     inkscape:cy="149.77589"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="3832"
+     inkscape:window-y="178"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs3537" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#008000;stroke-width:0"
+       id="rect3599"
+       width="35.785259"
+       height="8.3910255"
+       x="43.612175"
+       y="49.358971"
+       ry="0.017102931" />
+    <rect
+       style="fill:#008000;stroke-width:0"
+       id="rect3599-4"
+       width="4.4070539"
+       height="8.3910255"
+       x="59.777233"
+       y="54.541668"
+       ry="0.017102931" />
+    <rect
+       style="fill:#008000;stroke-width:0"
+       id="rect3599-4-0"
+       width="0.81090009"
+       height="8.3910255"
+       x="76.435783"
+       y="-8.1561108"
+       ry="0.017102931"
+       transform="rotate(53.081125)" />
+    <rect
+       style="fill:#008000;stroke-width:0"
+       id="rect3599-4-0-3"
+       width="0.81090009"
+       height="8.3910255"
+       x="-1.1724095"
+       y="91.051994"
+       ry="0.017102931"
+       transform="rotate(-51.712118)" />
+    <rect
+       style="fill:#008000;stroke-width:0"
+       id="rect3599-7"
+       width="31.448717"
+       height="3.7019231"
+       x="45.815708"
+       y="47.701923"
+       ry="0.0075454107" />
+    <rect
+       style="fill:#008000;stroke-width:0"
+       id="rect3599-7-0"
+       width="25.525637"
+       height="3.7019231"
+       x="48.512821"
+       y="44.088142"
+       ry="0.0075454107" />
+    <rect
+       style="fill:#008000;stroke-width:0"
+       id="rect3599-7-0-4"
+       width="15.75961"
+       height="3.7019231"
+       x="53.519234"
+       y="42.149036"
+       ry="0.0075454107" />
+    <rect
+       style="fill:#008000;stroke-width:0"
+       id="rect3599-7-0-0"
+       width="28.804483"
+       height="3.7019231"
+       x="47.084934"
+       y="45.674683"
+       ry="0.0075454107" />
+    <rect
+       style="fill:#803300;stroke-width:0"
+       id="rect3859"
+       width="28.868992"
+       height="1.4958028"
+       x="47.067928"
+       y="-47.466808"
+       ry="0.01251434"
+       transform="scale(1,-1)" />
+    <rect
+       style="fill:#000000;stroke-width:0"
+       id="rect3965"
+       width="7.6285944"
+       height="4.2381077"
+       x="62.524559"
+       y="-53.15086"
+       ry="0.0062267953"
+       transform="scale(1,-1)" />
+  </g>
+</svg>
