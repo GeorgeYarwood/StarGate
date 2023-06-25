@@ -99,19 +99,23 @@ public class FlyingState : GameStateBase
 
         if (Input.GetButtonUp(MOVE_UP))
         {
-            StartCoroutine(PlayerShip.Instance.CoastPlayer(MoveDirection.UP));
+            PlayerShip.Instance.CoastPlayerCoroutine =
+                StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
         if (Input.GetButtonUp(MOVE_DOWN))
         {
-            StartCoroutine(PlayerShip.Instance.CoastPlayer(MoveDirection.DOWN));
+            PlayerShip.Instance.CoastPlayerCoroutine =
+                StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
         if (Input.GetButtonUp(MOVE_LEFT))
         {
-            StartCoroutine(PlayerShip.Instance.CoastPlayer(MoveDirection.LEFT));
+            PlayerShip.Instance.CoastPlayerCoroutine =
+                StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
         if (Input.GetButtonUp(MOVE_RIGHT))
         {
-            StartCoroutine(PlayerShip.Instance.CoastPlayer(MoveDirection.RIGHT));
+            PlayerShip.Instance.CoastPlayerCoroutine =
+                StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
     }
 

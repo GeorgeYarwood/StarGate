@@ -25,8 +25,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="5.1754899"
-     inkscape:cx="246.16027"
-     inkscape:cy="176.2152"
+     inkscape:cx="208.28946"
+     inkscape:cy="178.72704"
      inkscape:window-width="2560"
      inkscape:window-height="1377"
      inkscape:window-x="3832"
@@ -47,7 +47,10 @@
        x="34.839897"
        y="-49.614262"
        ry="0.022939151"
-       transform="scale(1,-1)" />
+       transform="scale(1,-1)"
+       inkscape:export-filename="PlayerShip.png"
+       inkscape:export-xdpi="79.911057"
+       inkscape:export-ydpi="79.911057" />
     <rect
        style="fill:#803300;stroke-width:0.337547"
        id="rect552"

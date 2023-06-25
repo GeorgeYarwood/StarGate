@@ -6,6 +6,7 @@ using System.Threading;
 using System;
 using System.Threading.Tasks;
 using UnityEngine.UIElements;
+using Unity.VisualScripting;
 
 public enum MoveDirection { UP, DOWN, LEFT, RIGHT }
 public enum FacingDirection { LEFT, RIGHT }
@@ -16,18 +17,19 @@ public class PlayerShip : MonoBehaviour
     [SerializeField] Transform projectileSpawn;
     [SerializeField] LaserProjectile projectilePrefab;
     [SerializeField] ParticleSystem deathVfx;
+    [SerializeField] AudioClip fireSfx;
 
     public Transform ProjectileSpawn
     {
         get { return projectileSpawn; }
     }
 
-    const float PLAYER_MOVE_SPEED = 10.0f;
-    const float PLAYER_COAST_SPEED = 0.5f;
+    const float PLAYER_MOVE_SPEED = 5.0f;
+    const float PLAYER_COAST_SPEED = 0.75f;
 
     const float PROJECTILE_SPAWN_MODIFIER = 1.2f;
     const float FIRE_LOCKOUT_TIMER = 1.0f;
-    const float PLAYER_COAST_TIMER = 0.4f; //How long the player will coast after releasing input
+    const float PLAYER_COAST_TIMER = 1.2f; //How long the player will coast after releasing input
 
     const float LEFT_ROT_Y_VAL = 180.0f;
     const float RIGHT_ROT_Y_VAL = 0.0f;
@@ -35,6 +37,13 @@ public class PlayerShip : MonoBehaviour
     bool canFire = true;
 
     FacingDirection playerIsFacing;
+    MoveDirection lastDirection;
+
+    Coroutine coastPlayerCoroutine;
+    public Coroutine CoastPlayerCoroutine
+    {
+        set { coastPlayerCoroutine = value; }
+    }
 
     static PlayerShip instance;
     public static PlayerShip Instance
@@ -47,7 +56,7 @@ public class PlayerShip : MonoBehaviour
         get { return transform.position; }
     }
 
-    public void UpdatePosition(MoveDirection? ThisDirection, bool Coasting = false)
+    public void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false)
     {
         float ActualSpeed = PLAYER_MOVE_SPEED;
 
@@ -55,9 +64,9 @@ public class PlayerShip : MonoBehaviour
         {
             ActualSpeed = PLAYER_COAST_SPEED;
         }
-        else
+        else if(coastPlayerCoroutine != null)
         {
-            StopCoroutine(CoastPlayer(null));
+            StopCoroutine(coastPlayerCoroutine);
         }
 
         switch (ThisDirection)
@@ -70,16 +79,23 @@ public class PlayerShip : MonoBehaviour
                 break;
             case MoveDirection.LEFT:
                 transform.Translate(new Vector2(-1.0f, 0.0f) * ActualSpeed * Time.deltaTime);
-                playerIsFacing = FacingDirection.LEFT;
-                shipSprite.transform.rotation = Quaternion.Euler(new(shipSprite.transform.rotation.eulerAngles.x, LEFT_ROT_Y_VAL));
+                if(playerIsFacing != FacingDirection.LEFT)
+                {
+                    playerIsFacing = FacingDirection.LEFT;
+                    shipSprite.transform.rotation = Quaternion.Euler(new(shipSprite.transform.rotation.eulerAngles.x, LEFT_ROT_Y_VAL));
+                }
                 break;
             case MoveDirection.RIGHT:
                 transform.Translate(new Vector2(1.0f, 0.0f) * ActualSpeed * Time.deltaTime);
-                playerIsFacing = FacingDirection.RIGHT;
-                shipSprite.transform.rotation = Quaternion.Euler(new(shipSprite.transform.rotation.eulerAngles.x, RIGHT_ROT_Y_VAL));
+                if (playerIsFacing != FacingDirection.RIGHT)
+                {
+                    playerIsFacing = FacingDirection.RIGHT;
+                    shipSprite.transform.rotation = Quaternion.Euler(new(shipSprite.transform.rotation.eulerAngles.x, RIGHT_ROT_Y_VAL));
+                }
                 break;
         }
-        
+
+        lastDirection = ThisDirection;
         ClampPlayer();
     }
 
@@ -136,6 +152,7 @@ public class PlayerShip : MonoBehaviour
             Instantiate(projectilePrefab, ActualProjectileSpawn, Quaternion.Euler(FireDirection));
         ProjectileInstance.ProjectileIsFacing = playerIsFacing;
 
+        AudioManager.Instance.PlayAudioClip(fireSfx);
         StartCoroutine(FireLockOutTimer());
     }
 
@@ -149,6 +166,8 @@ public class PlayerShip : MonoBehaviour
         {
             Destroy(this);
         }
+
+        playerIsFacing = FacingDirection.RIGHT;
     }
 
     IEnumerator FireLockOutTimer()
@@ -169,15 +188,15 @@ public class PlayerShip : MonoBehaviour
         //TODO Play VFX
     }
 
-    public IEnumerator CoastPlayer(MoveDirection? Direction)
+    public IEnumerator CoastPlayer()
     {
         float ThisTimer = PLAYER_COAST_TIMER;
         while (ThisTimer > 0)
         {
-            UpdatePosition(Direction, Coasting: true);
-
+            UpdatePosition(lastDirection, Coasting: true);
             ThisTimer -= 1.0f * Time.deltaTime;
             yield return null;
         }
+        coastPlayerCoroutine = null;
     }
 }

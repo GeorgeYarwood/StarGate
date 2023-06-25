@@ -4952,6 +4952,7 @@ MonoBehaviour:
   projectileSpawn: {fileID: 8580451009868812092}
   projectilePrefab: {fileID: 3192940171559665861, guid: 57b3cb170dedbfb4499b9a44df2606fe, type: 3}
   deathVfx: {fileID: 4473492108697213035}
+  fireSfx: {fileID: 0}
 --- !u!61 &8580451008775452946
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4965,7 +4966,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0037164688, y: 0.008715063}
+  m_Offset: {x: 0.0005412102, y: -0.0023979843}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -4976,7 +4977,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.96943, y: 0.37599063}
+  m_Size: {x: 0.98513234, y: 0.17595583}
   m_EdgeRadius: 0
 --- !u!50 &8875332493870062709
 Rigidbody2D:

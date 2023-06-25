@@ -64,7 +64,7 @@ public class GameController : MonoBehaviour
 
     const float TIME_TO_WAIT_VFX = 2.0f;
     //Map bounds
-    const float MAX_Y_VAL = 5.0f;
+    const float MAX_Y_VAL = 4.0f;
     const float MAX_X_VAL = 20.0f;
 
     void Start()
