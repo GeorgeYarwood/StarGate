@@ -18,6 +18,8 @@ public class PlayerShip : MonoBehaviour
     [SerializeField] LaserProjectile projectilePrefab;
     [SerializeField] ParticleSystem deathVfx;
     [SerializeField] AudioClip fireSfx;
+    [SerializeField] AudioClip deathSfx;
+    [SerializeField] AudioClip engineSfx;
 
     public Transform ProjectileSpawn
     {
@@ -63,10 +65,16 @@ public class PlayerShip : MonoBehaviour
         if (Coasting)
         {
             ActualSpeed = PLAYER_COAST_SPEED;
+            AudioManager.Instance.PlayLoopedAudioClip(engineSfx, EndLoop: true);
         }
         else if(coastPlayerCoroutine != null)
         {
             StopCoroutine(coastPlayerCoroutine);
+        }
+
+        if (!Coasting)
+        {
+            AudioManager.Instance.PlayLoopedAudioClip(engineSfx);
         }
 
         switch (ThisDirection)
@@ -152,7 +160,7 @@ public class PlayerShip : MonoBehaviour
             Instantiate(projectilePrefab, ActualProjectileSpawn, Quaternion.Euler(FireDirection));
         ProjectileInstance.ProjectileIsFacing = playerIsFacing;
 
-        AudioManager.Instance.PlayAudioClip(fireSfx);
+        AudioManager.Instance.PlayAudioClip(fireSfx, RandomPitch: true);
         StartCoroutine(FireLockOutTimer());
     }
 
@@ -180,12 +188,8 @@ public class PlayerShip : MonoBehaviour
     public void OnCollisionWithEnemy()
     {
         deathVfx.Play();
+        AudioManager.Instance.PlayAudioClip(deathSfx);
         GameController.Instance.OnPlayerDeath();
-    }
-
-    public void OnCollisionWithSubLevelEntrance()
-    {
-        //TODO Play VFX
     }
 
     public IEnumerator CoastPlayer()

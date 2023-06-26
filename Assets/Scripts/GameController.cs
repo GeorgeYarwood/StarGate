@@ -61,8 +61,9 @@ public class GameController : MonoBehaviour
     }
     [SerializeField] EndGameState endGameState;
     [SerializeField] LevelCompleteState levelCompleteState;
+    [SerializeField] LifeLostState lifeLostState;
 
-    const float TIME_TO_WAIT_VFX = 2.0f;
+    const float TIME_TO_WAIT_VFX = 0.25f;
     //Map bounds
     const float MAX_Y_VAL = 4.0f;
     const float MAX_X_VAL = 20.0f;
@@ -79,9 +80,14 @@ public class GameController : MonoBehaviour
         }
 
         ResetAllLevels();
-
+        ResetPlayerPosition();
         //Temp until menu/state loading is added
         GoToState(flyingState);
+    }
+
+    public void ResetPlayerPosition()
+    {
+        PlayerShip.Instance.transform.position = Vector3.zero;
     }
 
     void ResetAllLevels()
@@ -127,6 +133,7 @@ public class GameController : MonoBehaviour
 
     void EnterNewState(GameStateBase StateToEnter)
     {
+        AudioManager.Instance.StopAllLoops();
         StateToEnter.OnStateEnter();
     }
 
@@ -149,7 +156,7 @@ public class GameController : MonoBehaviour
         if(currentLives - 1 >= 0)
         {
             currentLives--;
-            //TODO respawn`
+            GoToState(lifeLostState);
             return;
         }
 

@@ -179,6 +179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deathVfx: {fileID: 5045896529014432339}
+  deathSfx: {fileID: 8300000, guid: 5bc7d9c3a4a65524f8dea6b7905b802f, type: 3}
 --- !u!1001 &1962707574188134869
 PrefabInstance:
   m_ObjectHideFlags: 0

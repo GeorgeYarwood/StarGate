@@ -17,6 +17,7 @@ public class EnemyBase : MonoBehaviour
     }
 
     [SerializeField] ParticleSystem deathVfx;
+    [SerializeField] AudioClip deathSfx;
 
     bool waitingToDie = false;
 
@@ -47,6 +48,10 @@ public class EnemyBase : MonoBehaviour
     {
         GameController.Instance.AddScore(scoreAddition);
         GameController.Instance.FlyingStateInstance.RemoveEnemyFromList(this);
+        if (deathSfx)
+        {
+            AudioManager.Instance.PlayAudioClip(deathSfx);
+        }
         if (deathVfx)
         {
             deathVfx.Play();
@@ -59,6 +64,11 @@ public class EnemyBase : MonoBehaviour
 
     void Update()
     {
+        if(GameController.Instance.GetCurrentGameState
+            != GameController.Instance.FlyingStateInstance)
+        {
+            return; //Only tick enemies in flyingstate
+        }
         Tick();
         if (waitingToDie && !deathVfx.isPlaying)
         {

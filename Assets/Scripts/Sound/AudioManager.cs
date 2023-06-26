@@ -16,6 +16,8 @@ public class AudioManager : MonoBehaviour
         get { return instance; }
     }
 
+    const float RANDOM_PITCH_RANGE = 0.25f;
+
     void Start()
     {
         if (instance != null)
@@ -30,9 +32,57 @@ public class AudioManager : MonoBehaviour
         InitSources();
     }
 
-    public void PlayAudioClip(AudioClip ClipToPlay)
+    public void PlayAudioClip(AudioClip ClipToPlay, bool RandomPitch = false)
     {
-        GetFreeSourceFromPool().PlayOneShot(ClipToPlay);
+        AudioSource FreeSource = GetFreeSourceFromPool();
+        if (RandomPitch)
+        {
+            FreeSource.pitch -= Random.Range(-RANDOM_PITCH_RANGE, RANDOM_PITCH_RANGE);
+        }
+        FreeSource.PlayOneShot(ClipToPlay);
+    }
+
+    public void PlayLoopedAudioClip(AudioClip ClipToPlay, bool OnlyPermitOne = true, bool EndLoop = false)
+    {
+        if (OnlyPermitOne || EndLoop)
+        {
+            for (int s = 0; s < audioSourcePool.Count; s++)
+            {
+                if (audioSourcePool[s].clip == ClipToPlay
+                    && audioSourcePool[s].loop)
+                {
+                    if (EndLoop)
+                    {
+                        audioSourcePool[s].Stop();
+                        audioSourcePool[s].loop = false;
+                        audioSourcePool[s].clip = null;
+                    }
+                    return;
+                }
+            }
+            if (EndLoop)
+            {
+                return;
+            }
+        }
+
+        AudioSource FreeSource = GetFreeSourceFromPool();
+        FreeSource.loop = true;
+        FreeSource.clip = ClipToPlay;
+        FreeSource.Play();
+    }
+
+    public void StopAllLoops()
+    {
+        for (int s = 0; s < audioSourcePool.Count; s++)
+        {
+            if (audioSourcePool[s].loop)
+            {
+                audioSourcePool[s].Stop();
+                audioSourcePool[s].loop = false;
+                audioSourcePool[s].clip = null;
+            }
+        }
     }
 
     void InitSources()
@@ -50,7 +100,7 @@ public class AudioManager : MonoBehaviour
 
     AudioSource GetFreeSourceFromPool()
     {
-        for(int s = 0; s < audioSourcePool.Count; s++)
+        for (int s = 0; s < audioSourcePool.Count; s++)
         {
             if (audioSourcePool[s] == null)
             {
@@ -59,6 +109,9 @@ public class AudioManager : MonoBehaviour
 
             if (!audioSourcePool[s].isPlaying)
             {
+                audioSourcePool[s].pitch = 1;
+                audioSourcePool[s].clip = null;
+                audioSourcePool[s].loop = false;
                 return audioSourcePool[s];
             }
         }
