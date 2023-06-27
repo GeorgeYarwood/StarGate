@@ -1,8 +1,11 @@
 using Mono.Cecil.Cil;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
 public class FlyingState : GameStateBase
 {
     //Input buttons
@@ -44,7 +47,9 @@ public class FlyingState : GameStateBase
         }
 
         if ((GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count
-            + GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count) <= 0)
+            + GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count) <= 0
+            && GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised &&
+            GameController.AllLevels[GameController.CurrentLevel].IsInitialised)
         {
             GameController.Instance.OnLevelComplete();
         }
@@ -121,7 +126,7 @@ public class FlyingState : GameStateBase
 
     public void LoadLevel(LevelObject LevelToLoad)
     {
-        if (LevelToLoad.EnemiesInScene.Count > 0 || GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count > 0)
+        if (LevelToLoad.IsInitialised)
         {
             int MaxIterator;
             if (LevelToLoad.IsSubLevel) //We will never load a sublevel directly so we don't need to worry about it being the sublevel of a different level
@@ -151,16 +156,11 @@ public class FlyingState : GameStateBase
 
             return;
         }
-        //Initialise sublevel so we can check if all enemies are dead if it's never entered 
-        else if (!LevelToLoad.IsSubLevel)
+        else if (LevelToLoad.IsSubLevel && LevelToLoad.ParentLevel.IsInitialised)
         {
-            while (LevelToLoad.SubLevel.EnemiesInScene.Count < LevelToLoad.SubLevel.EnemiesPerLevel)
+            for (int e = 0; e < LevelToLoad.ParentLevel.EnemiesInScene.Count; e++)
             {
-                SpawnEnemies(LevelToLoad.SubLevel.EnemiesInScene, LevelToLoad.SubLevel.EnemyTypesToSpawn);
-            }
-            for (int e = 0; e < LevelToLoad.SubLevel.EnemiesInScene.Count; e++)
-            {
-                LevelToLoad.SubLevel.EnemiesInScene[e].gameObject.SetActive(false);
+                LevelToLoad.ParentLevel.EnemiesInScene[e].gameObject.SetActive(false);
             }
         }
 
@@ -168,14 +168,29 @@ public class FlyingState : GameStateBase
         {
             SpawnEnemies(LevelToLoad.EnemiesInScene, LevelToLoad.EnemyTypesToSpawn);
         }
+
+        LevelToLoad.IsInitialised = true;
     }
 
     void SpawnEnemies(List<EnemyBase> ListToAddTo, EnemyBase[] EnemyTypes)
     {
         int RandomEnemyType = Random.Range(0, EnemyTypes.Length);
     GetNewPosition:
-        Vector2 RandomSpawnPosition = new(Random.Range(-GameController.GetMapBoundsXVal,
-            GameController.GetMapBoundsXVal), Random.Range(GameController.GetMapBoundsYVal,
+        bool LeftSpawn = Convert.ToBoolean(Random.Range(0, 2));
+
+        float SpawnVal = 0.0f;
+        if (LeftSpawn)
+        {
+            SpawnVal = Random.Range(-GameController.GetMapBoundsXVal, 0.0f -
+                GameController.GetSpawnAdjustmentXVal);
+        }
+        else
+        {
+            SpawnVal = Random.Range(GameController.GetMapBoundsXVal, 0.0f +
+                GameController.GetSpawnAdjustmentXVal);
+        }
+
+        Vector2 RandomSpawnPosition = new(SpawnVal, Random.Range(GameController.GetMapBoundsYVal,
             -GameController.GetMapBoundsYVal));
         if (Mathf.Approximately(PlayerShip.Instance.transform.position.x, RandomSpawnPosition.x)
             || Mathf.Approximately(PlayerShip.Instance.transform.position.y, RandomSpawnPosition.y))

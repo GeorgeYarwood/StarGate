@@ -45,6 +45,11 @@ public class GameController : MonoBehaviour
         get { return MAX_X_VAL; }
     }
 
+    public static float GetSpawnAdjustmentXVal
+    {
+        get { return X_SPAWN_ADJUSTMENT_VAL; }
+    }
+
     [SerializeField] List<LevelObject> allLevels = new List<LevelObject>();
     public static List<LevelObject> AllLevels
     {
@@ -67,6 +72,9 @@ public class GameController : MonoBehaviour
     //Map bounds
     const float MAX_Y_VAL = 4.0f;
     const float MAX_X_VAL = 20.0f;
+
+    //Spawning X limits so we don't spawn in the centre (Where the player is)
+    const float X_SPAWN_ADJUSTMENT_VAL = 2.0f;
 
     void Start()
     {
@@ -95,10 +103,12 @@ public class GameController : MonoBehaviour
         //SO's have some persistance so reset each start
         for(int l = 0; l < allLevels.Count; l++)
         {
+            allLevels[l].IsInitialised = false;
             allLevels[l].EnemiesInScene = new List<EnemyBase>();
             if (!allLevels[l].IsSubLevel)
             {
                 allLevels[l].SubLevel.EnemiesInScene = new List<EnemyBase>();
+                allLevels[l].SubLevel.IsInitialised = false;
             }
         }
     }
@@ -119,7 +129,6 @@ public class GameController : MonoBehaviour
         if(gameStates.Count > 0)
         {
             ExitPrevState(gameStates.Peek());
-            //gameStates.Pop();
         }
        
         gameStates.Push(State);

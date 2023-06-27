@@ -33,6 +33,13 @@ public class LevelObject : ScriptableObject
         get { return parentLevel; } //If this level has a parent level, it is a sublevel
     }
 
+    bool isInitialised = false;
+    public bool IsInitialised
+    {
+        get { return isInitialised; }
+        set { isInitialised = value; }
+    }
+
     List<EnemyBase> enemiesInScene = new List<EnemyBase>();
     public List<EnemyBase> EnemiesInScene
     {
