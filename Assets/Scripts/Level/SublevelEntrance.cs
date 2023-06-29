@@ -5,8 +5,32 @@ using UnityEngine;
 public class SublevelEntrance : MonoBehaviour
 {
     bool isInSublevel = false;
+    public bool IsInSublevel
+    {
+        get { return isInSublevel; }
+        set { isInSublevel = value; }
+    }
     [SerializeField] ParticleSystem portalEnterVfx;
     [SerializeField] AudioClip portalEnterSfx;
+
+    //Just one entrance for all levels at the moment
+    static SublevelEntrance instance;
+    static public SublevelEntrance Instance
+    {
+        get { return instance;}
+    }
+
+    void Start()
+    {
+        if(instance != null)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
 
     void OnTriggerEnter2D(Collider2D Collision)
     {

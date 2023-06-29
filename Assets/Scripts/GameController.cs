@@ -74,7 +74,7 @@ public class GameController : MonoBehaviour
     const float MAX_X_VAL = 20.0f;
 
     //Spawning X limits so we don't spawn in the centre (Where the player is)
-    const float X_SPAWN_ADJUSTMENT_VAL = 2.0f;
+    const float X_SPAWN_ADJUSTMENT_VAL = 2.5f;
 
     void Start()
     {

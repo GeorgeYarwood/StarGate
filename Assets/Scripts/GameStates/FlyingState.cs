@@ -24,12 +24,22 @@ public class FlyingState : GameStateBase
             Debug.Log(ERROR_MESSAGE);
             return;
         }
-        LoadLevel(GameController.AllLevels[GameController.CurrentLevel]);
+        if (!GameController.AllLevels[GameController.CurrentLevel].IsInitialised
+            && !GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised)
+        {
+            LoadLevel(GameController.AllLevels[GameController.CurrentLevel]);
+        }
+
+        GameController.Instance.ResetPlayerPosition();
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public override void OnStateExit()
     {
-
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public override void Tick()
@@ -156,12 +166,20 @@ public class FlyingState : GameStateBase
 
             return;
         }
-        else if (LevelToLoad.IsSubLevel && LevelToLoad.ParentLevel.IsInitialised)
+        else if (LevelToLoad.IsSubLevel)
         {
-            for (int e = 0; e < LevelToLoad.ParentLevel.EnemiesInScene.Count; e++)
+            SublevelEntrance.Instance.IsInSublevel = true;
+            if(LevelToLoad.ParentLevel.IsInitialised)
             {
-                LevelToLoad.ParentLevel.EnemiesInScene[e].gameObject.SetActive(false);
+                for (int e = 0; e < LevelToLoad.ParentLevel.EnemiesInScene.Count; e++)
+                {
+                    LevelToLoad.ParentLevel.EnemiesInScene[e].gameObject.SetActive(false);
+                }
             }
+        }
+        else if (!LevelToLoad.IsSubLevel)
+        {
+            SublevelEntrance.Instance.IsInSublevel = false;
         }
 
         while (LevelToLoad.EnemiesInScene.Count < LevelToLoad.EnemiesPerLevel)
