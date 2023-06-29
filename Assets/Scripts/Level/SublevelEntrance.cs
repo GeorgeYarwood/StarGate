@@ -20,6 +20,9 @@ public class SublevelEntrance : MonoBehaviour
         get { return instance;}
     }
 
+    bool canReEnter = true;
+    const float RE_ENTRY_TIMER = 1.0f;
+
     void Start()
     {
         if(instance != null)
@@ -36,6 +39,7 @@ public class SublevelEntrance : MonoBehaviour
     {
         if(Collision.TryGetComponent(out PlayerShip _))
         {
+            StartCoroutine(BlockInteractionForTime()); //Stop up immediately going straight back in
             portalEnterVfx.Play();
             AudioManager.Instance.PlayAudioClip(portalEnterSfx);
 
@@ -54,5 +58,12 @@ public class SublevelEntrance : MonoBehaviour
                 isInSublevel = false;
             }
         }
+    }
+
+    IEnumerator BlockInteractionForTime()
+    {
+        canReEnter = false;
+        yield return new WaitForSeconds(RE_ENTRY_TIMER);
+        canReEnter = true;
     }
 }
