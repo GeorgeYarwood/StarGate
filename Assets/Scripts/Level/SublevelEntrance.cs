@@ -39,7 +39,7 @@ public class SublevelEntrance : MonoBehaviour
     {
         if(Collision.TryGetComponent(out PlayerShip _))
         {
-            StartCoroutine(BlockInteractionForTime()); //Stop up immediately going straight back in
+            StartCoroutine(BlockInteractionForTime()); //Stop us immediately going straight back in
             portalEnterVfx.Play();
             AudioManager.Instance.PlayAudioClip(portalEnterSfx);
 

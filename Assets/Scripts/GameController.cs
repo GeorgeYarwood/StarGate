@@ -2,6 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameStates 
+{ 
+    FLYING,
+    END_GAME,
+    LEVEL_COMPLETE,
+    LIFE_LOST,
+    DEATH,
+    PAUSE
+}
+
 public class GameController : MonoBehaviour
 {
     Stack<GameStateBase> gameStates = new Stack<GameStateBase>();
@@ -67,6 +77,7 @@ public class GameController : MonoBehaviour
     [SerializeField] EndGameState endGameState;
     [SerializeField] LevelCompleteState levelCompleteState;
     [SerializeField] LifeLostState lifeLostState;
+    [SerializeField] PauseGameState pauseGameState;
 
     const float TIME_TO_WAIT_VFX = 0.25f;
     //Map bounds
@@ -133,6 +144,38 @@ public class GameController : MonoBehaviour
        
         gameStates.Push(State);
         EnterNewState(State);
+    }
+
+    public void GoToState(GameStates State)
+    {
+        if (gameStates.Count > 0)
+        {
+            ExitPrevState(gameStates.Peek());
+        }
+
+        GameStateBase StateToLoad = new();
+
+        switch (State)
+        {
+            case GameStates.FLYING:
+                StateToLoad = flyingState;
+                break;
+            case GameStates.END_GAME:
+                StateToLoad = endGameState;
+                break;
+            case GameStates.LEVEL_COMPLETE:
+                StateToLoad = levelCompleteState;
+                break;
+            case GameStates.LIFE_LOST:
+                StateToLoad = lifeLostState;
+                break;
+            case GameStates.PAUSE:
+                StateToLoad = pauseGameState;
+                break;
+        }
+
+        gameStates.Push(StateToLoad);
+        EnterNewState(StateToLoad);
     }
 
     void ExitPrevState(GameStateBase StateToExit)

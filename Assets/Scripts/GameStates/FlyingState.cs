@@ -8,14 +8,21 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 public class FlyingState : GameStateBase
 {
-    //Input buttons
+    //Input buttons, should really move these to their own class
     const string MOVE_LEFT = "MoveLeft";
     const string MOVE_RIGHT = "MoveRight";
     const string MOVE_UP = "MoveUp";
     const string MOVE_DOWN = "MoveDown";
     const string FIRE = "Fire";
+    const string PAUSE_MENU = "PauseMenu";
 
     const string ERROR_MESSAGE = "No levels added to FlyingState gameobject! Returning out";
+
+    List<GameObject> projectilesInScene = new List<GameObject>();
+    public List<GameObject> ProjectilesInScene
+    {
+        get { return projectilesInScene; }
+    }
 
     public override void OnStateEnter()
     {
@@ -29,6 +36,10 @@ public class FlyingState : GameStateBase
         {
             LoadLevel(GameController.AllLevels[GameController.CurrentLevel]);
         }
+        else if (GameController.AllLevels[GameController.CurrentLevel].IsInitialised) //Reset spawns if we're already in the level
+        {
+            ResetEnemyPositions();
+        }
 
         GameController.Instance.ResetPlayerPosition();
 
@@ -36,10 +47,28 @@ public class FlyingState : GameStateBase
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    void ResetEnemyPositions()
+    {
+        for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++) 
+        {
+            GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].transform.position
+                = ReturnRandomSpawnPositionInRange();
+        }
+    }
+
     public override void OnStateExit()
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        for (int p = 0; p < projectilesInScene.Count; p++)
+        {
+            if (projectilesInScene[p])
+            {
+                Destroy(projectilesInScene[p].gameObject);
+            }
+        }
+
+        projectilesInScene.Clear();
     }
 
     public override void Tick()
@@ -47,6 +76,18 @@ public class FlyingState : GameStateBase
         GetInput();
         TrackPlayerWithCamera();
         CheckIfLevelComplete();
+        CleanList();
+    }
+
+    void CleanList()
+    {
+        for (int p = 0; p < projectilesInScene.Count; p++)
+        {
+            if (!projectilesInScene[p])
+            {
+                projectilesInScene.RemoveAt(p);
+            }
+        }
     }
 
     void CheckIfLevelComplete()
@@ -104,7 +145,10 @@ public class FlyingState : GameStateBase
         {
             PlayerShip.Instance.FireProjectile();
         }
-
+        if (Input.GetButtonDown(PAUSE_MENU))
+        {
+            GameController.Instance.GoToState(GameStates.PAUSE);
+        }
         //Listen for release so we can coast
 
         if (Input.anyKey)
@@ -169,7 +213,7 @@ public class FlyingState : GameStateBase
         else if (LevelToLoad.IsSubLevel)
         {
             SublevelEntrance.Instance.IsInSublevel = true;
-            if(LevelToLoad.ParentLevel.IsInitialised)
+            if (LevelToLoad.ParentLevel.IsInitialised)
             {
                 for (int e = 0; e < LevelToLoad.ParentLevel.EnemiesInScene.Count; e++)
                 {
@@ -193,6 +237,15 @@ public class FlyingState : GameStateBase
     void SpawnEnemies(List<EnemyBase> ListToAddTo, EnemyBase[] EnemyTypes)
     {
         int RandomEnemyType = Random.Range(0, EnemyTypes.Length);
+
+        EnemyBase ThisEnemy = Instantiate(EnemyTypes[RandomEnemyType],
+            ReturnRandomSpawnPositionInRange(), Quaternion.identity);
+
+        ListToAddTo.Add(ThisEnemy);
+    }
+
+    Vector2 ReturnRandomSpawnPositionInRange()
+    {
     GetNewPosition:
         bool LeftSpawn = Convert.ToBoolean(Random.Range(0, 2));
 
@@ -216,9 +269,6 @@ public class FlyingState : GameStateBase
             goto GetNewPosition;    //Programming like it's 1970
         }
 
-        EnemyBase ThisEnemy = Instantiate(EnemyTypes[RandomEnemyType],
-            RandomSpawnPosition, Quaternion.identity);
-
-        ListToAddTo.Add(ThisEnemy);
+        return RandomSpawnPosition;
     }
 }

@@ -58,6 +58,7 @@ public class PlayerShip : MonoBehaviour
         get { return transform.position; }
     }
 
+
     public void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false)
     {
         float ActualSpeed = PLAYER_MOVE_SPEED;
@@ -159,12 +160,13 @@ public class PlayerShip : MonoBehaviour
         LaserProjectile ProjectileInstance =
             Instantiate(projectilePrefab, ActualProjectileSpawn, Quaternion.Euler(FireDirection));
         ProjectileInstance.ProjectileIsFacing = playerIsFacing;
-
+        GameController.Instance.FlyingStateInstance.
+            ProjectilesInScene.Add(ProjectileInstance.gameObject);
         AudioManager.Instance.PlayAudioClip(fireSfx, RandomPitch: true);
         StartCoroutine(FireLockOutTimer());
     }
 
-    void Start()
+    void OnEnable()
     {
         if (instance == null)
         {
@@ -202,5 +204,10 @@ public class PlayerShip : MonoBehaviour
             yield return null;
         }
         coastPlayerCoroutine = null;
+    }
+
+    void OnDestroy() 
+    {
+        instance = null;
     }
 }
