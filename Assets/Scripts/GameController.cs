@@ -21,6 +21,12 @@ public class GameController : MonoBehaviour
         get { return gameStates.Peek(); }
     }
 
+    GameStateBase lastGameState;
+    public GameStateBase LastGameState
+    {
+        get { return lastGameState; }
+    }
+
     static GameController instance;
     public static GameController Instance
     {
@@ -85,7 +91,7 @@ public class GameController : MonoBehaviour
     const float MAX_X_VAL = 20.0f;
 
     //Spawning X limits so we don't spawn in the centre (Where the player is)
-    const float X_SPAWN_ADJUSTMENT_VAL = 2.5f;
+    const float X_SPAWN_ADJUSTMENT_VAL = 6.0f;
 
     void Start()
     {
@@ -98,6 +104,7 @@ public class GameController : MonoBehaviour
             Destroy(this);
         }
 
+        currentLives = startingLives;
         ResetAllLevels();
         ResetPlayerPosition();
         //Temp until menu/state loading is added
@@ -122,6 +129,8 @@ public class GameController : MonoBehaviour
                 allLevels[l].SubLevel.IsInitialised = false;
             }
         }
+
+        currentLevel = 0;
     }
 
     public void GoToPreviousGameState()
@@ -181,6 +190,7 @@ public class GameController : MonoBehaviour
     void ExitPrevState(GameStateBase StateToExit)
     {
         StateToExit.OnStateExit();
+        lastGameState = StateToExit;
     }
 
     void EnterNewState(GameStateBase StateToEnter)

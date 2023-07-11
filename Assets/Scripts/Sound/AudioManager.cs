@@ -16,9 +16,11 @@ public class AudioManager : MonoBehaviour
         get { return instance; }
     }
 
+    List<AudioSource> musicSources = new List<AudioSource>(); //Save sources playing music here so we don't touch them
+
     const float RANDOM_PITCH_RANGE = 0.25f;
 
-    void Start()
+    void OnEnable()
     {
         if (instance != null)
         {
@@ -28,7 +30,7 @@ public class AudioManager : MonoBehaviour
         {
             instance = this;
         }
-
+        DontDestroyOnLoad(gameObject);
         InitSources();
     }
 
@@ -42,7 +44,7 @@ public class AudioManager : MonoBehaviour
         FreeSource.PlayOneShot(ClipToPlay);
     }
 
-    public void PlayLoopedAudioClip(AudioClip ClipToPlay, bool OnlyPermitOne = true, bool EndLoop = false)
+    public void PlayLoopedAudioClip(AudioClip ClipToPlay, bool OnlyPermitOne = true, bool EndLoop = false, bool IsMusic = false)
     {
         if (OnlyPermitOne || EndLoop)
         {
@@ -53,6 +55,10 @@ public class AudioManager : MonoBehaviour
                 {
                     if (EndLoop)
                     {
+                        if (IsMusic)
+                        {
+                            musicSources.Remove(audioSourcePool[s]);
+                        }
                         audioSourcePool[s].Stop();
                         audioSourcePool[s].loop = false;
                         audioSourcePool[s].clip = null;
@@ -69,14 +75,34 @@ public class AudioManager : MonoBehaviour
         AudioSource FreeSource = GetFreeSourceFromPool();
         FreeSource.loop = true;
         FreeSource.clip = ClipToPlay;
+        if (IsMusic)
+        {
+            musicSources.Add(FreeSource);
+        }
         FreeSource.Play();
+    }
+
+    void CleanList()
+    {
+        for(int a = 0; a < musicSources.Count; a++)
+        {
+            if (!musicSources[a])
+            {
+                musicSources.Remove(musicSources[a]);
+            }
+        }
+    }
+
+    void Update()
+    {
+        CleanList();
     }
 
     public void StopAllLoops()
     {
         for (int s = 0; s < audioSourcePool.Count; s++)
         {
-            if (audioSourcePool[s].loop)
+            if (audioSourcePool[s].loop && !musicSources.Contains(audioSourcePool[s]))
             {
                 audioSourcePool[s].Stop();
                 audioSourcePool[s].loop = false;
@@ -120,7 +146,7 @@ public class AudioManager : MonoBehaviour
         AudioSource NewSource = this.AddComponent<AudioSource>();
         NewSource.volume = globalVolume;
         audioSourcePool.Add(NewSource);
-        Debug.Log(NOT_ENOUGH_SOURCES_ERROR);
+        Debug.LogWarning(NOT_ENOUGH_SOURCES_ERROR);
         return NewSource;
     }
 }

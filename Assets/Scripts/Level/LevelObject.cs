@@ -6,6 +6,12 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Level tools/New level...")]
 public class LevelObject : ScriptableObject
 {
+    [SerializeField] AudioClip levelSong;
+    public AudioClip LevelSong
+    {
+        get { return levelSong; }
+    }
+    
     [SerializeField] int enemiesPerLevel;
     public int EnemiesPerLevel
     {

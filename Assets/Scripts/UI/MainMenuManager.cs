@@ -8,12 +8,15 @@ public class MainMenuManager : MonoBehaviour
 {
     [SerializeField] Button startGameButton;
     [SerializeField] Button quitButton;
+    [SerializeField] AudioClip mainMenuSong;
 
     const string GAME_SCENE = "GameScene";
 
     void OnEnable()
     {
         SetupButtons();
+        AudioManager.Instance.PlayLoopedAudioClip(
+            mainMenuSong, OnlyPermitOne: true, IsMusic: true);
     }
 
     void SetupButtons()

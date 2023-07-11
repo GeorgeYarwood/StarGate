@@ -34,17 +34,21 @@ public class FlyingState : GameStateBase
         if (!GameController.AllLevels[GameController.CurrentLevel].IsInitialised
             && !GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised)
         {
+            GameController.Instance.ResetPlayerPosition();
             LoadLevel(GameController.AllLevels[GameController.CurrentLevel]);
         }
-        else if (GameController.AllLevels[GameController.CurrentLevel].IsInitialised) //Reset spawns if we're already in the level
+        else if (GameController.AllLevels[GameController.CurrentLevel].IsInitialised
+            && GameController.Instance.LastGameState is not PauseGameState) //Reset spawns if we're already in the level
         {
             ResetEnemyPositions();
         }
 
-        GameController.Instance.ResetPlayerPosition();
-
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        AudioManager.Instance.PlayLoopedAudioClip(
+            GameController.AllLevels[GameController.CurrentLevel].LevelSong,
+            OnlyPermitOne: true, IsMusic: true);
     }
 
     void ResetEnemyPositions()
