@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LevelCompleteState : GameStateBase
@@ -8,6 +9,8 @@ public class LevelCompleteState : GameStateBase
     [SerializeField] GameObject levelCompletePanel;
     [SerializeField] Button loadNextLevelButton; 
     [SerializeField] Button returnToMenuButton;
+
+    const string MAIN_MENU_SCENE = "MainMenu";
 
     void OnEnable()
     {
@@ -50,7 +53,7 @@ public class LevelCompleteState : GameStateBase
 
     void ReturnToMenu()
     {
-        //Temp until menu is implemented
-        Application.Quit();
+        SceneManager.LoadScene(MAIN_MENU_SCENE);
+        //Application.Quit();
     }
 }
