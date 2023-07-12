@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3fbea6369f5f45499d9e296936cbc21, type: 3}
-  m_Name: LevelStart
+  m_Name: ParentLevelEnter
   m_EditorClassIdentifier: 
-  dialogueString: Welcome! Let's see you deploy....
+  dialogueString: Let's make things interesting...
   whenToPlay: 2
   isEnemy: 0

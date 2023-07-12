@@ -98,9 +98,9 @@ public class FlyingState : GameStateBase
             && GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised &&
             GameController.AllLevels[GameController.CurrentLevel].IsInitialised)
         {
-            GameController.Instance.OnLevelComplete();
             HandleDialogue(DialogueQueuePoint.LEVEL_END, GameController.AllLevels[GameController.CurrentLevel]);
             HandleDialogue(DialogueQueuePoint.LEVEL_END, GameController.AllLevels[GameController.CurrentLevel].SubLevel);
+            GameController.Instance.OnLevelComplete();
         }
     }
 
@@ -256,10 +256,13 @@ public class FlyingState : GameStateBase
     void SpawnEnemies(List<EnemyBase> ListToAddTo, EnemyBase[] EnemyTypes)
     {
         int RandomEnemyType = Random.Range(0, EnemyTypes.Length);
-
+        if (EnemyTypes[RandomEnemyType].OnePerLevel && EnemyTypes[RandomEnemyType].IsSpawned)
+        {
+            return;
+        }
         EnemyBase ThisEnemy = Instantiate(EnemyTypes[RandomEnemyType],
             ReturnRandomSpawnPositionInRange(), Quaternion.identity);
-
+        EnemyTypes[RandomEnemyType].IsSpawned = true;
         ListToAddTo.Add(ThisEnemy);
     }
 

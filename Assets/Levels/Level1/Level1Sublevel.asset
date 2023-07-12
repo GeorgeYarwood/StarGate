@@ -20,6 +20,4 @@ MonoBehaviour:
   subLevel: {fileID: 0}
   parentLevel: {fileID: 11400000, guid: 52da59a82bce1dc4ea2e950cab0e48b1, type: 2}
   levelDialogue:
-  - {fileID: 11400000, guid: dc28629ba65a7514ba22d67fd6b11de0, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: c02967efa85a5af40aeb323e4d3406d9, type: 2}

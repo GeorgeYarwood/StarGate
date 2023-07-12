@@ -178,8 +178,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0840f7ab5f9185b438eb924bc70e6e10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyHealth: 2
   deathVfx: {fileID: 5045896529014432339}
   deathSfx: {fileID: 8300000, guid: 5bc7d9c3a4a65524f8dea6b7905b802f, type: 3}
+  enemyDialogue: []
+  moveSpeed: 1.5
+  minDistanceToPlayer: 10
 --- !u!1001 &1962707574188134869
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -194,15 +198,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5358305726408690424, guid: 671e2afa5bb381c4c9ec12db434d022d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.50398254
+      value: 0.002
       objectReference: {fileID: 0}
     - target: {fileID: 5358305726408690424, guid: 671e2afa5bb381c4c9ec12db434d022d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.12364411
+      value: -0.01
       objectReference: {fileID: 0}
     - target: {fileID: 5358305726408690424, guid: 671e2afa5bb381c4c9ec12db434d022d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.022470195
+      value: -0.022
       objectReference: {fileID: 0}
     - target: {fileID: 5358305726408690424, guid: 671e2afa5bb381c4c9ec12db434d022d, type: 3}
       propertyPath: m_LocalRotation.w

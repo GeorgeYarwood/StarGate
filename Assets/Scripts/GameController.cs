@@ -121,12 +121,20 @@ public class GameController : MonoBehaviour
         //SO's have some persistance so reset each start
         for(int l = 0; l < allLevels.Count; l++)
         {
+            for(int e = 0; e < allLevels[l].EnemyTypesToSpawn.Length; e++)
+            {
+                allLevels[l].EnemyTypesToSpawn[e].IsSpawned = false;
+            }
             allLevels[l].IsInitialised = false;
             allLevels[l].EnemiesInScene = new List<EnemyBase>();
             if (!allLevels[l].IsSubLevel)
             {
                 allLevels[l].SubLevel.EnemiesInScene = new List<EnemyBase>();
                 allLevels[l].SubLevel.IsInitialised = false;
+                for (int e = 0; e < allLevels[l].SubLevel.EnemyTypesToSpawn.Length; e++)
+                {
+                    allLevels[l].SubLevel.EnemyTypesToSpawn[e].IsSpawned = false;
+                }
             }
         }
 

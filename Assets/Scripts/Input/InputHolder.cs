@@ -17,4 +17,5 @@ public class InputHolder : MonoBehaviour
     public const string MOVE_DOWN = "MoveDown";
     public const string FIRE = "Fire";
     public const string SKIP_DIALOGUE_BUTTON = "SkipDialogue";
+    public const string DEVELOPER_MENU = "DeveloperMenu";
 }

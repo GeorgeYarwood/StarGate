@@ -10,7 +10,12 @@ public class DialoguePanel : MonoBehaviour
     [SerializeField] GameObject panelGo;    //What we hide and show
     [SerializeField] AudioClip characterBlipSfx;
 
-    const float PRINTING_SPEED = 0.2f;
+    const float PRINTING_SPEED = 0.1f;
+    const float PUNCTUATION_SPEED = 0.3f;
+    const float AUTO_CLOSE_TIME = 1.5f;
+
+    const char COMMA = ',';
+    const char FULL_STOP = '.';
 
     bool isPrinting = false;
     public bool IsPrinting
@@ -54,6 +59,25 @@ public class DialoguePanel : MonoBehaviour
                 panelGo.SetActive(false);
             }
         }
+
+        if(!isPrinting && panelGo.activeInHierarchy)    //Close the panel after time
+        {
+            StartCoroutine(AutoClosePanel());
+        }
+    }
+
+    IEnumerator AutoClosePanel()
+    {
+        float ThisTime = AUTO_CLOSE_TIME;
+        while (ThisTime > 0)
+        {
+            ThisTime -= 1.0f * Time.deltaTime;
+            yield return null;
+        }
+        if(!isPrinting)
+        {
+            panelGo.SetActive(false);
+        }
     }
 
     public IEnumerator PrintDialogue(string Text)   //Give us the slow typing effect
@@ -65,10 +89,22 @@ public class DialoguePanel : MonoBehaviour
         int Iterator = 0;
         while (dialogueText.text.Length < Text.Length)
         {
+            bool LongPause = false;
+            if (Text[Iterator] == COMMA || Text[Iterator] == FULL_STOP)
+            {
+                LongPause = true;
+            }
             dialogueText.text += Text[Iterator];
             Iterator++;
             AudioManager.Instance.PlayAudioClip(characterBlipSfx);
-            yield return new WaitForSeconds(PRINTING_SPEED);
+            if (LongPause)
+            {
+                yield return new WaitForSeconds(PUNCTUATION_SPEED);
+            }
+            else
+            {
+                yield return new WaitForSeconds(PRINTING_SPEED);
+            }
         }
         isPrinting = false;
     }

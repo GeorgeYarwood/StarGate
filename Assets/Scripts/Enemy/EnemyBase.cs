@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyBase : MonoBehaviour
 {
-    int enemyHealth;
+    [SerializeField] int enemyHealth;
     public int EnemyHealth
     {
         get { return enemyHealth; }
@@ -17,8 +17,25 @@ public class EnemyBase : MonoBehaviour
     }
 
     [SerializeField] ParticleSystem deathVfx;
+    [SerializeField] ParticleSystem hitVfx;
     [SerializeField] AudioClip deathSfx;
+    [SerializeField] AudioClip hitSfx;
     [SerializeField] Dialogue[] enemyDialogue = new Dialogue[3];
+    [SerializeField] bool onePerLevel = false;
+    [SerializeField] float encounterDistance = 5.0f;    //How close until ON_ENCOUNTER dialogue is triggered
+
+    bool hasRunFirstEncounter = false;
+
+    public bool OnePerLevel
+    {
+        get { return onePerLevel; }
+    }
+    bool isSpawned = false;
+    public bool IsSpawned
+    {
+        get { return isSpawned; }
+        set { isSpawned = value; }
+    }
     public Dialogue[] EnemyDialogue
     {
         get { return enemyDialogue; }
@@ -42,6 +59,14 @@ public class EnemyBase : MonoBehaviour
         if (enemyHealth - DamageToDeduct > 0)
         {
             enemyHealth -= DamageToDeduct;
+            if (hitSfx)
+            {
+                AudioManager.Instance.PlayAudioClip(hitSfx);
+            }
+            if (hitVfx)
+            {
+                hitVfx.Play();
+            }
             return;
         }
 
@@ -85,6 +110,11 @@ public class EnemyBase : MonoBehaviour
             {
                 DialogueManager.Instance.PlayDialogue(enemyDialogue[d]);
             }
+            else if(enemyDialogue[d].WhenToPlay == DialogueQueuePoint.ON_ENCOUNTER
+                && WhatPointIsThis == DialogueQueuePoint.ON_ENCOUNTER)
+            {
+                DialogueManager.Instance.PlayDialogue(enemyDialogue[d]);
+            }
         }
     }
 
@@ -94,6 +124,12 @@ public class EnemyBase : MonoBehaviour
             != GameController.Instance.FlyingStateInstance)
         {
             return; //Only tick enemies in flyingstate
+        }
+        if (Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= encounterDistance
+            && !hasRunFirstEncounter)
+        {
+            HandleDialogue(DialogueQueuePoint.ON_ENCOUNTER);
+            hasRunFirstEncounter = true;
         }
         Tick();
         if (waitingToDie && !deathVfx.isPlaying)

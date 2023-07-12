@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MovingEnemy : EnemyBase
 {
-    const float MOVE_SPEED = 1.5f;
-    const float MIN_DIST_TO_PLAYER = 10.0f;
+    [SerializeField] float moveSpeed = 1.5f;
+    [SerializeField] float minDistanceToPlayer = 10.0f; //How close player must be before we start chasing
     public override void Tick()
     {
         TrackPlayer();
@@ -13,10 +13,10 @@ public class MovingEnemy : EnemyBase
 
     void TrackPlayer()
     {
-        if(Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= MIN_DIST_TO_PLAYER)
+        if(Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= minDistanceToPlayer)
         {
             transform.position = Vector2.MoveTowards(transform.position,
-                PlayerShip.Instance.GetPos, MOVE_SPEED * Time.deltaTime);
+                PlayerShip.Instance.GetPos, moveSpeed * Time.deltaTime);
         }
     }
 }
