@@ -10,7 +10,6 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] Button quitButton;
     [SerializeField] AudioClip mainMenuSong;
 
-    const string GAME_SCENE = "GameScene";
 
     void OnEnable()
     {
@@ -27,7 +26,7 @@ public class MainMenuManager : MonoBehaviour
 
     void StartGame()
     {
-        SceneManager.LoadScene(GAME_SCENE);
+        SceneManager.LoadScene(InputHolder.GAME_SCENE);
     }
 
     void QuitGame()

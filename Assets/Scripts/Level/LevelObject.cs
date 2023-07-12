@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Level tools/New level...")]
@@ -51,5 +49,11 @@ public class LevelObject : ScriptableObject
     {
         get { return enemiesInScene; }
         set {  enemiesInScene = value; }
+    }
+
+    [SerializeField] Dialogue[] levelDialogue = new Dialogue[3];
+    public Dialogue[] LevelDialogue
+    {
+        get { return levelDialogue;}
     }
 }

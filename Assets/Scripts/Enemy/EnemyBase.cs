@@ -18,7 +18,11 @@ public class EnemyBase : MonoBehaviour
 
     [SerializeField] ParticleSystem deathVfx;
     [SerializeField] AudioClip deathSfx;
-
+    [SerializeField] Dialogue[] enemyDialogue = new Dialogue[3];
+    public Dialogue[] EnemyDialogue
+    {
+        get { return enemyDialogue; }
+    }
     bool waitingToDie = false;
 
     void OnTriggerEnter2D(Collider2D Collision)
@@ -48,6 +52,7 @@ public class EnemyBase : MonoBehaviour
     {
         GameController.Instance.AddScore(scoreAddition);
         GameController.Instance.FlyingStateInstance.RemoveEnemyFromList(this);
+        HandleDialogue(DialogueQueuePoint.ON_DEATH);
         if (deathSfx)
         {
             AudioManager.Instance.PlayAudioClip(deathSfx);
@@ -60,6 +65,27 @@ public class EnemyBase : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    void HandleDialogue(DialogueQueuePoint WhatPointIsThis)
+    {
+        if(enemyDialogue.Length == 0)
+        {
+            return;
+        }
+
+        for(int d = 0; d < enemyDialogue.Length; d++)
+        {
+            if (!enemyDialogue[d])
+            {
+                continue;
+            }
+            if (enemyDialogue[d].WhenToPlay == DialogueQueuePoint.ON_DEATH
+                && WhatPointIsThis == DialogueQueuePoint.ON_DEATH)
+            {
+                DialogueManager.Instance.PlayDialogue(enemyDialogue[d]);
+            }
+        }
     }
 
     void Update()

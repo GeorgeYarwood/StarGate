@@ -13,9 +13,6 @@ public class PauseGameState : GameStateBase
     [SerializeField] Button returnToMenuButton;
     [SerializeField] Button quitButton;
 
-    const string MENU_SCENE = "MainMenu";
-    const string PAUSE_MENU = "PauseMenu";
-
     public override void OnStateEnter()
     {
         pausePanel.SetActive(true);
@@ -31,7 +28,7 @@ public class PauseGameState : GameStateBase
 
     void ReturnToMenu()
     {
-        SceneManager.LoadScene(MENU_SCENE);
+        SceneManager.LoadScene(InputHolder.MENU_SCENE);
     }
 
     void QuitGame()
@@ -59,7 +56,7 @@ public class PauseGameState : GameStateBase
 
     public override void Tick()
     {
-        if (Input.GetButtonDown(PAUSE_MENU))
+        if (Input.GetButtonDown(InputHolder.PAUSE_MENU))
         {
             GameController.Instance.GoToPreviousGameState();
         }

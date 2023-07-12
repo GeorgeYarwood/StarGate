@@ -19,3 +19,6 @@ MonoBehaviour:
   - {fileID: 3801359242005734824, guid: 159195292ac143347ab7cb7b4bc894a8, type: 3}
   subLevel: {fileID: 11400000, guid: 408fe9fd2adcf72478ebd68f595bb596, type: 2}
   parentLevel: {fileID: 0}
+  levelDialogue:
+  - {fileID: 11400000, guid: dc28629ba65a7514ba22d67fd6b11de0, type: 2}
+  - {fileID: 11400000, guid: eb0958580b0d74a4d954245270ac8222, type: 2}

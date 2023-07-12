@@ -8,14 +8,6 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 public class FlyingState : GameStateBase
 {
-    //Input buttons, should really move these to their own class
-    const string MOVE_LEFT = "MoveLeft";
-    const string MOVE_RIGHT = "MoveRight";
-    const string MOVE_UP = "MoveUp";
-    const string MOVE_DOWN = "MoveDown";
-    const string FIRE = "Fire";
-    const string PAUSE_MENU = "PauseMenu";
-
     const string ERROR_MESSAGE = "No levels added to FlyingState gameobject! Returning out";
 
     List<GameObject> projectilesInScene = new List<GameObject>();
@@ -107,6 +99,8 @@ public class FlyingState : GameStateBase
             GameController.AllLevels[GameController.CurrentLevel].IsInitialised)
         {
             GameController.Instance.OnLevelComplete();
+            HandleDialogue(DialogueQueuePoint.LEVEL_END, GameController.AllLevels[GameController.CurrentLevel]);
+            HandleDialogue(DialogueQueuePoint.LEVEL_END, GameController.AllLevels[GameController.CurrentLevel].SubLevel);
         }
     }
 
@@ -129,27 +123,27 @@ public class FlyingState : GameStateBase
 
     void GetInput()
     {
-        if (Input.GetButton(MOVE_UP))
+        if (Input.GetButton(InputHolder.MOVE_UP))
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.UP);
         }
-        if (Input.GetButton(MOVE_DOWN))
+        if (Input.GetButton(InputHolder.MOVE_DOWN))
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.DOWN);
         }
-        if (Input.GetButton(MOVE_LEFT))
+        if (Input.GetButton(InputHolder.MOVE_LEFT))
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.LEFT);
         }
-        if (Input.GetButton(MOVE_RIGHT))
+        if (Input.GetButton(InputHolder.MOVE_RIGHT))
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.RIGHT);
         }
-        if (Input.GetButton(FIRE))
+        if (Input.GetButton(InputHolder.FIRE))
         {
             PlayerShip.Instance.FireProjectile();
         }
-        if (Input.GetButtonDown(PAUSE_MENU))
+        if (Input.GetButtonDown(InputHolder.PAUSE_MENU))
         {
             GameController.Instance.GoToState(GameStates.PAUSE);
         }
@@ -160,22 +154,22 @@ public class FlyingState : GameStateBase
             return;
         }
 
-        if (Input.GetButtonUp(MOVE_UP))
+        if (Input.GetButtonUp(InputHolder.MOVE_UP))
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
-        if (Input.GetButtonUp(MOVE_DOWN))
+        if (Input.GetButtonUp(InputHolder.MOVE_DOWN))
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
-        if (Input.GetButtonUp(MOVE_LEFT))
+        if (Input.GetButtonUp(InputHolder.MOVE_LEFT))
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
-        if (Input.GetButtonUp(MOVE_RIGHT))
+        if (Input.GetButtonUp(InputHolder.MOVE_RIGHT))
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
@@ -235,7 +229,28 @@ public class FlyingState : GameStateBase
             SpawnEnemies(LevelToLoad.EnemiesInScene, LevelToLoad.EnemyTypesToSpawn);
         }
 
+        HandleDialogue(DialogueQueuePoint.LEVEL_START, LevelToLoad);
+       
         LevelToLoad.IsInitialised = true;
+    }
+
+    void HandleDialogue(DialogueQueuePoint WhatPointIsThis, LevelObject ThisLevel)
+    {
+        if (ThisLevel.LevelDialogue.Length > 0)
+        {
+            for (int d = 0; d < ThisLevel.LevelDialogue.Length; d++)
+            {
+                if (!ThisLevel.LevelDialogue[d])
+                {
+                    continue;
+                }
+
+                if (ThisLevel.LevelDialogue[d].WhenToPlay == WhatPointIsThis)
+                {
+                    DialogueManager.Instance.PlayDialogue(ThisLevel.LevelDialogue[d]);
+                }
+            }
+        }
     }
 
     void SpawnEnemies(List<EnemyBase> ListToAddTo, EnemyBase[] EnemyTypes)

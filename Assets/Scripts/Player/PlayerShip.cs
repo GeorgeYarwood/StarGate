@@ -58,7 +58,6 @@ public class PlayerShip : MonoBehaviour
         get { return transform.position; }
     }
 
-
     public void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false)
     {
         float ActualSpeed = PLAYER_MOVE_SPEED;

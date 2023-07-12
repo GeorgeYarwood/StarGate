@@ -10,8 +10,6 @@ public class LevelCompleteState : GameStateBase
     [SerializeField] Button loadNextLevelButton; 
     [SerializeField] Button returnToMenuButton;
 
-    const string MAIN_MENU_SCENE = "MainMenu";
-
     void OnEnable()
     {
         loadNextLevelButton.onClick.AddListener(LoadNextLevel);
@@ -53,7 +51,7 @@ public class LevelCompleteState : GameStateBase
 
     void ReturnToMenu()
     {
-        SceneManager.LoadScene(MAIN_MENU_SCENE);
+        SceneManager.LoadScene(InputHolder.MENU_SCENE);
         //Application.Quit();
     }
 }
