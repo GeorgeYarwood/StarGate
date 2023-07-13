@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2294187218363598420}
   - component: {fileID: 2294187218363598421}
   - component: {fileID: 2294187218363598422}
+  - component: {fileID: 3962613361770593165}
   m_Layer: 0
   m_Name: StaticEnemy
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2294187218363598423}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.42, y: -1.48, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -111,6 +112,9 @@ MonoBehaviour:
   - {fileID: 0}
   onePerLevel: 0
   encounterDistance: 5
+  timeBetweenShots: 1.5
+  shootAtPlayer: 1
+  projectile: {fileID: 3192940171559665861, guid: 8067b8952b69a184598240cad5a77ac4, type: 3}
 --- !u!61 &2294187218363598422
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -137,6 +141,26 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.79859066, y: 1.1306436}
   m_EdgeRadius: 0
+--- !u!95 &3962613361770593165
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2294187218363598423}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f7e1b09542c61cb46823cda21ba376ea, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &4142669478919000366
 PrefabInstance:
   m_ObjectHideFlags: 0

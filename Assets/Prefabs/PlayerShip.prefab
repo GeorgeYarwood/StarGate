@@ -136,7 +136,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shipSprite: {fileID: 5569309481754929994}
   projectileSpawn: {fileID: 8580451009868812092}
-  projectilePrefab: {fileID: 3192940171559665861, guid: 57b3cb170dedbfb4499b9a44df2606fe, type: 3}
+  singleFireProjectilePrefab: {fileID: 3192940171559665861, guid: 57b3cb170dedbfb4499b9a44df2606fe, type: 3}
+  rapidFireProjectilePrefab: {fileID: 3192940171559665861, guid: 77dfb2c7743459c4f995b5b218b5af13, type: 3}
   deathVfx: {fileID: 4231996117396045592}
   fireSfx: {fileID: 8300000, guid: 2a2b553534a6342418c4c1a70bf2f64d, type: 3}
   deathSfx: {fileID: 8300000, guid: 5bb978095a6e5064bbb49d664cd5e198, type: 3}

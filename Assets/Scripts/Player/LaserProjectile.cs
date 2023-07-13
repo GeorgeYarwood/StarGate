@@ -10,13 +10,12 @@ public class LaserProjectile : MonoBehaviour
         get { return hitDamage; }
     }
 
-    void OnTriggerEnter2D(Collider2D Collision)
+    [SerializeField] bool ignoreEnemy = true;
+    public bool IgnoreEnemy
     {
-        if(Collision.TryGetComponent(out EnemyBase _))
-        {
-            Destroy(gameObject);
-        }
+        get { return ignoreEnemy; }
     }
+    [SerializeField] bool ignorePlayer = true;
 
     const float MOVE_SPEED = 4.0f;
 
@@ -32,6 +31,19 @@ public class LaserProjectile : MonoBehaviour
     {
         StartCoroutine(WaitToDespawn());
     }
+
+    void OnTriggerEnter2D(Collider2D Collision)
+    {
+        if (Collision.TryGetComponent(out EnemyBase _) && !ignoreEnemy)
+        {
+            Destroy(gameObject);
+        }
+        else if (Collision.TryGetComponent(out PlayerShip _) && !ignorePlayer)
+        {
+            PlayerShip.Instance.OnCollisionWithEnemy();
+        }
+    }
+
 
     void Update()
     {

@@ -1,21 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using UnityEngine;
-using System.Threading;
 using System;
-using System.Threading.Tasks;
-using UnityEngine.UIElements;
-using Unity.VisualScripting;
+using System.Collections;
+using UnityEngine;
 
-public enum MoveDirection { UP, DOWN, LEFT, RIGHT }
-public enum FacingDirection { LEFT, RIGHT }
+public enum MoveDirection
+{ 
+    UP,
+    DOWN, 
+    LEFT, 
+    RIGHT 
+}
+
+public enum FacingDirection 
+{ 
+    LEFT, 
+    RIGHT 
+}
+
+public enum WeaponFireMode
+{
+    SINGLE,
+    RAPID
+}
 
 public class PlayerShip : MonoBehaviour
 {
     [SerializeField] GameObject shipSprite;
     [SerializeField] Transform projectileSpawn;
-    [SerializeField] LaserProjectile projectilePrefab;
+    [SerializeField] LaserProjectile singleFireProjectilePrefab;
+    [SerializeField] LaserProjectile rapidFireProjectilePrefab;
     [SerializeField] ParticleSystem deathVfx;
     [SerializeField] AudioClip fireSfx;
     [SerializeField] AudioClip deathSfx;
@@ -27,19 +39,25 @@ public class PlayerShip : MonoBehaviour
     }
 
     const float PLAYER_MOVE_SPEED = 5.0f;
+    const float PLAYER_BOOST_ADJUSTMENT = 2.5f;
     const float PLAYER_COAST_SPEED = 0.75f;
 
     const float PROJECTILE_SPAWN_MODIFIER = 1.2f;
-    const float FIRE_LOCKOUT_TIMER = 1.0f;
+    const float SINGLE_FIRE_LOCKOUT_TIMER = 1.0f;
+    const float RAPID_FIRE_LOCKOUT_TIMER = 0.15f;
+    const float RAPID_FIRE_EFFECT_TIMER = 3.0f;
     const float PLAYER_COAST_TIMER = 1.2f; //How long the player will coast after releasing input
+    const float BOOST_EFFECT_TIMER = 2.0f; //Stops player just holding boost forever
 
     const float LEFT_ROT_Y_VAL = 180.0f;
     const float RIGHT_ROT_Y_VAL = 0.0f;
 
     bool canFire = true;
+    bool isBoosting = false;
 
     FacingDirection playerIsFacing;
     MoveDirection lastDirection;
+    WeaponFireMode currentFireMode = WeaponFireMode.SINGLE;
 
     Coroutine coastPlayerCoroutine;
     public Coroutine CoastPlayerCoroutine
@@ -56,6 +74,17 @@ public class PlayerShip : MonoBehaviour
     public Vector2 GetPos
     {
         get { return transform.position; }
+    }
+
+    Action rapidFirePowerUp;
+    public Action RapidFirePowerUp
+    {
+        get { return rapidFirePowerUp; }
+    }
+    Action speedBoostPowerUp;
+    public Action SpeedBoostPowerUp
+    {
+        get { return speedBoostPowerUp; }
     }
 
     public void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false)
@@ -75,6 +104,10 @@ public class PlayerShip : MonoBehaviour
         if (!Coasting)
         {
             AudioManager.Instance.PlayLoopedAudioClip(engineSfx);
+            if (isBoosting)
+            {
+                ActualSpeed += PLAYER_BOOST_ADJUSTMENT;
+            }
         }
 
         switch (ThisDirection)
@@ -155,14 +188,48 @@ public class PlayerShip : MonoBehaviour
                 break;
         }
 
+        LaserProjectile ProjectileToSpawn;
+        if (currentFireMode == WeaponFireMode.SINGLE)
+        {
+            ProjectileToSpawn = singleFireProjectilePrefab;
+        }
+        else
+        {
+            ProjectileToSpawn = rapidFireProjectilePrefab;
+        }
         //Make sure we spawn infront/behind player not inside
         LaserProjectile ProjectileInstance =
-            Instantiate(projectilePrefab, ActualProjectileSpawn, Quaternion.Euler(FireDirection));
+            Instantiate(ProjectileToSpawn, ActualProjectileSpawn, Quaternion.Euler(FireDirection));
         ProjectileInstance.ProjectileIsFacing = playerIsFacing;
         GameController.Instance.FlyingStateInstance.
             ProjectilesInScene.Add(ProjectileInstance.gameObject);
         AudioManager.Instance.PlayAudioClip(fireSfx, RandomPitch: true);
         StartCoroutine(FireLockOutTimer());
+    }
+
+    void HandleSpeedBoostEffect()
+    {
+        StartCoroutine(SpeedBoostTimer());
+    }
+
+    IEnumerator SpeedBoostTimer()
+    {
+        isBoosting = true;
+        yield return new WaitForSeconds(BOOST_EFFECT_TIMER);
+        isBoosting = false;
+    }
+
+
+    void HandleRapidFireEffect()
+    {
+        StartCoroutine(RapidFireTimer());
+    }
+
+    IEnumerator RapidFireTimer()
+    {
+        currentFireMode = WeaponFireMode.RAPID;
+        yield return new WaitForSeconds(RAPID_FIRE_EFFECT_TIMER);
+        currentFireMode = WeaponFireMode.SINGLE;
     }
 
     void OnEnable()
@@ -177,12 +244,21 @@ public class PlayerShip : MonoBehaviour
         }
 
         playerIsFacing = FacingDirection.RIGHT;
+        rapidFirePowerUp += HandleRapidFireEffect;
+        speedBoostPowerUp += HandleSpeedBoostEffect;
     }
 
     IEnumerator FireLockOutTimer()
     {
         canFire = false;
-        yield return new WaitForSeconds(FIRE_LOCKOUT_TIMER);
+        if(currentFireMode == WeaponFireMode.SINGLE)
+        {
+            yield return new WaitForSeconds(SINGLE_FIRE_LOCKOUT_TIMER);
+        }
+        else
+        {
+            yield return new WaitForSeconds(RAPID_FIRE_LOCKOUT_TIMER);
+        }
         canFire = true;
     }
 

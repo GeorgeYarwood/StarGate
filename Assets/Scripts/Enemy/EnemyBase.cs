@@ -20,6 +20,8 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] ParticleSystem hitVfx;
     [SerializeField] AudioClip deathSfx;
     [SerializeField] AudioClip hitSfx;
+    [SerializeField] PowerUp canDropOnDeath;
+    [SerializeField] bool alwaysDrop = false;
     [SerializeField] Dialogue[] enemyDialogue = new Dialogue[3];
     [SerializeField] bool onePerLevel = false;
     [SerializeField] float encounterDistance = 5.0f;    //How close until ON_ENCOUNTER dialogue is triggered
@@ -42,11 +44,19 @@ public class EnemyBase : MonoBehaviour
     }
     bool waitingToDie = false;
 
+    void Start()
+    {
+        Init();
+    }
+
     void OnTriggerEnter2D(Collider2D Collision)
     {
         if(Collision.TryGetComponent(out LaserProjectile HitProjectile))
         {
-            OnHit(HitProjectile.HitDamage);
+            if (!HitProjectile.IgnoreEnemy)
+            {
+                OnHit(HitProjectile.HitDamage);
+            }
         }
         else if(Collision.TryGetComponent(out PlayerShip _))
         {
@@ -78,6 +88,10 @@ public class EnemyBase : MonoBehaviour
         GameController.Instance.AddScore(scoreAddition);
         GameController.Instance.FlyingStateInstance.RemoveEnemyFromList(this);
         HandleDialogue(DialogueQueuePoint.ON_DEATH);
+        if (canDropOnDeath)
+        {
+            PowerUpManager.Instance.DropRandomPowerUpAtPosition(transform.position, canDropOnDeath, ForceSpawn: alwaysDrop);
+        }
         if (deathSfx)
         {
             AudioManager.Instance.PlayAudioClip(deathSfx);
@@ -136,6 +150,11 @@ public class EnemyBase : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public virtual void Init()
+    {
+
     }
     
     public virtual void Tick()

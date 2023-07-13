@@ -56,6 +56,11 @@ public class FlyingState : GameStateBase
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        ClearAllProjectiles();
+    }
+
+    void ClearAllProjectiles()
+    {
         for (int p = 0; p < projectilesInScene.Count; p++)
         {
             if (projectilesInScene[p])
@@ -143,6 +148,7 @@ public class FlyingState : GameStateBase
         {
             PlayerShip.Instance.FireProjectile();
         }
+       
         if (Input.GetButtonDown(InputHolder.PAUSE_MENU))
         {
             GameController.Instance.GoToState(GameStates.PAUSE);
@@ -178,6 +184,7 @@ public class FlyingState : GameStateBase
 
     public void LoadLevel(LevelObject LevelToLoad)
     {
+        ClearAllProjectiles();
         if (LevelToLoad.IsInitialised)
         {
             int MaxIterator;
