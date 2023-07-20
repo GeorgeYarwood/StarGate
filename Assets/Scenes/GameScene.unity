@@ -2745,6 +2745,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 52da59a82bce1dc4ea2e950cab0e48b1, type: 2}
   - {fileID: 11400000, guid: 82bfc2389f37baa40a3c7ac8d0989cef, type: 2}
   - {fileID: 11400000, guid: fd9151f2a374fea45bad042443e3138a, type: 2}
+  - {fileID: 11400000, guid: ba50d3973d67c38408a7b129eb7cbbb1, type: 2}
   startingLives: 3
   flyingState: {fileID: 501254448}
   endGameState: {fileID: 923953678}

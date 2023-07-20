@@ -3,17 +3,17 @@ using System.Collections;
 using UnityEngine;
 
 public enum MoveDirection
-{ 
+{
     UP,
-    DOWN, 
-    LEFT, 
-    RIGHT 
+    DOWN,
+    LEFT,
+    RIGHT
 }
 
-public enum FacingDirection 
-{ 
-    LEFT, 
-    RIGHT 
+public enum FacingDirection
+{
+    LEFT,
+    RIGHT
 }
 
 public enum WeaponFireMode
@@ -96,7 +96,7 @@ public class PlayerShip : MonoBehaviour
             ActualSpeed = PLAYER_COAST_SPEED;
             AudioManager.Instance.PlayLoopedAudioClip(engineSfx, EndLoop: true);
         }
-        else if(coastPlayerCoroutine != null)
+        else if (coastPlayerCoroutine != null)
         {
             StopCoroutine(coastPlayerCoroutine);
         }
@@ -120,7 +120,7 @@ public class PlayerShip : MonoBehaviour
                 break;
             case MoveDirection.LEFT:
                 transform.Translate(new Vector2(-1.0f, 0.0f) * ActualSpeed * Time.deltaTime);
-                if(playerIsFacing != FacingDirection.LEFT)
+                if (playerIsFacing != FacingDirection.LEFT)
                 {
                     playerIsFacing = FacingDirection.LEFT;
                     shipSprite.transform.rotation = Quaternion.Euler(new(shipSprite.transform.rotation.eulerAngles.x, LEFT_ROT_Y_VAL));
@@ -251,7 +251,7 @@ public class PlayerShip : MonoBehaviour
     IEnumerator FireLockOutTimer()
     {
         canFire = false;
-        if(currentFireMode == WeaponFireMode.SINGLE)
+        if (currentFireMode == WeaponFireMode.SINGLE)
         {
             yield return new WaitForSeconds(SINGLE_FIRE_LOCKOUT_TIMER);
         }
@@ -281,7 +281,7 @@ public class PlayerShip : MonoBehaviour
         coastPlayerCoroutine = null;
     }
 
-    void OnDestroy() 
+    void OnDestroy()
     {
         instance = null;
     }
