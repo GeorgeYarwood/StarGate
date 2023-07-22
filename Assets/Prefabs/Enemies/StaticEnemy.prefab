@@ -106,6 +106,8 @@ MonoBehaviour:
   hitVfx: {fileID: 7225999189625938600}
   deathSfx: {fileID: 8300000, guid: 5bc7d9c3a4a65524f8dea6b7905b802f, type: 3}
   hitSfx: {fileID: 8300000, guid: d9f636ef0697b3c47b0483e4cdf0c06e, type: 3}
+  canDropOnDeath: {fileID: 0}
+  alwaysDrop: 0
   enemyDialogue:
   - {fileID: 0}
   - {fileID: 0}
@@ -154,7 +156,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: f7e1b09542c61cb46823cda21ba376ea, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 

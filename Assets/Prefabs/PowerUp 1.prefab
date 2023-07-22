@@ -73,6 +73,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   powerUpType: 1
+  onCollectAudio: {fileID: 8300000, guid: b1805963600aeb24dae3c36662f5b5f7, type: 3}
 --- !u!1 &4746540032711142427
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,13 +5,13 @@ using UnityEngine;
 public class PowerUp : MonoBehaviour
 {
     [SerializeField] PowerUpType powerUpType;
+    [SerializeField] AudioClip onCollectAudio;
     const float MOVE_SPEED = 0.35f;
     const float LIFE_TIME = 3.5f;
 
     void Start()
     {
         StartCoroutine(MoveToFloor());
-        StartCoroutine(TimeToLive());
     }
 
     IEnumerator TimeToLive()
@@ -28,6 +28,8 @@ public class PowerUp : MonoBehaviour
                 transform.position.y - MOVE_SPEED * Time.deltaTime);
             yield return null;
         }
+
+        StartCoroutine(TimeToLive());
     }
 
     void OnTriggerEnter2D(Collider2D Collision)
@@ -35,6 +37,10 @@ public class PowerUp : MonoBehaviour
         if (Collision.TryGetComponent(out PlayerShip _))
         {
             PowerUpManager.Instance.ApplyPowerUp(powerUpType);
+            if (onCollectAudio)
+            {
+                AudioManager.Instance.PlayAudioClip(onCollectAudio);
+            }
             Destroy(this.gameObject);
         }
     }

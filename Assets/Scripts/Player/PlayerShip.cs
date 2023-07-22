@@ -219,7 +219,6 @@ public class PlayerShip : MonoBehaviour
         isBoosting = false;
     }
 
-
     void HandleRapidFireEffect()
     {
         StartCoroutine(RapidFireTimer());
@@ -230,6 +229,7 @@ public class PlayerShip : MonoBehaviour
         currentFireMode = WeaponFireMode.RAPID;
         yield return new WaitForSeconds(RAPID_FIRE_EFFECT_TIMER);
         currentFireMode = WeaponFireMode.SINGLE;
+        PowerUpManager.Instance.OnPowerUpEnd();
     }
 
     void OnEnable()

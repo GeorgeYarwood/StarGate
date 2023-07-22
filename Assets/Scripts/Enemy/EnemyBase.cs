@@ -32,12 +32,7 @@ public class EnemyBase : MonoBehaviour
     {
         get { return onePerLevel; }
     }
-    bool isSpawned = false;
-    public bool IsSpawned
-    {
-        get { return isSpawned; }
-        set { isSpawned = value; }
-    }
+    
     public Dialogue[] EnemyDialogue
     {
         get { return enemyDialogue; }

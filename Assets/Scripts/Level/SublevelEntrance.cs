@@ -37,8 +37,9 @@ public class SublevelEntrance : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D Collision)
     {
-        if(Collision.TryGetComponent(out PlayerShip _))
+        if(Collision.TryGetComponent(out PlayerShip _) && canReEnter)
         {
+            GameController.Instance.DestroyAllProjectiles();
             StartCoroutine(BlockInteractionForTime()); //Stop us immediately going straight back in
             portalEnterVfx.Play();
             AudioManager.Instance.PlayAudioClip(portalEnterSfx);

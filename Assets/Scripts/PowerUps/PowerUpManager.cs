@@ -24,6 +24,8 @@ public class PowerUpManager : MonoBehaviour
 
     List<PowerUp> spawnedPowerUps = new List<PowerUp>();
 
+    [SerializeField] AudioClip powerUpEndClip;
+
     void Start()
     {
         if(instance != null)
@@ -44,6 +46,11 @@ public class PowerUpManager : MonoBehaviour
         {
             PowerUpAction.Invoke();
         }
+    }
+
+    public void OnPowerUpEnd()
+    {
+        AudioManager.Instance.PlayAudioClip(powerUpEndClip);
     }
 
     void InitPowerUpList() //New powerups get added here, along with their action to run

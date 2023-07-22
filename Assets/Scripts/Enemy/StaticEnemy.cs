@@ -67,7 +67,7 @@ public class StaticEnemy : EnemyBase
         spawnedProjectiles.Clear();
     }
 
-    void CleanList()    //Ensure we don't have dead references
+    void CleanList() //Ensure we don't have dead references
     {
         for (int p = 0; p < spawnedProjectiles.Count; p++)
         {

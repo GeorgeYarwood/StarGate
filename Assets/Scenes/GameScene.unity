@@ -4509,6 +4509,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 039e333fdf24b7f44ace67bf4ed13289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  powerUpEndClip: {fileID: 8300000, guid: c30d66d64713e24459c349dcd532bef7, type: 3}
 --- !u!1001 &4746540031170463768
 PrefabInstance:
   m_ObjectHideFlags: 0

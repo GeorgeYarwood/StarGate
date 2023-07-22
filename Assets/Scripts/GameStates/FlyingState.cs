@@ -263,13 +263,12 @@ public class FlyingState : GameStateBase
     void SpawnEnemies(List<EnemyBase> ListToAddTo, EnemyBase[] EnemyTypes)
     {
         int RandomEnemyType = Random.Range(0, EnemyTypes.Length);
-        if (EnemyTypes[RandomEnemyType].OnePerLevel && EnemyTypes[RandomEnemyType].IsSpawned)
+        if (EnemyTypes[RandomEnemyType].OnePerLevel && ListToAddTo.Contains(EnemyTypes[RandomEnemyType]))
         {
             return;
         }
         EnemyBase ThisEnemy = Instantiate(EnemyTypes[RandomEnemyType],
             ReturnRandomSpawnPositionInRange(), Quaternion.identity);
-        EnemyTypes[RandomEnemyType].IsSpawned = true;
         ListToAddTo.Add(ThisEnemy);
     }
 
