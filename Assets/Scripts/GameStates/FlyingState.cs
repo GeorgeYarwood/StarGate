@@ -9,12 +9,15 @@ using Random = UnityEngine.Random;
 public class FlyingState : GameStateBase
 {
     const string ERROR_MESSAGE = "No levels added to FlyingState gameobject! Returning out";
+    const string INFINITE_LOOP_ERROR_MESSAGE = "Infinite loop detected! The enemy type for this level is set to only allow one per level, but the enemies per level is set higher than 1!";
 
     List<GameObject> projectilesInScene = new List<GameObject>();
     public List<GameObject> ProjectilesInScene
     {
         get { return projectilesInScene; }
     }
+
+    bool waitingForStateExit = false;
 
     public override void OnStateEnter()
     {
@@ -24,7 +27,8 @@ public class FlyingState : GameStateBase
             return;
         }
         if (!GameController.AllLevels[GameController.CurrentLevel].IsInitialised
-            && !GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised)
+            && (!GameController.AllLevels[GameController.CurrentLevel].HasSublevel 
+            ||!GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised))
         {
             GameController.Instance.ResetPlayerPosition();
             LoadLevel(GameController.AllLevels[GameController.CurrentLevel]);
@@ -45,7 +49,7 @@ public class FlyingState : GameStateBase
 
     void ResetEnemyPositions()
     {
-        for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++) 
+        for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
         {
             GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].transform.position
                 = ReturnRandomSpawnPositionInRange();
@@ -56,6 +60,7 @@ public class FlyingState : GameStateBase
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        waitingForStateExit = false;
         ClearAllProjectiles();
     }
 
@@ -93,20 +98,47 @@ public class FlyingState : GameStateBase
 
     void CheckIfLevelComplete()
     {
-        if (GameController.AllLevels.Count == 0)
+        if (GameController.AllLevels.Count == 0 || waitingForStateExit)
         {
             return;
         }
 
-        if ((GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count
-            + GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count) <= 0
-            && GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised &&
-            GameController.AllLevels[GameController.CurrentLevel].IsInitialised)
+        LevelObject CurrentLevel = GameController.AllLevels[GameController.CurrentLevel];
+
+        if (CurrentLevel.HasSublevel)
         {
-            HandleDialogue(DialogueQueuePoint.LEVEL_END, GameController.AllLevels[GameController.CurrentLevel]);
-            HandleDialogue(DialogueQueuePoint.LEVEL_END, GameController.AllLevels[GameController.CurrentLevel].SubLevel);
-            GameController.Instance.OnLevelComplete();
+            if ((CurrentLevel.EnemiesInScene.Count + CurrentLevel.SubLevel.EnemiesInScene.Count) <= 0
+                && CurrentLevel.SubLevel.IsInitialised && CurrentLevel.IsInitialised)
+            {
+                StartCoroutine(EndLevel());
+            }
         }
+        else
+        {
+            if (CurrentLevel.EnemiesInScene.Count <= 0 && CurrentLevel.IsInitialised)
+            {
+                StartCoroutine(EndLevel());
+            }
+        }
+
+    }
+
+    IEnumerator EndLevel()
+    {
+        waitingForStateExit = true;
+        yield return new WaitUntil(() => HandleDialogue(DialogueQueuePoint.LEVEL_END, GameController.AllLevels[GameController.CurrentLevel]));
+        if (GameController.AllLevels[GameController.CurrentLevel].SubLevel)
+        {
+            yield return new WaitUntil(() => HandleDialogue(DialogueQueuePoint.LEVEL_END, GameController.AllLevels[GameController.CurrentLevel].SubLevel));
+        }
+
+        StartCoroutine(WaitForEndOfDialogue());
+    }
+
+    IEnumerator WaitForEndOfDialogue()
+    {
+        yield return new WaitUntil(() => DialoguePanel.Instance.PanelActive == false);
+        GameController.Instance.OnLevelComplete();
     }
 
     void TrackPlayerWithCamera()
@@ -148,7 +180,7 @@ public class FlyingState : GameStateBase
         {
             PlayerShip.Instance.FireProjectile();
         }
-       
+
         if (Input.GetButtonDown(InputHolder.PAUSE_MENU))
         {
             GameController.Instance.GoToState(GameStates.PAUSE);
@@ -228,20 +260,27 @@ public class FlyingState : GameStateBase
         }
         else if (!LevelToLoad.IsSubLevel)
         {
+            SublevelEntrance.Instance.ToggleSublevel(LevelToLoad.HasSublevel);
             SublevelEntrance.Instance.IsInSublevel = false;
         }
 
         while (LevelToLoad.EnemiesInScene.Count < LevelToLoad.EnemiesPerLevel)
         {
             SpawnEnemies(LevelToLoad.EnemiesInScene, LevelToLoad.EnemyTypesToSpawn);
+            if(LevelToLoad.EnemiesInScene.Count == 1 && LevelToLoad.EnemiesInScene[0].OnePerLevel
+                && LevelToLoad.EnemiesPerLevel > 1 && LevelToLoad.EnemyTypesToSpawn.Length == 1)
+            {
+                Debug.Log(INFINITE_LOOP_ERROR_MESSAGE);
+                break;
+            }
         }
 
         HandleDialogue(DialogueQueuePoint.LEVEL_START, LevelToLoad);
-       
+
         LevelToLoad.IsInitialised = true;
     }
 
-    void HandleDialogue(DialogueQueuePoint WhatPointIsThis, LevelObject ThisLevel)
+    bool HandleDialogue(DialogueQueuePoint WhatPointIsThis, LevelObject ThisLevel)
     {
         if (ThisLevel.LevelDialogue.Length > 0)
         {
@@ -258,14 +297,22 @@ public class FlyingState : GameStateBase
                 }
             }
         }
+
+        return true;
     }
 
     void SpawnEnemies(List<EnemyBase> ListToAddTo, EnemyBase[] EnemyTypes)
     {
         int RandomEnemyType = Random.Range(0, EnemyTypes.Length);
-        if (EnemyTypes[RandomEnemyType].OnePerLevel && ListToAddTo.Contains(EnemyTypes[RandomEnemyType]))
+        if (EnemyTypes[RandomEnemyType].OnePerLevel)
         {
-            return;
+            for(int e = 0; e < ListToAddTo.Count; e++)
+            {
+                if (ListToAddTo[e].ThisEnemyType == EnemyTypes[RandomEnemyType].ThisEnemyType)
+                {
+                    return;
+                }
+            }
         }
         EnemyBase ThisEnemy = Instantiate(EnemyTypes[RandomEnemyType],
             ReturnRandomSpawnPositionInRange(), Quaternion.identity);

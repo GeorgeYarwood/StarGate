@@ -8,6 +8,10 @@ public class DialoguePanel : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI dialogueText;
     [SerializeField] GameObject panelGo;    //What we hide and show
+    public bool PanelActive
+    {
+        get { return panelGo.activeInHierarchy; }
+    }
     [SerializeField] AudioClip characterBlipSfx;
 
     const float PRINTING_SPEED = 0.1f;

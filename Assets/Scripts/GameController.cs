@@ -37,6 +37,7 @@ public class GameController : MonoBehaviour
     public static int CurrentLevel
     {
         get { return currentLevel; }
+        set { currentLevel = value; }
     }
 
     static int currentScore = 0;
@@ -116,14 +117,14 @@ public class GameController : MonoBehaviour
         PlayerShip.Instance.transform.position = Vector3.zero;
     }
 
-    void ResetAllLevels()
+    public void ResetAllLevels()
     {
         //SO's have some persistance so reset each start
         for(int l = 0; l < allLevels.Count; l++)
         {
             allLevels[l].IsInitialised = false;
             allLevels[l].EnemiesInScene = new List<EnemyBase>();
-            if (!allLevels[l].IsSubLevel)
+            if (!allLevels[l].IsSubLevel && allLevels[l].SubLevel)
             {
                 allLevels[l].SubLevel.EnemiesInScene = new List<EnemyBase>();
                 allLevels[l].SubLevel.IsInitialised = false;
@@ -218,6 +219,8 @@ public class GameController : MonoBehaviour
         if(currentLives - 1 >= 0)
         {
             currentLives--;
+            PowerUpManager.Instance.EndAllPowerUps();
+            PowerUpManager.Instance.ClearPowerUps();
             GoToState(lifeLostState);
             return;
         }
@@ -249,6 +252,7 @@ public class GameController : MonoBehaviour
 
     public void DestroyAllProjectiles()
     {
+        //I could be less lazy and like cache these or something but cba
         LaserProjectile[] FoundProjectiles = FindObjectsOfType<LaserProjectile>();
         for(int l = 0; l < FoundProjectiles.Length; l++)
         {

@@ -86,6 +86,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 609ec460b821e9746b1dbeacc06ac97f, type: 2}
   onePerLevel: 1
   encounterDistance: 5
+  thisEnemyType: 1
   moveSpeed: 0.5
   minDistanceToPlayer: 20
 --- !u!1 &8418229850324593048

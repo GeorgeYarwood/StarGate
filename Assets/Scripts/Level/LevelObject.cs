@@ -44,6 +44,12 @@ public class LevelObject : ScriptableObject
         set { isInitialised = value; }
     }
 
+    [SerializeField] bool hasSublevel = true;
+    public bool HasSublevel
+    {
+        get { return hasSublevel;}
+    }
+
     List<EnemyBase> enemiesInScene = new List<EnemyBase>();
     public List<EnemyBase> EnemiesInScene
     {

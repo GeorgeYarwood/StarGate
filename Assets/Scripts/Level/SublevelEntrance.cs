@@ -11,6 +11,8 @@ public class SublevelEntrance : MonoBehaviour
         set { isInSublevel = value; }
     }
     [SerializeField] ParticleSystem portalEnterVfx;
+    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] BoxCollider2D boxCollider;
     [SerializeField] AudioClip portalEnterSfx;
 
     //Just one entrance for all levels at the moment
@@ -33,6 +35,12 @@ public class SublevelEntrance : MonoBehaviour
         {
             instance = this;
         }
+    }
+
+    public void ToggleSublevel(bool Setting)
+    {
+        spriteRenderer.enabled = Setting;
+        boxCollider.enabled = Setting;
     }
 
     void OnTriggerEnter2D(Collider2D Collision)

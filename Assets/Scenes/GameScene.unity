@@ -2746,6 +2746,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 82bfc2389f37baa40a3c7ac8d0989cef, type: 2}
   - {fileID: 11400000, guid: fd9151f2a374fea45bad042443e3138a, type: 2}
   - {fileID: 11400000, guid: ba50d3973d67c38408a7b129eb7cbbb1, type: 2}
+  - {fileID: 11400000, guid: 4f9ae6f22fd769f469f644d4af732a7a, type: 2}
+  - {fileID: 11400000, guid: c5e348b1fefd8cb4eaa5f8f0a40c5ccb, type: 2}
+  - {fileID: 11400000, guid: e1dadeaad9428a54f9d21ecb58882b60, type: 2}
+  - {fileID: 11400000, guid: 3fe11d57570a8c24092181f0380fd084, type: 2}
+  - {fileID: 11400000, guid: 32e73289b755d3b4f8bc71a98bb1900e, type: 2}
+  - {fileID: 11400000, guid: 6ae370466e1d2e4469d620d8ec7fa3b6, type: 2}
   startingLives: 3
   flyingState: {fileID: 501254448}
   endGameState: {fileID: 923953678}
@@ -4519,9 +4525,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4746540031556271520, guid: b15847b59fd008f47997bd2457c92a8e, type: 3}
+      propertyPath: boxCollider
+      value: 
+      objectReference: {fileID: 4746540031170463770}
+    - target: {fileID: 4746540031556271520, guid: b15847b59fd008f47997bd2457c92a8e, type: 3}
       propertyPath: portalEnterSfx
       value: 
       objectReference: {fileID: 8300000, guid: 3b94a6dd29ace214980d47465d4872ac, type: 3}
+    - target: {fileID: 4746540031556271520, guid: b15847b59fd008f47997bd2457c92a8e, type: 3}
+      propertyPath: spriteRenderer
+      value: 
+      objectReference: {fileID: 4746540031170463769}
     - target: {fileID: 4746540031556271532, guid: b15847b59fd008f47997bd2457c92a8e, type: 3}
       propertyPath: m_Name
       value: SubLevelEntrance
@@ -4573,6 +4587,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: b15847b59fd008f47997bd2457c92a8e, type: 3}
+--- !u!212 &4746540031170463769 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4746540032711142429, guid: b15847b59fd008f47997bd2457c92a8e, type: 3}
+  m_PrefabInstance: {fileID: 4746540031170463768}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &4746540031170463770 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4746540031556271535, guid: b15847b59fd008f47997bd2457c92a8e, type: 3}
+  m_PrefabInstance: {fileID: 4746540031170463768}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8580451008508426355
 PrefabInstance:
   m_ObjectHideFlags: 0

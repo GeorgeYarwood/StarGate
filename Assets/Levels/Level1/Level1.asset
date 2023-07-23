@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Level1
   m_EditorClassIdentifier: 
   levelSong: {fileID: 8300000, guid: 3e20293a1093bac4999c0f173cb66f9f, type: 3}
-  enemiesPerLevel: 1
+  enemiesPerLevel: 5
   enemyTypesToSpawn:
   - {fileID: 2449997915474525672, guid: e1aa7d01bc7c71c4ca1266ddfe7e8588, type: 3}
-  - {fileID: 3801359242005734824, guid: 159195292ac143347ab7cb7b4bc894a8, type: 3}
   subLevel: {fileID: 11400000, guid: 408fe9fd2adcf72478ebd68f595bb596, type: 2}
   parentLevel: {fileID: 0}
+  hasSublevel: 0
   levelDialogue:
   - {fileID: 11400000, guid: dc28629ba65a7514ba22d67fd6b11de0, type: 2}
   - {fileID: 11400000, guid: eb0958580b0d74a4d954245270ac8222, type: 2}

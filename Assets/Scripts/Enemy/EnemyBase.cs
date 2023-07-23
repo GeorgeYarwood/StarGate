@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EnemyType { NORMAL, BOSS, BOSS_MASSIVE } //Used for comaprison checks
+
 public class EnemyBase : MonoBehaviour
 {
     [SerializeField] int enemyHealth;
@@ -42,6 +44,12 @@ public class EnemyBase : MonoBehaviour
     void Start()
     {
         Init();
+    }
+
+    [SerializeField] EnemyType thisEnemyType;
+    public EnemyType ThisEnemyType
+    {
+        get { return thisEnemyType; }
     }
 
     void OnTriggerEnter2D(Collider2D Collision)

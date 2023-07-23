@@ -81,10 +81,23 @@ public class PlayerShip : MonoBehaviour
     {
         get { return rapidFirePowerUp; }
     }
+
+    Action endRapidFirePowerUp;
+    public Action EndRapidFirePowerUp
+    {
+        get { return endRapidFirePowerUp; }
+    }
+
     Action speedBoostPowerUp;
     public Action SpeedBoostPowerUp
     {
         get { return speedBoostPowerUp; }
+    }
+
+    Action endSpeedBoostPowerUp;
+    public Action EndSpeedBoostPowerUp
+    {
+        get { return endSpeedBoostPowerUp; }
     }
 
     public void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false)
@@ -212,11 +225,16 @@ public class PlayerShip : MonoBehaviour
         StartCoroutine(SpeedBoostTimer());
     }
 
+    void EndSpeedBoostEffect()
+    {
+        isBoosting = false;
+    }
+
     IEnumerator SpeedBoostTimer()
     {
         isBoosting = true;
         yield return new WaitForSeconds(BOOST_EFFECT_TIMER);
-        isBoosting = false;
+        EndSpeedBoostEffect();
     }
 
     void HandleRapidFireEffect()
@@ -224,12 +242,17 @@ public class PlayerShip : MonoBehaviour
         StartCoroutine(RapidFireTimer());
     }
 
+    void EndRapidFireEffect()
+    {
+        currentFireMode = WeaponFireMode.SINGLE;
+        PowerUpManager.Instance.OnPowerUpEnd();
+    }
+
     IEnumerator RapidFireTimer()
     {
         currentFireMode = WeaponFireMode.RAPID;
         yield return new WaitForSeconds(RAPID_FIRE_EFFECT_TIMER);
-        currentFireMode = WeaponFireMode.SINGLE;
-        PowerUpManager.Instance.OnPowerUpEnd();
+        EndRapidFireEffect();
     }
 
     void OnEnable()
@@ -244,8 +267,12 @@ public class PlayerShip : MonoBehaviour
         }
 
         playerIsFacing = FacingDirection.RIGHT;
+
         rapidFirePowerUp += HandleRapidFireEffect;
+        endRapidFirePowerUp += EndRapidFireEffect;
+
         speedBoostPowerUp += HandleSpeedBoostEffect;
+        endSpeedBoostPowerUp += EndSpeedBoostEffect;
     }
 
     IEnumerator FireLockOutTimer()

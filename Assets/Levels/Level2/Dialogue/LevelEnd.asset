@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3fbea6369f5f45499d9e296936cbc21, type: 3}
   m_Name: LevelEnd
   m_EditorClassIdentifier: 
-  dialogueString: Well done...
+  dialogueString: This isn't over...
   whenToPlay: 3
   isEnemy: 0

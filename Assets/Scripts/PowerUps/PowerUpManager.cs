@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -20,11 +21,23 @@ public class PowerUpManager : MonoBehaviour
 
     const int POWER_UP_SPAWN_CHANCE = 10;
 
-    Dictionary<PowerUpType, Action> allPowerups = new Dictionary<PowerUpType, Action>();
+    Dictionary<PowerUpType, PowerUpContainer> allPowerups = new Dictionary<PowerUpType, PowerUpContainer>();
 
     List<PowerUp> spawnedPowerUps = new List<PowerUp>();
 
     [SerializeField] AudioClip powerUpEndClip;
+
+    public struct PowerUpContainer
+    {
+        public Action powerUpStart;
+        public Action powerUpEnd;
+
+        public PowerUpContainer(Action StartAction, Action EndAction)
+        {
+            powerUpStart = StartAction;
+            powerUpEnd = EndAction;
+        }
+    }
 
     void Start()
     {
@@ -42,9 +55,9 @@ public class PowerUpManager : MonoBehaviour
 
     public void ApplyPowerUp(PowerUpType ThisPowerUp)
     {
-        if(allPowerups.TryGetValue(ThisPowerUp, out Action PowerUpAction))
+        if(allPowerups.TryGetValue(ThisPowerUp, out PowerUpContainer ThisPowerUpContainer))
         {
-            PowerUpAction.Invoke();
+            ThisPowerUpContainer.powerUpStart.Invoke();
         }
     }
 
@@ -55,8 +68,16 @@ public class PowerUpManager : MonoBehaviour
 
     void InitPowerUpList() //New powerups get added here, along with their action to run
     {
-        allPowerups.Add(PowerUpType.RAPID_FIRE, PlayerShip.Instance.RapidFirePowerUp);
-        allPowerups.Add(PowerUpType.SPEED_BOOST, PlayerShip.Instance.SpeedBoostPowerUp);
+        allPowerups.Add(PowerUpType.RAPID_FIRE, new PowerUpContainer(PlayerShip.Instance.RapidFirePowerUp, PlayerShip.Instance.EndRapidFirePowerUp));
+        allPowerups.Add(PowerUpType.SPEED_BOOST, new PowerUpContainer(PlayerShip.Instance.SpeedBoostPowerUp, PlayerShip.Instance.EndSpeedBoostPowerUp));
+    }
+    
+    public void EndAllPowerUps()
+    {
+        for(int p = 0; p < allPowerups.Count; p++)
+        {
+            allPowerups.ElementAt(p).Value.powerUpEnd.Invoke();
+        }
     }
 
     public void DropRandomPowerUpAtPosition(Vector2 PositionToSpawn, PowerUp PowerUpToDrop, bool ForceSpawn = false)
@@ -77,7 +98,7 @@ public class PowerUpManager : MonoBehaviour
         {
             if (spawnedPowerUps[p])
             {
-                Destroy(spawnedPowerUps[p]);
+                Destroy(spawnedPowerUps[p].gameObject);
             }
         }
 

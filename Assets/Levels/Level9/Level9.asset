@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63da7fb6dbfdb7647abe2b016995eccd, type: 3}
+  m_Name: Level9
+  m_EditorClassIdentifier: 
+  levelSong: {fileID: 8300000, guid: 3e20293a1093bac4999c0f173cb66f9f, type: 3}
+  enemiesPerLevel: 45
+  enemyTypesToSpawn:
+  - {fileID: 6333169361043419027, guid: 45b130431639f954187077c561406bf0, type: 3}
+  - {fileID: 6974150420764494528, guid: 05cc0a19b3171b3409f6a42999e5229d, type: 3}
+  subLevel: {fileID: 11400000, guid: 812b5677516b7a74b80c9732a5da5a4b, type: 2}
+  parentLevel: {fileID: 0}
+  hasSublevel: 1
+  levelDialogue:
+  - {fileID: 11400000, guid: 6214997a2dd772f44ac00bb2d286bf55, type: 2}

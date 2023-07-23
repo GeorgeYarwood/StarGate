@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3fbea6369f5f45499d9e296936cbc21, type: 3}
   m_Name: ParentLevelEnter
   m_EditorClassIdentifier: 
-  dialogueString: This ends now!
+  dialogueString: You've done well to make it this far... It's a shame your reward
+    must be DEATH
   whenToPlay: 2
   isEnemy: 0

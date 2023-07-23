@@ -16,8 +16,7 @@ MonoBehaviour:
   enemiesPerLevel: 5
   enemyTypesToSpawn:
   - {fileID: 2449997915474525672, guid: e1aa7d01bc7c71c4ca1266ddfe7e8588, type: 3}
-  - {fileID: 3801359242005734824, guid: 159195292ac143347ab7cb7b4bc894a8, type: 3}
   subLevel: {fileID: 0}
   parentLevel: {fileID: 11400000, guid: 52da59a82bce1dc4ea2e950cab0e48b1, type: 2}
-  levelDialogue:
-  - {fileID: 11400000, guid: c02967efa85a5af40aeb323e4d3406d9, type: 2}
+  hasSublevel: 1
+  levelDialogue: []

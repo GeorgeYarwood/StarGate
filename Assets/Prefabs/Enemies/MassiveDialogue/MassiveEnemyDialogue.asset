@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3fbea6369f5f45499d9e296936cbc21, type: 3}
   m_Name: MassiveEnemyDialogue
   m_EditorClassIdentifier: 
-  dialogueString: This ends NOW!
+  dialogueString: I will succeed where my predecessors have failed!
   whenToPlay: 0
   isEnemy: 1

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63da7fb6dbfdb7647abe2b016995eccd, type: 3}
+  m_Name: Level10
+  m_EditorClassIdentifier: 
+  levelSong: {fileID: 8300000, guid: 3e20293a1093bac4999c0f173cb66f9f, type: 3}
+  enemiesPerLevel: 75
+  enemyTypesToSpawn:
+  - {fileID: 6333169361043419027, guid: 45b130431639f954187077c561406bf0, type: 3}
+  - {fileID: 6974150420764494528, guid: 05cc0a19b3171b3409f6a42999e5229d, type: 3}
+  - {fileID: 2449997915474525672, guid: e1aa7d01bc7c71c4ca1266ddfe7e8588, type: 3}
+  - {fileID: 3801359242005734824, guid: 159195292ac143347ab7cb7b4bc894a8, type: 3}
+  - {fileID: 2294187218363598421, guid: 6857977e9ebda4b43b199e0d10bb98bd, type: 3}
+  subLevel: {fileID: 11400000, guid: 2d6cdb1cd67d5764eaf4922c88acdcf7, type: 2}
+  parentLevel: {fileID: 0}
+  hasSublevel: 1
+  levelDialogue:
+  - {fileID: 11400000, guid: 704f1b328686e224f975e7181daeabc7, type: 2}
+  - {fileID: 11400000, guid: 68a70526fbe7a1e4ba3203a2fcf9ac11, type: 2}
+  - {fileID: 11400000, guid: 734d0403069e7bc40b3190159f4c7eda, type: 2}
+  - {fileID: 11400000, guid: ccab48625d6eba84a9ab3931c4f94857, type: 2}
+  - {fileID: 11400000, guid: 123156e5878d0974798bb1858743f22e, type: 2}
