@@ -61,7 +61,7 @@ public class EnemyBase : MonoBehaviour
                 OnHit(HitProjectile.HitDamage);
             }
         }
-        else if (Collision.TryGetComponent(out PlayerShip _))
+        else if (Collision.TryGetComponent(out PlayerShip _) && !waitingToDie)
         {
             PlayerShip.Instance.OnCollisionWithEnemy();
         }
