@@ -112,8 +112,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a91932f2676b11646a5e8ef190d8df0d, type: 2}
   - {fileID: 11400000, guid: ce69e35970a4b0642ac7ed17e8d2ffdd, type: 2}
   - {fileID: 11400000, guid: b4e6ee7346c37ec4b9d02152e6a89bc4, type: 2}
-  onePerLevel: 0
+  onePerLevel: 1
   encounterDistance: 5
+  thisEnemyType: 0
   timeBetweenShots: 1.5
   shootAtPlayer: 1
   projectile: {fileID: 3192940171559665861, guid: 8067b8952b69a184598240cad5a77ac4, type: 3}

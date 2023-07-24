@@ -188,8 +188,9 @@ MonoBehaviour:
   enemyDialogue: []
   onePerLevel: 0
   encounterDistance: 5
+  thisEnemyType: 0
   moveSpeed: 1.5
-  minDistanceToPlayer: 10
+  minDistanceToPlayer: 15
 --- !u!1001 &1962707574188134869
 PrefabInstance:
   m_ObjectHideFlags: 0

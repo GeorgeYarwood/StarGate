@@ -111,6 +111,23 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void StopAllMusicLoops()
+    {
+        for (int s = 0; s < audioSourcePool.Count; s++)
+        {
+            if (audioSourcePool[s].loop)
+            {
+                audioSourcePool[s].Stop();
+                audioSourcePool[s].loop = false;
+                audioSourcePool[s].clip = null;
+                if (musicSources.Contains(audioSourcePool[s]))
+                {
+                    musicSources.Remove(audioSourcePool[s]);
+                }
+            }
+        }
+    }
+
     void InitSources()
     {
         for (int s = 0; s < audioSourcePool.Count; s++)

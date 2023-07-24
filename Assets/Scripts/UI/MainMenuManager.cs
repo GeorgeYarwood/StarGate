@@ -10,10 +10,10 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] Button quitButton;
     [SerializeField] AudioClip mainMenuSong;
 
-
     void OnEnable()
     {
         SetupButtons();
+        AudioManager.Instance.StopAllMusicLoops();
         AudioManager.Instance.PlayLoopedAudioClip(
             mainMenuSong, OnlyPermitOne: true, IsMusic: true);
     }

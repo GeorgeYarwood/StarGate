@@ -221,6 +221,7 @@ public class GameController : MonoBehaviour
             currentLives--;
             PowerUpManager.Instance.EndAllPowerUps();
             PowerUpManager.Instance.ClearPowerUps();
+            DestroyAllProjectiles();
             GoToState(lifeLostState);
             return;
         }

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2449997915474525685}
   - component: {fileID: 2449997915474525687}
-  - component: {fileID: 2449997915474525672}
+  - component: {fileID: 5165725826245076490}
   m_Layer: 0
   m_Name: MassiveEnemy
   m_TagString: Untagged
@@ -62,7 +62,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 4.7576923, y: 1.0467627}
   m_EdgeRadius: 0
---- !u!114 &2449997915474525672
+--- !u!114 &5165725826245076490
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,24 +71,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 2449997915474525673}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0840f7ab5f9185b438eb924bc70e6e10, type: 3}
+  m_Script: {fileID: 11500000, guid: 83d8ddbb9dafd3f4ea33739d1609ab11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: 100
+  enemyHealth: 500
   deathVfx: {fileID: 8924685274588867962}
   hitVfx: {fileID: 7709306502991214686}
   deathSfx: {fileID: 8300000, guid: 5bc7d9c3a4a65524f8dea6b7905b802f, type: 3}
   hitSfx: {fileID: 8300000, guid: d9f636ef0697b3c47b0483e4cdf0c06e, type: 3}
-  canDropOnDeath: {fileID: -1806860569846721500, guid: f70fab3856b1ab64f80331511c19caaa, type: 3}
-  alwaysDrop: 1
+  canDropOnDeath: {fileID: 0}
+  alwaysDrop: 0
   enemyDialogue:
   - {fileID: 11400000, guid: 188676cb1fba2004d862734783272a69, type: 2}
   - {fileID: 11400000, guid: 743c77c955590ad4d9476a672478969f, type: 2}
+  - {fileID: 11400000, guid: 4752cb93ae30ae04585fed3d1a4b54cb, type: 2}
+  - {fileID: 11400000, guid: c12856e2d8fd417489f9fe98a0882104, type: 2}
+  - {fileID: 11400000, guid: 9a4bc77b4bc0adb4aa62cc79dbfd69ba, type: 2}
+  - {fileID: 11400000, guid: c0805c407f12cf04cabee63f35f5e6b8, type: 2}
   onePerLevel: 1
   encounterDistance: 5
   thisEnemyType: 2
   moveSpeed: 0.5
   minDistanceToPlayer: 20
+  waveDifficultyScale: 10
+  waves:
+  - HealthThreshhold: 400
+  - HealthThreshhold: 300
+  - HealthThreshhold: 200
+  - HealthThreshhold: 100
+  enemyTypesToSpawn:
+  - {fileID: 2449997915474525672, guid: e1aa7d01bc7c71c4ca1266ddfe7e8588, type: 3}
+  - {fileID: 3801359242005734824, guid: 159195292ac143347ab7cb7b4bc894a8, type: 3}
 --- !u!1 &8418229850324593048
 GameObject:
   m_ObjectHideFlags: 0

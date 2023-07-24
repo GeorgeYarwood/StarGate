@@ -6,7 +6,8 @@ public enum DialogueQueuePoint
     ON_ENCOUNTER,
     ON_DEATH,
     LEVEL_START,
-    LEVEL_END
+    LEVEL_END,
+    AT_HP
 }
 
 [CreateAssetMenu(menuName = "Level tools/New dialogue...")]
@@ -28,5 +29,23 @@ public class Dialogue : ScriptableObject
     public bool IsEnemy
     {
         get { return isEnemy; }
+    }
+
+    [SerializeField] int hpPoint;
+    public int HpPoint
+    {
+        get { return hpPoint; }
+    }
+
+    bool hasBeenPlayed = false;
+    public bool HasBeenPlayed
+    {
+        get { return hasBeenPlayed; }
+        set { hasBeenPlayed = value; }
+    }
+
+    void Awake()
+    {
+        hasBeenPlayed = false;
     }
 }

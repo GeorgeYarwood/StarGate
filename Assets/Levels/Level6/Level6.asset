@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63da7fb6dbfdb7647abe2b016995eccd, type: 3}
   m_Name: Level6
   m_EditorClassIdentifier: 
-  levelSong: {fileID: 8300000, guid: 3e20293a1093bac4999c0f173cb66f9f, type: 3}
+  levelSong: {fileID: 8300000, guid: cdb261860466d004eb5d88d5d3519845, type: 3}
   enemiesPerLevel: 1
   enemyTypesToSpawn:
-  - {fileID: 2449997915474525672, guid: 0a1d9827c5d90d348accd48f4ff39ffb, type: 3}
+  - {fileID: 5165725826245076490, guid: 0a1d9827c5d90d348accd48f4ff39ffb, type: 3}
   subLevel: {fileID: 0}
   parentLevel: {fileID: 0}
   hasSublevel: 0

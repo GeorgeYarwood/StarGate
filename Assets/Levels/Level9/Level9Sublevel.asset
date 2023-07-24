@@ -15,8 +15,8 @@ MonoBehaviour:
   levelSong: {fileID: 0}
   enemiesPerLevel: 45
   enemyTypesToSpawn:
-  - {fileID: 6333169361043419027, guid: 45b130431639f954187077c561406bf0, type: 3}
-  - {fileID: 6974150420764494528, guid: 05cc0a19b3171b3409f6a42999e5229d, type: 3}
+  - {fileID: 5344641649189442274, guid: 45b130431639f954187077c561406bf0, type: 3}
+  - {fileID: 394439359356948770, guid: 05cc0a19b3171b3409f6a42999e5229d, type: 3}
   subLevel: {fileID: 0}
   parentLevel: {fileID: 11400000, guid: 32e73289b755d3b4f8bc71a98bb1900e, type: 2}
   hasSublevel: 1

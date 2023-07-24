@@ -58,11 +58,28 @@ public class DeveloperMenu : MonoBehaviour
         }
     }
 
+    void KillAllEnemies()
+    {
+        //This is debug only so performance don't matter
+        EnemyBase[] AllEnemies = FindObjectsOfType<EnemyBase>();
+        foreach(EnemyBase Enemy in AllEnemies)
+        {
+            Destroy(Enemy.gameObject);
+        }
+        LaserProjectile[] AllProjectiles = FindObjectsOfType<LaserProjectile>();
+        foreach(LaserProjectile Projectile in AllProjectiles)
+        {
+            Destroy(Projectile.gameObject);
+        }
+    }
+
     void TraverseLevels(int Level)
     {
+        KillAllEnemies();
         GameController.Instance.ResetAllLevels();
-        GameController.CurrentLevel = Level;
-        GameController.Instance.OnLevelComplete();
+        GameController.CurrentLevel = Level - 1;
+        AudioManager.Instance.StopAllMusicLoops();
+        GameController.Instance.GoToState(GameStates.FLYING);
     }
 
     void Update()

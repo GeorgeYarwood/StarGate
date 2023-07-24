@@ -62,6 +62,12 @@ public class FlyingState : GameStateBase
         Cursor.lockState = CursorLockMode.None;
         waitingForStateExit = false;
         ClearAllProjectiles();
+        if(GameController.CurrentLevel > 0) //First level shares song with main menu... just a happy little accident
+        {
+            AudioManager.Instance.PlayLoopedAudioClip(
+                GameController.AllLevels[GameController.CurrentLevel - 1].LevelSong,
+                EndLoop: true);
+        }
     }
 
     void ClearAllProjectiles()
@@ -264,20 +270,26 @@ public class FlyingState : GameStateBase
             SublevelEntrance.Instance.IsInSublevel = false;
         }
 
+        StartCoroutine(HandleSpawnEnemies(LevelToLoad));
+
+        HandleDialogue(DialogueQueuePoint.LEVEL_START, LevelToLoad);
+
+        LevelToLoad.IsInitialised = true;
+    }
+
+    IEnumerator HandleSpawnEnemies(LevelObject LevelToLoad)
+    {
         while (LevelToLoad.EnemiesInScene.Count < LevelToLoad.EnemiesPerLevel)
         {
             SpawnEnemies(LevelToLoad.EnemiesInScene, LevelToLoad.EnemyTypesToSpawn);
-            if(LevelToLoad.EnemiesInScene.Count == 1 && LevelToLoad.EnemiesInScene[0].OnePerLevel
+            if (LevelToLoad.EnemiesInScene.Count == 1 && LevelToLoad.EnemiesInScene[0].OnePerLevel
                 && LevelToLoad.EnemiesPerLevel > 1 && LevelToLoad.EnemyTypesToSpawn.Length == 1)
             {
                 Debug.Log(INFINITE_LOOP_ERROR_MESSAGE);
                 break;
             }
+            yield return null;
         }
-
-        HandleDialogue(DialogueQueuePoint.LEVEL_START, LevelToLoad);
-
-        LevelToLoad.IsInitialised = true;
     }
 
     bool HandleDialogue(DialogueQueuePoint WhatPointIsThis, LevelObject ThisLevel)
@@ -301,7 +313,7 @@ public class FlyingState : GameStateBase
         return true;
     }
 
-    void SpawnEnemies(List<EnemyBase> ListToAddTo, EnemyBase[] EnemyTypes)
+    public void SpawnEnemies(List<EnemyBase> ListToAddTo, EnemyBase[] EnemyTypes)
     {
         int RandomEnemyType = Random.Range(0, EnemyTypes.Length);
         if (EnemyTypes[RandomEnemyType].OnePerLevel)

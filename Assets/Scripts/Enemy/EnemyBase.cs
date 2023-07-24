@@ -34,7 +34,7 @@ public class EnemyBase : MonoBehaviour
     {
         get { return onePerLevel; }
     }
-    
+
     public Dialogue[] EnemyDialogue
     {
         get { return enemyDialogue; }
@@ -54,14 +54,14 @@ public class EnemyBase : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D Collision)
     {
-        if(Collision.TryGetComponent(out LaserProjectile HitProjectile))
+        if (Collision.TryGetComponent(out LaserProjectile HitProjectile))
         {
             if (!HitProjectile.IgnoreEnemy)
             {
                 OnHit(HitProjectile.HitDamage);
             }
         }
-        else if(Collision.TryGetComponent(out PlayerShip _))
+        else if (Collision.TryGetComponent(out PlayerShip _))
         {
             PlayerShip.Instance.OnCollisionWithEnemy();
         }
@@ -80,6 +80,8 @@ public class EnemyBase : MonoBehaviour
             {
                 hitVfx.Play();
             }
+
+            HandleDialogue(DialogueQueuePoint.AT_HP);
             return;
         }
 
@@ -111,12 +113,12 @@ public class EnemyBase : MonoBehaviour
 
     void HandleDialogue(DialogueQueuePoint WhatPointIsThis)
     {
-        if(enemyDialogue.Length == 0)
+        if (enemyDialogue.Length == 0)
         {
             return;
         }
 
-        for(int d = 0; d < enemyDialogue.Length; d++)
+        for (int d = 0; d < enemyDialogue.Length; d++)
         {
             if (!enemyDialogue[d])
             {
@@ -127,17 +129,24 @@ public class EnemyBase : MonoBehaviour
             {
                 DialogueManager.Instance.PlayDialogue(enemyDialogue[d]);
             }
-            else if(enemyDialogue[d].WhenToPlay == DialogueQueuePoint.ON_ENCOUNTER
+            else if (enemyDialogue[d].WhenToPlay == DialogueQueuePoint.ON_ENCOUNTER
                 && WhatPointIsThis == DialogueQueuePoint.ON_ENCOUNTER)
             {
                 DialogueManager.Instance.PlayDialogue(enemyDialogue[d]);
+            }
+            else if (enemyDialogue[d].WhenToPlay == DialogueQueuePoint.AT_HP
+               && WhatPointIsThis == DialogueQueuePoint.AT_HP
+               && EnemyHealth <= enemyDialogue[d].HpPoint && !enemyDialogue[d].HasBeenPlayed)
+            {
+                DialogueManager.Instance.PlayDialogue(enemyDialogue[d]);
+                enemyDialogue[d].HasBeenPlayed = true;
             }
         }
     }
 
     void Update()
     {
-        if(GameController.Instance.GetCurrentGameState
+        if (GameController.Instance.GetCurrentGameState
             != GameController.Instance.FlyingStateInstance)
         {
             return; //Only tick enemies in flyingstate
@@ -155,11 +164,29 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        ResetDialogue();
+    }
+
+    void ResetDialogue()
+    {
+        for (int d = 0; d < enemyDialogue.Length; d++)
+        {
+            if (!enemyDialogue[d])
+            {
+                continue;
+            }
+
+            enemyDialogue[d].HasBeenPlayed = false;
+        }
+    }
+
     public virtual void Init()
     {
 
     }
-    
+
     public virtual void Tick()
     {
 
