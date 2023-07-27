@@ -16,7 +16,7 @@ public class DialoguePanel : MonoBehaviour
 
     const float PRINTING_SPEED = 0.1f;
     const float PUNCTUATION_SPEED = 0.3f;
-    const float AUTO_CLOSE_TIME = 1.5f;
+    const float AUTO_CLOSE_TIME = 2.5f;
 
     const char COMMA = ',';
     const char FULL_STOP = '.';

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EnemyType { NORMAL, BOSS, BOSS_MASSIVE } //Used for comaprison checks
+public enum EnemyType { NORMAL, BOSS, BOSS_MASSIVE } //Used for comparison checks
 
 public class EnemyBase : MonoBehaviour
 {

@@ -12,11 +12,21 @@ public class BossEnemy : MovingEnemy
 
     [SerializeField] EnemyBase[] enemyTypesToSpawn = new EnemyBase[2];
 
+    [SerializeField] List<CrackHp> healthCrackPoints = new List<CrackHp>();
+
     [Serializable]
     struct EnemyWave
     {
         public int HealthThreshhold;
         internal bool HasBeenTriggered;
+    }
+
+    [Serializable]
+    struct CrackHp
+    {
+        public int HealthThreshhold;
+        internal bool HasBeenTriggered;
+        public GameObject CrackImage;
     }
 
     void Start()
@@ -27,6 +37,23 @@ public class BossEnemy : MovingEnemy
     public override void OnHit(int DamageToDeduct)
     {
         base.OnHit(DamageToDeduct);
+
+        for(int c = 0; c < healthCrackPoints.Count; c++)
+        {
+            if (healthCrackPoints[c].HasBeenTriggered)
+            {
+                continue;
+            }
+
+            if(EnemyHealth <= healthCrackPoints[c].HealthThreshhold)
+            {
+                TriggerCrack(healthCrackPoints[c].CrackImage);
+                CrackHp ModifiedHp = healthCrackPoints[c];
+                ModifiedHp.HasBeenTriggered = true;
+                healthCrackPoints[c] = ModifiedHp;
+                break;
+            }
+        }
 
         for (int w = 0; w < waves.Count; w++)
         {
@@ -66,5 +93,10 @@ public class BossEnemy : MovingEnemy
     void TriggerWave(int Level)
     {
         StartCoroutine(SpawnEnemy(Level + waveDifficultyScale));
+    }
+
+    void TriggerCrack(GameObject CrackImage)
+    {
+        CrackImage.SetActive(true);
     }
 }
