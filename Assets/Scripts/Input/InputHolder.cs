@@ -22,4 +22,6 @@ public class InputHolder : MonoBehaviour
 
     //Playerprefs
     public const string LAST_LEVEL = "LastLevel";
+    public const string MUSIC_VOLUME = "MusicVolume";
+    public const string SFX_VOLUME = "SfxVolume";
 }

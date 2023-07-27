@@ -44,7 +44,6 @@ public class LaserProjectile : MonoBehaviour
         }
     }
 
-
     void Update()
     {
         switch (projectileIsFacing)

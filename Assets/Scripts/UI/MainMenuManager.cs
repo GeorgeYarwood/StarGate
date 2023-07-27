@@ -10,6 +10,8 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] Button continueGameButton;
     [SerializeField] Button quitButton;
     [SerializeField] AudioClip mainMenuSong;
+    [SerializeField] Slider musicVolumeSlider;
+    [SerializeField] Slider sfxVolumeSlider;
 
     void OnEnable()
     {
@@ -17,6 +19,9 @@ public class MainMenuManager : MonoBehaviour
         AudioManager.Instance.StopAllMusicLoops();
         AudioManager.Instance.PlayLoopedAudioClip(
             mainMenuSong, OnlyPermitOne: true, IsMusic: true);
+
+        musicVolumeSlider.value = PlayerPrefs.GetFloat(InputHolder.MUSIC_VOLUME);
+        sfxVolumeSlider.value = PlayerPrefs.GetFloat(InputHolder.SFX_VOLUME);
     }
 
     void SetupButtons()
@@ -49,6 +54,18 @@ public class MainMenuManager : MonoBehaviour
             GameController.CurrentLevel = 0;
         }
         SceneManager.LoadScene(InputHolder.GAME_SCENE);
+    }
+
+    public void SetSfxVolume(Slider ThisSlider)
+    {
+        PlayerPrefs.SetFloat(InputHolder.SFX_VOLUME, ThisSlider.value);
+        AudioManager.Instance.ForceUpdateSourceVolumes();
+    }
+
+    public void SetMusicVolume(Slider ThisSlider) 
+    {
+        PlayerPrefs.SetFloat(InputHolder.MUSIC_VOLUME, ThisSlider.value);
+        AudioManager.Instance.ForceUpdateSourceVolumes();
     }
 
     void QuitGame()
