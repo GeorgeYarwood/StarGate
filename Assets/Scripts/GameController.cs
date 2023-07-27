@@ -137,7 +137,10 @@ public class GameController : MonoBehaviour
             }
         }
 
-        currentLevel = 0;
+        if(currentLevel >= allLevels.Count)
+        {
+            currentLevel = 0;   //We should never get here
+        } 
     }
 
     public void GoToPreviousGameState()

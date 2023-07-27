@@ -21,6 +21,7 @@ public class FlyingState : GameStateBase
 
     public override void OnStateEnter()
     {
+        PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel);
         if (GameController.AllLevels.Count == 0)
         {
             Debug.Log(ERROR_MESSAGE);

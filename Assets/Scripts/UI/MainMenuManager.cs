@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class MainMenuManager : MonoBehaviour
 {
     [SerializeField] Button startGameButton;
+    [SerializeField] Button continueGameButton;
     [SerializeField] Button quitButton;
     [SerializeField] AudioClip mainMenuSong;
 
@@ -20,12 +21,33 @@ public class MainMenuManager : MonoBehaviour
 
     void SetupButtons()
     {
-        startGameButton.onClick.AddListener(StartGame);
+        startGameButton.onClick.AddListener(() =>
+            StartGame(false)
+        );
         quitButton.onClick.AddListener(QuitGame);
+        if (PlayerPrefs.GetInt(InputHolder.LAST_LEVEL) > 0)
+        {
+            continueGameButton.gameObject.SetActive(true);
+            continueGameButton.onClick.AddListener(() =>
+                StartGame(true)
+            );
+        }
+        else
+        {
+            continueGameButton.gameObject.SetActive(false);
+        }
     }
 
-    void StartGame()
+    void StartGame(bool IsContinue)
     {
+        if (IsContinue)
+        {
+            GameController.CurrentLevel = PlayerPrefs.GetInt(InputHolder.LAST_LEVEL);
+        }
+        else
+        {
+            GameController.CurrentLevel = 0;
+        }
         SceneManager.LoadScene(InputHolder.GAME_SCENE);
     }
 

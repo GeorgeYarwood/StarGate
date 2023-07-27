@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Holds all the games input buttons, and also scene names
+//Holds all the games input buttons, and also scene names and now playerprefs because I'm lazy as fuck
 public class InputHolder : MonoBehaviour
 {
     //Scene names
@@ -19,4 +19,7 @@ public class InputHolder : MonoBehaviour
     public const string SPEED_BOOST = "SpeedBoost";
     public const string SKIP_DIALOGUE_BUTTON = "SkipDialogue";
     public const string DEVELOPER_MENU = "DeveloperMenu";
+
+    //Playerprefs
+    public const string LAST_LEVEL = "LastLevel";
 }
