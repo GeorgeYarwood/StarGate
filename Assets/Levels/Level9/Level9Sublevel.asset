@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level9Sublevel
   m_EditorClassIdentifier: 
   levelSong: {fileID: 0}
-  enemiesPerLevel: 45
+  enemiesPerLevel: 5
   enemyTypesToSpawn:
   - {fileID: 5344641649189442274, guid: 45b130431639f954187077c561406bf0, type: 3}
   - {fileID: 394439359356948770, guid: 05cc0a19b3171b3409f6a42999e5229d, type: 3}

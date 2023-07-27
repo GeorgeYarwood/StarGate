@@ -27,6 +27,14 @@ public class DialoguePanel : MonoBehaviour
         get { return isPrinting; }
     }
 
+    bool InPauseMenu
+    {
+        get {
+            return GameController.Instance.GetCurrentGameState.GetType()
+            == typeof(PauseGameState);
+        }
+    }
+
     string lastText;
 
     static DialoguePanel instance;
@@ -48,6 +56,8 @@ public class DialoguePanel : MonoBehaviour
         panelGo.SetActive(false);
     }
 
+    bool pauseResume = false;
+
     void Update()
     {
         if(Input.GetButtonDown(InputHolder.SKIP_DIALOGUE_BUTTON))
@@ -62,6 +72,22 @@ public class DialoguePanel : MonoBehaviour
             {
                 panelGo.SetActive(false);
             }
+        }
+
+        if(GameController.Instance.GetCurrentGameState.GetType()
+            == typeof(PauseGameState) && panelGo.activeInHierarchy)
+        {
+            panelGo.SetActive(false);
+            StopAllCoroutines();
+            pauseResume = true;
+        }
+        else if(GameController.Instance.LastGameState &&
+            GameController.Instance.LastGameState.GetType()
+            == typeof(PauseGameState) && pauseResume)
+        {
+            panelGo.SetActive(true);
+            StartCoroutine(PrintDialogue(lastText, lastIterator));
+            pauseResume = false;
         }
 
         if(!isPrinting && panelGo.activeInHierarchy)    //Close the panel after time
@@ -84,15 +110,22 @@ public class DialoguePanel : MonoBehaviour
         }
     }
 
-    public IEnumerator PrintDialogue(string Text)   //Give us the slow typing effect
+    int lastIterator = 0;
+    public IEnumerator PrintDialogue(string Text, int Iterator = 0)   //Give us the slow typing effect
     {
         panelGo.SetActive(true);
         isPrinting = true;
-        lastText = Text;
-        dialogueText.text = "";
-        int Iterator = 0;
+        if(Iterator == 0)
+        {
+            lastText = Text;
+            dialogueText.text = "";
+        }
         while (dialogueText.text.Length < Text.Length)
         {
+            if (InPauseMenu)
+            {
+                break;
+            }
             bool LongPause = false;
             if (Text[Iterator] == COMMA || Text[Iterator] == FULL_STOP)
             {
@@ -100,6 +133,7 @@ public class DialoguePanel : MonoBehaviour
             }
             dialogueText.text += Text[Iterator];
             Iterator++;
+            lastIterator = Iterator;
             AudioManager.Instance.PlayAudioClip(characterBlipSfx);
             if (LongPause)
             {

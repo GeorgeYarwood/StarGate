@@ -143,7 +143,9 @@ public class FlyingState : GameStateBase
 
     IEnumerator WaitForEndOfDialogue()
     {
+        GameController.Instance.BlockStateExit = true;
         yield return new WaitUntil(() => DialoguePanel.Instance.PanelActive == false);
+        GameController.Instance.BlockStateExit = false;
         GameController.Instance.OnLevelComplete();
     }
 

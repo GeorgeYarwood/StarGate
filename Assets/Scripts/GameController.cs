@@ -94,6 +94,12 @@ public class GameController : MonoBehaviour
     //Spawning X limits so we don't spawn in the centre (Where the player is)
     const float X_SPAWN_ADJUSTMENT_VAL = 6.0f;
 
+    bool blockStateExit = false;
+    public bool BlockStateExit
+    {
+        set { blockStateExit = value; }
+    }
+
     void Start()
     {
         if (instance == null)
@@ -136,6 +142,10 @@ public class GameController : MonoBehaviour
 
     public void GoToPreviousGameState()
     {
+        if (blockStateExit)
+        {
+            return;
+        }
         if (gameStates.Count == 1)
         {
             return;
@@ -147,6 +157,10 @@ public class GameController : MonoBehaviour
 
     public void GoToState(GameStateBase State)
     {
+        if (blockStateExit)
+        {
+            return;
+        }
         if(gameStates.Count > 0)
         {
             ExitPrevState(gameStates.Peek());
@@ -158,6 +172,10 @@ public class GameController : MonoBehaviour
 
     public void GoToState(GameStates State)
     {
+        if (blockStateExit)
+        {
+            return;
+        }
         if (gameStates.Count > 0)
         {
             ExitPrevState(gameStates.Peek());
