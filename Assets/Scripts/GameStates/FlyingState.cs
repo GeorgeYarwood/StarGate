@@ -63,12 +63,9 @@ public class FlyingState : GameStateBase
         Cursor.lockState = CursorLockMode.None;
         waitingForStateExit = false;
         ClearAllProjectiles();
-        if(GameController.CurrentLevel > 0) //First level shares song with main menu... just a happy little accident
-        {
-            AudioManager.Instance.PlayLoopedAudioClip(
-                GameController.AllLevels[GameController.CurrentLevel - 1].LevelSong,
-                EndLoop: true);
-        }
+        AudioManager.Instance.PlayLoopedAudioClip(
+            GameController.AllLevels[GameController.CurrentLevel - 1].LevelSong,
+            EndLoop: true);
     }
 
     void ClearAllProjectiles()
@@ -342,12 +339,12 @@ public class FlyingState : GameStateBase
         float SpawnVal = 0.0f;
         if (LeftSpawn)
         {
-            SpawnVal = Random.Range(-GameController.GetMapBoundsXVal, 0.0f -
+            SpawnVal = Random.Range(-GameController.GetMapBoundsXVal, PlayerShip.Instance.GetPos.x -
                 GameController.GetSpawnAdjustmentXVal);
         }
         else
         {
-            SpawnVal = Random.Range(GameController.GetMapBoundsXVal, 0.0f +
+            SpawnVal = Random.Range(GameController.GetMapBoundsXVal, PlayerShip.Instance.GetPos.x +
                 GameController.GetSpawnAdjustmentXVal);
         }
 

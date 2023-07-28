@@ -77,5 +77,6 @@ public class MainMenuManager : MonoBehaviour
     {
         startGameButton.onClick.RemoveAllListeners();
         quitButton.onClick.RemoveAllListeners();
+        AudioManager.Instance.PlayLoopedAudioClip(mainMenuSong, EndLoop: true);
     }
 }
