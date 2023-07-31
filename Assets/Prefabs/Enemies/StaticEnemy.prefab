@@ -102,6 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 20
+  spriteRenderer: {fileID: 2294187218363598420}
   deathVfx: {fileID: 1507934593952868454}
   hitVfx: {fileID: 7225999189625938600}
   deathSfx: {fileID: 8300000, guid: 5bc7d9c3a4a65524f8dea6b7905b802f, type: 3}

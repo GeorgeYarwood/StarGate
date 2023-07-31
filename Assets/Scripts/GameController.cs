@@ -66,6 +66,10 @@ public class GameController : MonoBehaviour
     {
         get { return X_SPAWN_ADJUSTMENT_VAL; }
     }
+    public static float GetMapRepeatBufferVal
+    {
+        get { return MAP_REPEAT_BUFFER_VAL; }
+    }
 
     [SerializeField] List<LevelObject> allLevels = new List<LevelObject>();
     public static List<LevelObject> AllLevels
@@ -93,6 +97,8 @@ public class GameController : MonoBehaviour
 
     //Spawning X limits so we don't spawn in the centre (Where the player is)
     const float X_SPAWN_ADJUSTMENT_VAL = 6.0f;
+    //How far the player has to go on BEYOND the map limit so we can't see the pop-in/out of enemies while the map repeats
+    const float MAP_REPEAT_BUFFER_VAL = 3.5f;
 
     bool blockStateExit = false;
     public bool BlockStateExit

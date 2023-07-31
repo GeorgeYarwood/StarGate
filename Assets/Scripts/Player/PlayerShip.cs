@@ -32,6 +32,7 @@ public class PlayerShip : MonoBehaviour
     [SerializeField] AudioClip fireSfx;
     [SerializeField] AudioClip deathSfx;
     [SerializeField] AudioClip engineSfx;
+    [SerializeField] AudioClip mapRepeatBoostSfx;
 
     public Transform ProjectileSpawn
     {
@@ -41,6 +42,7 @@ public class PlayerShip : MonoBehaviour
     const float PLAYER_MOVE_SPEED = 5.0f;
     const float PLAYER_BOOST_ADJUSTMENT = 2.5f;
     const float PLAYER_COAST_SPEED = 0.75f;
+    const float PLAYER_MAP_REPEAT_BOOST_SPEED = 10.5f;
 
     const float PROJECTILE_SPAWN_MODIFIER = 1.2f;
     const float SINGLE_FIRE_LOCKOUT_TIMER = 1.0f;
@@ -51,9 +53,15 @@ public class PlayerShip : MonoBehaviour
 
     const float LEFT_ROT_Y_VAL = 180.0f;
     const float RIGHT_ROT_Y_VAL = 0.0f;
+    const float STOP_BEFORE_COLLISION = 1.35f; //When we speed through the edges of the map for the reset, how far off the limit (Where enemies may be) we stop (Too low and we'll collide with enemies)
 
     bool canFire = true;
     bool isBoosting = false;
+    bool lockInput = false;
+    public bool LockInput
+    {
+        get { return lockInput; }
+    }
 
     FacingDirection playerIsFacing;
     MoveDirection lastDirection;
@@ -100,13 +108,18 @@ public class PlayerShip : MonoBehaviour
         get { return endSpeedBoostPowerUp; }
     }
 
-    public void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false)
+    public void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false, bool FastSpeed = false)
     {
         float ActualSpeed = PLAYER_MOVE_SPEED;
 
         if (Coasting)
         {
             ActualSpeed = PLAYER_COAST_SPEED;
+
+            if (FastSpeed)
+            {
+                ActualSpeed = PLAYER_MAP_REPEAT_BOOST_SPEED;
+            }
             AudioManager.Instance.PlayLoopedAudioClip(engineSfx, EndLoop: true);
         }
         else if (coastPlayerCoroutine != null)
@@ -165,13 +178,23 @@ public class PlayerShip : MonoBehaviour
         {
             transform.position = new(transform.position.x, -GameController.GetMapBoundsYVal);
         }
-        if (RawX > GameController.GetMapBoundsXVal)
+        if (RawX > GameController.GetMapBoundsXVal + GameController.GetMapRepeatBufferVal)  //We go on a bit further so we don't see the enemies popping in and out as we repeat the map
         {
-            transform.position = new(GameController.GetMapBoundsXVal, transform.position.y);
+            //transform.position = new(GameController.GetMapBoundsXVal, transform.position.y);  //Changed for infinite "repeat" scrolling due to player feedback
+            transform.position = new(-GameController.GetMapBoundsXVal - GameController.GetMapRepeatBufferVal, transform.position.y);
+            WorldScroller.Instance.ForceUpdateWorldScoller(BackgroundDirection.LEFT);
+            GameController.Instance.DestroyAllProjectiles();
+            MapRepeat.Instance.TriggerAnimation();
+            StartCoroutine(HandleMapLoopSpeedBoost(false));
         }
-        else if (RawX < -GameController.GetMapBoundsXVal)
+        else if (RawX < -GameController.GetMapBoundsXVal - GameController.GetMapRepeatBufferVal)
         {
-            transform.position = new(-GameController.GetMapBoundsXVal, transform.position.y);
+            //transform.position = new(-GameController.GetMapBoundsXVal, transform.position.y);
+            transform.position = new(GameController.GetMapBoundsXVal + GameController.GetMapRepeatBufferVal, transform.position.y);
+            WorldScroller.Instance.ForceUpdateWorldScoller(BackgroundDirection.RIGHT);
+            GameController.Instance.DestroyAllProjectiles(); //Partly so we can't see our own projectiles going the opposite way but also for balance reasons
+            MapRepeat.Instance.TriggerAnimation();
+            StartCoroutine(HandleMapLoopSpeedBoost(true));
         }
     }
 
@@ -228,6 +251,29 @@ public class PlayerShip : MonoBehaviour
     void EndSpeedBoostEffect()
     {
         isBoosting = false;
+    }
+
+    IEnumerator HandleMapLoopSpeedBoost(bool Positive) //Speeds us past the janky map repeating so no one sees how bad it is
+    {
+        lockInput = true;
+        AudioManager.Instance.PlayAudioClip(mapRepeatBoostSfx);
+        if (Positive)
+        {
+            while (GetPos.x >= GameController.GetMapBoundsXVal + STOP_BEFORE_COLLISION)
+            {
+                UpdatePosition(lastDirection, Coasting: true, FastSpeed: true);
+                yield return null;
+            }
+        }
+        else
+        {
+            while (GetPos.x <= -GameController.GetMapBoundsXVal - STOP_BEFORE_COLLISION)
+            {
+                UpdatePosition(lastDirection, Coasting: true, FastSpeed: true);
+                yield return null;
+            }
+        }
+        lockInput = false;
     }
 
     IEnumerator SpeedBoostTimer()
@@ -299,6 +345,7 @@ public class PlayerShip : MonoBehaviour
     public IEnumerator CoastPlayer()
     {
         float ThisTimer = PLAYER_COAST_TIMER;
+        
         while (ThisTimer > 0)
         {
             UpdatePosition(lastDirection, Coasting: true);

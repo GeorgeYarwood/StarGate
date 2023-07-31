@@ -179,6 +179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 2
+  spriteRenderer: {fileID: 4439147781978743613}
   deathVfx: {fileID: 5045896529014432339}
   hitVfx: {fileID: 0}
   deathSfx: {fileID: 8300000, guid: 5bc7d9c3a4a65524f8dea6b7905b802f, type: 3}
@@ -191,6 +192,7 @@ MonoBehaviour:
   thisEnemyType: 0
   moveSpeed: 1.5
   minDistanceToPlayer: 15
+  collisionAvoidRadius: 0.01
 --- !u!1001 &1962707574188134869
 PrefabInstance:
   m_ObjectHideFlags: 0

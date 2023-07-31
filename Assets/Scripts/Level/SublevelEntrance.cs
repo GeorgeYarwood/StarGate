@@ -25,16 +25,14 @@ public class SublevelEntrance : MonoBehaviour
     bool canReEnter = true;
     const float RE_ENTRY_TIMER = 1.0f;
 
-    void Start()
+    void OnEnable()
     {
         if(instance != null)
         {
-            Destroy(this);
+            Destroy(instance);
         }
-        else
-        {
-            instance = this;
-        }
+        
+        instance = this;
     }
 
     public void ToggleSublevel(bool Setting)

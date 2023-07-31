@@ -160,6 +160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 500
+  spriteRenderer: {fileID: 7210987045129718777}
   deathVfx: {fileID: 8924685274588867962}
   hitVfx: {fileID: 7709306502991214686}
   deathSfx: {fileID: 8300000, guid: 5bc7d9c3a4a65524f8dea6b7905b802f, type: 3}
@@ -178,6 +179,7 @@ MonoBehaviour:
   thisEnemyType: 2
   moveSpeed: 0.5
   minDistanceToPlayer: 20
+  collisionAvoidRadius: 0.01
   waveDifficultyScale: 10
   waves:
   - HealthThreshhold: 400

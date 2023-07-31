@@ -15,6 +15,7 @@ public class StaticEnemy : EnemyBase
 
     FacingDirection lastFacingDirection = FacingDirection.RIGHT;
 
+
     public override void Init()
     {
         if (shootAtPlayer)

@@ -14,6 +14,12 @@ public class MovingEnemy : EnemyBase
 
     void TrackPlayer()
     {
+        //Account for different width enemies
+        if((transform.position.x + spriteRenderer.bounds.extents.x) >= GameController.GetMapBoundsXVal
+            || (transform.position.x - spriteRenderer.bounds.extents.x) <= -GameController.GetMapBoundsXVal)
+        {
+            return;
+        }
         if(Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= minDistanceToPlayer)
         {
             transform.position = GetNonOverlappingVector();

@@ -63,12 +63,19 @@ public class FlyingState : GameStateBase
         Cursor.lockState = CursorLockMode.None;
         waitingForStateExit = false;
         ClearAllProjectiles();
-        AudioManager.Instance.PlayLoopedAudioClip(
+        if(GameController.CurrentLevel > 0)
+        {
+            AudioManager.Instance.PlayLoopedAudioClip(
             GameController.AllLevels[GameController.CurrentLevel - 1].LevelSong,
             EndLoop: true);
+        }
+        if(GameController.CurrentLevel + 1 < GameController.AllLevels.Count)
+        {
+            PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel + 1);    //In case we go to menu without clicking on "Next level"
+        }
     }
 
-    void ClearAllProjectiles()
+    public void ClearAllProjectiles()
     {
         for (int p = 0; p < projectilesInScene.Count; p++)
         {
@@ -166,6 +173,11 @@ public class FlyingState : GameStateBase
 
     void GetInput()
     {
+        if (PlayerShip.Instance.LockInput)
+        {
+            return;
+        }
+
         if (Input.GetButton(InputHolder.MOVE_UP))
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.UP);
@@ -355,7 +367,6 @@ public class FlyingState : GameStateBase
         {
             goto GetNewPosition;    //Programming like it's 1970
         }
-
         return RandomSpawnPosition;
     }
 }

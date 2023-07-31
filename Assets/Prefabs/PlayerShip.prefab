@@ -142,6 +142,7 @@ MonoBehaviour:
   fireSfx: {fileID: 8300000, guid: 2a2b553534a6342418c4c1a70bf2f64d, type: 3}
   deathSfx: {fileID: 8300000, guid: 5bb978095a6e5064bbb49d664cd5e198, type: 3}
   engineSfx: {fileID: 8300000, guid: e4f1fcbb9b86a9c469b3e1358be0fa7b, type: 3}
+  mapRepeatBoostSfx: {fileID: 8300000, guid: 1d2354f0657b7aa4a99ba03704918cff, type: 3}
 --- !u!61 &8580451008775452946
 BoxCollider2D:
   m_ObjectHideFlags: 0

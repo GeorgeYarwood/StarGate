@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-enum BackgroundDirection { LEFT, RIGHT, NONE }
+public enum BackgroundDirection
+{
+    LEFT,
+    RIGHT,
+    NONE
+}
 
 public class WorldScroller : MonoBehaviour
 {
@@ -16,7 +21,46 @@ public class WorldScroller : MonoBehaviour
     bool canRunBackgroundCheck = true;
     const float BG_CHECK_DELAY = 0.5f;
 
-    const float MAX_X_VAL = 1000.0f; //Map/game position will reset once we reach this threshhold  on the X axis
+    static WorldScroller instance;
+    public static WorldScroller Instance
+    {
+        get { return instance; }
+    }
+
+    void OnEnable()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
+
+    public void ForceUpdateWorldScoller(BackgroundDirection Direction)
+    {
+        canRunBackgroundCheck = false;
+        //yield return new WaitUntil(() => !CheckBackgroundInFrame(out _));
+        //SwapSectionDirections();
+        switch (Direction)
+        {
+            case BackgroundDirection.LEFT:
+                leftWorldSection.transform.position = new(leftWorldSection.transform.position.y - GameController.GetMapBoundsXVal,
+                    leftWorldSection.transform.position.y, leftWorldSection.transform.position.z);
+                rightWorldSection.transform.position = new(rightWorldSection.transform.position.y - GameController.GetMapBoundsXVal,
+                    rightWorldSection.transform.position.y, rightWorldSection.transform.position.z);
+                break;
+            case BackgroundDirection.RIGHT:
+                leftWorldSection.transform.position = new(leftWorldSection.transform.position.y + GameController.GetMapBoundsXVal,
+                   leftWorldSection.transform.position.y, leftWorldSection.transform.position.z);
+                rightWorldSection.transform.position = new(rightWorldSection.transform.position.y + GameController.GetMapBoundsXVal,
+                    rightWorldSection.transform.position.y, rightWorldSection.transform.position.z);
+                break;
+        }
+        canRunBackgroundCheck = true;
+    }
 
     bool CheckBackgroundInFrame(out BackgroundDirection Direction)
     {

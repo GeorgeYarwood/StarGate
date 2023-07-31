@@ -23,6 +23,7 @@ public class EnemyBase : MonoBehaviour
         get { return scoreAddition; }
     }
 
+    [SerializeField] internal SpriteRenderer spriteRenderer;
     [SerializeField] ParticleSystem deathVfx;
     [SerializeField] ParticleSystem hitVfx;
     [SerializeField] AudioClip deathSfx;

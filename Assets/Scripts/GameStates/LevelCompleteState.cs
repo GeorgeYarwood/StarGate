@@ -10,20 +10,11 @@ public class LevelCompleteState : GameStateBase
     [SerializeField] Button loadNextLevelButton; 
     [SerializeField] Button returnToMenuButton;
 
-    void OnEnable()
+    public override void OnStateEnter()
     {
         loadNextLevelButton.onClick.AddListener(LoadNextLevel);
         returnToMenuButton.onClick.AddListener(ReturnToMenu);
-    }
 
-    void OnDisable()
-    {
-        loadNextLevelButton.onClick.RemoveListener(LoadNextLevel);
-        returnToMenuButton.onClick.RemoveListener(ReturnToMenu);
-    }
-
-    public override void OnStateEnter()
-    {
         levelCompletePanel.SetActive(true);
         if(GameController.CurrentLevel >= GameController.AllLevels.Count)
         {
@@ -37,6 +28,8 @@ public class LevelCompleteState : GameStateBase
 
     public override void OnStateExit()
     {
+        loadNextLevelButton.onClick.RemoveListener(LoadNextLevel);
+        returnToMenuButton.onClick.RemoveListener(ReturnToMenu);
         levelCompletePanel.SetActive(false);
     }
 
