@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum EnemyType //Used for comparison checks
-{ 
+{
     NORMAL,
     BOSS,
-    BOSS_MASSIVE 
-} 
+    BOSS_MASSIVE
+}
 
 public class EnemyBase : MonoBehaviour
 {
@@ -152,8 +152,7 @@ public class EnemyBase : MonoBehaviour
 
     void Update()
     {
-        if (GameController.Instance.GetCurrentGameState
-            != GameController.Instance.FlyingStateInstance)
+        if (GameController.Instance.GetCurrentGameState != GameController.Instance.FlyingStateInstance)
         {
             return; //Only tick enemies in flyingstate
         }
@@ -188,9 +187,29 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
+    public void ParentToBackground()
+    {
+        RaycastHit2D Centre = Physics2D.Raycast(transform.position, transform.forward);
+
+        if (Centre.collider)
+        {
+            transform.parent = Centre.collider.transform;
+            return;
+        }
+
+
+        GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Remove(this);
+        Destroy(gameObject);
+    }
+
+    public void DetachFromParent()
+    {
+        transform.parent = null;
+    }
+
     public virtual void Init()
     {
-
+        ParentToBackground();
     }
 
     public virtual void Tick()

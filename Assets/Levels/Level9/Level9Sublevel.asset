@@ -19,6 +19,10 @@ MonoBehaviour:
   - {fileID: 394439359356948770, guid: 05cc0a19b3171b3409f6a42999e5229d, type: 3}
   subLevel: {fileID: 0}
   parentLevel: {fileID: 11400000, guid: 32e73289b755d3b4f8bc71a98bb1900e, type: 2}
-  hasSublevel: 1
+  hasSublevel: 0
   levelDialogue:
   - {fileID: 11400000, guid: d879d9e6dbf1afe41bbf47eb1f8cf3e7, type: 2}
+  backgroundColour: {r: 0, g: 0, b: 0, a: 1}
+  starsColour: {r: 2, g: 0.92156863, b: 0.015686275, a: 2}
+  foregroundColour: {r: 2, g: 0.92156863, b: 0.015686275, a: 2}
+  useParentLevelColour: 1

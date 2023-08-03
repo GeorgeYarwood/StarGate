@@ -57,18 +57,18 @@ public class GameController : MonoBehaviour
         get { return MAX_Y_VAL; }
     }
 
-    public static float GetMapBoundsXVal
+    public static float GetMapBoundsMinXVal
     {
-        get { return MAX_X_VAL; }
+        get { return WorldScroller.Instance.GetMinXBounds(); }
+    }
+    public static float GetMapBoundsMaxXVal
+    {
+        get { return WorldScroller.Instance.GetMaxXBounds(); }
     }
 
     public static float GetSpawnAdjustmentXVal
     {
         get { return X_SPAWN_ADJUSTMENT_VAL; }
-    }
-    public static float GetMapRepeatBufferVal
-    {
-        get { return MAP_REPEAT_BUFFER_VAL; }
     }
 
     [SerializeField] List<LevelObject> allLevels = new List<LevelObject>();
@@ -93,12 +93,10 @@ public class GameController : MonoBehaviour
     const float TIME_TO_WAIT_VFX = 0.25f;
     //Map bounds
     const float MAX_Y_VAL = 4.0f;
-    const float MAX_X_VAL = 20.0f;
+    const float MAX_X_VAL = 28.0f;
 
     //Spawning X limits so we don't spawn in the centre (Where the player is)
-    const float X_SPAWN_ADJUSTMENT_VAL = 6.0f;
-    //How far the player has to go on BEYOND the map limit so we can't see the pop-in/out of enemies while the map repeats
-    const float MAP_REPEAT_BUFFER_VAL = 3.5f;
+    const float X_SPAWN_ADJUSTMENT_VAL = 4.5f;
 
     bool blockStateExit = false;
     public bool BlockStateExit
@@ -126,7 +124,7 @@ public class GameController : MonoBehaviour
 
     public void ResetPlayerPosition()
     {
-        PlayerShip.Instance.transform.position = Vector3.zero;
+        PlayerShip.Instance.transform.position = new(WorldScroller.Instance.GetCurrentCentre(), 0.0f);
     }
 
     public void ResetAllLevels()
@@ -278,13 +276,22 @@ public class GameController : MonoBehaviour
         currentScore += ScoreToAdd;
     }
 
-    public void DestroyAllProjectiles()
+    public void DestroyAllProjectiles(bool EnemyOnly = false)
     {
         //I could be less lazy and like cache these or something but cba
         LaserProjectile[] FoundProjectiles = FindObjectsOfType<LaserProjectile>();
         for(int l = 0; l < FoundProjectiles.Length; l++)
         {
+            if(EnemyOnly && !FoundProjectiles[l].IgnoreEnemy)
+            {
+                continue;
+            }
             Destroy(FoundProjectiles[l].gameObject);
         }
+    }
+
+    public LaserProjectile[] GetAllProjectiles()
+    {
+        return FindObjectsOfType<LaserProjectile>();
     }
 }

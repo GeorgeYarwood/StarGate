@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3192940171559665861}
   - component: {fileID: 4526643473658605977}
   - component: {fileID: 4437849756007951685}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: RapidLaserProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}

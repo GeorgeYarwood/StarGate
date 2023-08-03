@@ -48,6 +48,7 @@ public class SublevelEntrance : MonoBehaviour
             GameController.Instance.DestroyAllProjectiles();
             StartCoroutine(BlockInteractionForTime()); //Stop us immediately going straight back in
             portalEnterVfx.Play();
+            PowerUpManager.Instance.ClearPowerUps();
             AudioManager.Instance.PlayAudioClip(portalEnterSfx);
 
             if (!isInSublevel)

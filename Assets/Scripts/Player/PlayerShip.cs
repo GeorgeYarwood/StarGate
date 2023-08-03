@@ -178,24 +178,39 @@ public class PlayerShip : MonoBehaviour
         {
             transform.position = new(transform.position.x, -GameController.GetMapBoundsYVal);
         }
-        if (RawX > GameController.GetMapBoundsXVal + GameController.GetMapRepeatBufferVal)  //We go on a bit further so we don't see the enemies popping in and out as we repeat the map
+        //if (RawX > GameController.GetMapBoundsXVal + GameController.GetMapRepeatBufferVal)  //We go on a bit further so we don't see the enemies popping in and out as we repeat the map
+        //{
+        //    //transform.position = new(GameController.GetMapBoundsXVal, transform.position.y);  //Changed for infinite "repeat" scrolling due to player feedback
+        //    transform.position = new(-GameController.GetMapBoundsXVal - GameController.GetMapRepeatBufferVal, transform.position.y);
+        //    WorldScroller.Instance.ForceUpdateWorldScoller(BackgroundDirection.LEFT);
+        //    GameController.Instance.DestroyAllProjectiles();
+        //    //MapRepeat.Instance.TriggerAnimation();
+        //    //StartCoroutine(HandleMapLoopSpeedBoost(false));
+        //}
+        //else if (RawX < -GameController.GetMapBoundsXVal - GameController.GetMapRepeatBufferVal)
+        //{
+        //    //transform.position = new(-GameController.GetMapBoundsXVal, transform.position.y);
+        //    transform.position = new(GameController.GetMapBoundsXVal + GameController.GetMapRepeatBufferVal, transform.position.y);
+        //    WorldScroller.Instance.ForceUpdateWorldScoller(BackgroundDirection.RIGHT);
+        //    GameController.Instance.DestroyAllProjectiles(); //Partly so we can't see our own projectiles going the opposite way but also for balance reasons
+        //    //MapRepeat.Instance.TriggerAnimation();
+        //    //StartCoroutine(HandleMapLoopSpeedBoost(true));
+        //}
+    }
+
+    public void ParentToBackground()
+    {
+        RaycastHit2D Centre = Physics2D.Raycast(transform.position, transform.forward);
+
+        if (Centre.collider)
         {
-            //transform.position = new(GameController.GetMapBoundsXVal, transform.position.y);  //Changed for infinite "repeat" scrolling due to player feedback
-            transform.position = new(-GameController.GetMapBoundsXVal - GameController.GetMapRepeatBufferVal, transform.position.y);
-            WorldScroller.Instance.ForceUpdateWorldScoller(BackgroundDirection.LEFT);
-            GameController.Instance.DestroyAllProjectiles();
-            MapRepeat.Instance.TriggerAnimation();
-            StartCoroutine(HandleMapLoopSpeedBoost(false));
+            transform.parent = Centre.collider.transform;
         }
-        else if (RawX < -GameController.GetMapBoundsXVal - GameController.GetMapRepeatBufferVal)
-        {
-            //transform.position = new(-GameController.GetMapBoundsXVal, transform.position.y);
-            transform.position = new(GameController.GetMapBoundsXVal + GameController.GetMapRepeatBufferVal, transform.position.y);
-            WorldScroller.Instance.ForceUpdateWorldScoller(BackgroundDirection.RIGHT);
-            GameController.Instance.DestroyAllProjectiles(); //Partly so we can't see our own projectiles going the opposite way but also for balance reasons
-            MapRepeat.Instance.TriggerAnimation();
-            StartCoroutine(HandleMapLoopSpeedBoost(true));
-        }
+    }
+
+    public void DetachFromParent()
+    {
+        transform.parent = null;
     }
 
     public void ResetPosition()
@@ -253,28 +268,28 @@ public class PlayerShip : MonoBehaviour
         isBoosting = false;
     }
 
-    IEnumerator HandleMapLoopSpeedBoost(bool Positive) //Speeds us past the janky map repeating so no one sees how bad it is
-    {
-        lockInput = true;
-        AudioManager.Instance.PlayAudioClip(mapRepeatBoostSfx);
-        if (Positive)
-        {
-            while (GetPos.x >= GameController.GetMapBoundsXVal + STOP_BEFORE_COLLISION)
-            {
-                UpdatePosition(lastDirection, Coasting: true, FastSpeed: true);
-                yield return null;
-            }
-        }
-        else
-        {
-            while (GetPos.x <= -GameController.GetMapBoundsXVal - STOP_BEFORE_COLLISION)
-            {
-                UpdatePosition(lastDirection, Coasting: true, FastSpeed: true);
-                yield return null;
-            }
-        }
-        lockInput = false;
-    }
+    //IEnumerator HandleMapLoopSpeedBoost(bool Positive) //Speeds us past the janky map repeating so no one sees how bad it is
+    //{
+    //    lockInput = true;
+    //    AudioManager.Instance.PlayAudioClip(mapRepeatBoostSfx);
+    //    if (Positive)
+    //    {
+    //        while (GetPos.x >= GameController.GetMapBoundsXVal + STOP_BEFORE_COLLISION)
+    //        {
+    //            UpdatePosition(lastDirection, Coasting: true, FastSpeed: true);
+    //            yield return null;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        while (GetPos.x <= -GameController.GetMapBoundsXVal - STOP_BEFORE_COLLISION)
+    //        {
+    //            UpdatePosition(lastDirection, Coasting: true, FastSpeed: true);
+    //            yield return null;
+    //        }
+    //    }
+    //    lockInput = false;
+    //}
 
     IEnumerator SpeedBoostTimer()
     {

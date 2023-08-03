@@ -29,3 +29,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 734d0403069e7bc40b3190159f4c7eda, type: 2}
   - {fileID: 11400000, guid: ccab48625d6eba84a9ab3931c4f94857, type: 2}
   - {fileID: 11400000, guid: 123156e5878d0974798bb1858743f22e, type: 2}
+  backgroundColour: {r: 0.11320752, g: 0, b: 0, a: 1}
+  starsColour: {r: 1, g: 1, b: 1, a: 2}
+  foregroundColour: {r: 0.1792453, g: 0.1792453, b: 0.1792453, a: 2}
+  useParentLevelColour: 0

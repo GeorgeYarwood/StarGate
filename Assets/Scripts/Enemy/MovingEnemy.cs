@@ -7,6 +7,7 @@ public class MovingEnemy : EnemyBase
     [SerializeField] float moveSpeed = 1.5f;
     [SerializeField] float minDistanceToPlayer = 10.0f; //How close player must be before we start chasing
     [SerializeField] float collisionAvoidRadius = 0.01f; //Radius for checking with collisions against other enemies
+    const float UNSTICK_AFTER_RANGE_HALT = 0.01f;
     public override void Tick()
     {
         TrackPlayer();
@@ -14,13 +15,19 @@ public class MovingEnemy : EnemyBase
 
     void TrackPlayer()
     {
-        //Account for different width enemies
-        if((transform.position.x + spriteRenderer.bounds.extents.x) >= GameController.GetMapBoundsXVal
-            || (transform.position.x - spriteRenderer.bounds.extents.x) <= -GameController.GetMapBoundsXVal)
-        {
-            return;
-        }
-        if(Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= minDistanceToPlayer)
+        ////Account for different width enemies
+        //if ((transform.position.x + spriteRenderer.bounds.extents.x) >= GameController.GetMapBoundsXVal)
+        //{
+        //    transform.position = new(transform.position.x - UNSTICK_AFTER_RANGE_HALT, transform.position.y);
+        //    return;
+        //}
+        //else if ((transform.position.x - spriteRenderer.bounds.extents.x) <= -GameController.GetMapBoundsXVal)
+        //{
+        //    transform.position = new(transform.position.x + UNSTICK_AFTER_RANGE_HALT, transform.position.y);
+        //    return;
+        //}
+
+        if (Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= minDistanceToPlayer)
         {
             transform.position = GetNonOverlappingVector();
         }
@@ -35,9 +42,9 @@ public class MovingEnemy : EnemyBase
         {
             return BaseVector;
         }
-        if(Hit.transform.TryGetComponent(out EnemyBase HitEnemy))
+        if (Hit.transform.TryGetComponent(out EnemyBase HitEnemy))
         {
-            if(HitEnemy == this)
+            if (HitEnemy == this)
             {
                 return BaseVector;
             }

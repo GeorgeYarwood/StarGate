@@ -20,6 +20,11 @@ public class WorldScroller : MonoBehaviour
 
     bool canRunBackgroundCheck = true;
     const float BG_CHECK_DELAY = 0.5f;
+    const float OUT_OF_RANGE_RESET = 1000.0f; //We reset the world position to 0 so we don't go on forever
+
+    Vector2 leftWorldInitialPos;
+    Vector2 rightWorldInitialPos;
+
 
     static WorldScroller instance;
     public static WorldScroller Instance
@@ -37,30 +42,33 @@ public class WorldScroller : MonoBehaviour
         {
             Destroy(this);
         }
+
+        leftWorldInitialPos = leftWorldSection.transform.position;
+        rightWorldInitialPos = rightWorldSection.transform.position;
     }
 
-    public void ForceUpdateWorldScoller(BackgroundDirection Direction)
-    {
-        canRunBackgroundCheck = false;
-        //yield return new WaitUntil(() => !CheckBackgroundInFrame(out _));
-        //SwapSectionDirections();
-        switch (Direction)
-        {
-            case BackgroundDirection.LEFT:
-                leftWorldSection.transform.position = new(leftWorldSection.transform.position.y - GameController.GetMapBoundsXVal,
-                    leftWorldSection.transform.position.y, leftWorldSection.transform.position.z);
-                rightWorldSection.transform.position = new(rightWorldSection.transform.position.y - GameController.GetMapBoundsXVal,
-                    rightWorldSection.transform.position.y, rightWorldSection.transform.position.z);
-                break;
-            case BackgroundDirection.RIGHT:
-                leftWorldSection.transform.position = new(leftWorldSection.transform.position.y + GameController.GetMapBoundsXVal,
-                   leftWorldSection.transform.position.y, leftWorldSection.transform.position.z);
-                rightWorldSection.transform.position = new(rightWorldSection.transform.position.y + GameController.GetMapBoundsXVal,
-                    rightWorldSection.transform.position.y, rightWorldSection.transform.position.z);
-                break;
-        }
-        canRunBackgroundCheck = true;
-    }
+    //public void ForceUpdateWorldScoller(BackgroundDirection Direction)
+    //{
+    //    canRunBackgroundCheck = false;
+    //    //yield return new WaitUntil(() => !CheckBackgroundInFrame(out _));
+    //    //SwapSectionDirections();
+    //    switch (Direction)
+    //    {
+    //        case BackgroundDirection.LEFT:
+    //            leftWorldSection.transform.position = new(leftWorldSection.transform.position.y - GameController.GetMapBoundsXVal,
+    //                leftWorldSection.transform.position.y, leftWorldSection.transform.position.z);
+    //            rightWorldSection.transform.position = new(rightWorldSection.transform.position.y - GameController.GetMapBoundsXVal,
+    //                rightWorldSection.transform.position.y, rightWorldSection.transform.position.z);
+    //            break;
+    //        case BackgroundDirection.RIGHT:
+    //            leftWorldSection.transform.position = new(leftWorldSection.transform.position.y + GameController.GetMapBoundsXVal,
+    //               leftWorldSection.transform.position.y, leftWorldSection.transform.position.z);
+    //            rightWorldSection.transform.position = new(rightWorldSection.transform.position.y + GameController.GetMapBoundsXVal,
+    //                rightWorldSection.transform.position.y, rightWorldSection.transform.position.z);
+    //            break;
+    //    }
+    //    canRunBackgroundCheck = true;
+    //}
 
     bool CheckBackgroundInFrame(out BackgroundDirection Direction)
     {
@@ -92,11 +100,63 @@ public class WorldScroller : MonoBehaviour
         rightWorldSection = TempLeft;
     }
 
+    public void ResetToZero(bool NewLevel = false)
+    {
+        if (NewLevel)
+        {
+            ResetPos();
+            return;
+        }
+        for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
+        {
+            GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].ParentToBackground();
+        }
+
+        PlayerShip.Instance.ParentToBackground();
+
+        LaserProjectile[] Projectiles = GameController.Instance.GetAllProjectiles();
+
+        for(int p = 0; p < Projectiles.Length; p++)
+        {
+            Projectiles[p].ParentToBackground();
+        }
+
+        ResetPos();
+
+        //for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
+        //{
+        //    GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].DetachFromParent();
+        //}
+
+        for (int p = 0; p < Projectiles.Length; p++)
+        {
+            Projectiles[p].DetachFromParent();
+        }
+
+        PlayerShip.Instance.DetachFromParent();
+    }
+
+    void ResetPos()
+    {
+        leftWorldSection.transform.position = leftWorldInitialPos;
+        rightWorldSection.transform.position = rightWorldInitialPos;
+    }
+
     void Update()
     {
+        if (leftWorldSection.transform.position.x > OUT_OF_RANGE_RESET || leftWorldSection.transform.position.x < -OUT_OF_RANGE_RESET
+            || rightWorldSection.transform.position.x > OUT_OF_RANGE_RESET || rightWorldSection.transform.position.x < -OUT_OF_RANGE_RESET)
+        {
+            ResetToZero();
+        }
+
         BackgroundDirection DirectionToUpdate;
         if (!CheckBackgroundInFrame(out DirectionToUpdate) && canRunBackgroundCheck)
         {
+            for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
+            {
+                GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].ParentToBackground();
+            }
             switch (DirectionToUpdate)
             {
                 case BackgroundDirection.LEFT:
@@ -110,9 +170,30 @@ public class WorldScroller : MonoBehaviour
                        leftWorldSection.transform.position.y, leftWorldSection.transform.position.z);
                     break;
             }
+
             SwapSectionDirections();
             StartCoroutine(WaitForBackgroundUpate());
+
+            //for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
+            //{
+            //    GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].DetachFromParent();
+            //}
         }
+    }
+
+    public float GetMinXBounds()
+    {
+        return leftWorldSection.bounds.center.x - Mathf.Abs((leftWorldSection.bounds.size.x / 2.0f));
+    }
+
+    public float GetMaxXBounds()
+    {
+        return rightWorldSection.bounds.center.x + (rightWorldSection.bounds.size.x / 2.0f);
+    }
+
+    public float GetCurrentCentre()
+    {
+        return leftWorldSection.bounds.center.x + (leftWorldSection.bounds.size.x / 2);
     }
 
     IEnumerator WaitForBackgroundUpate()

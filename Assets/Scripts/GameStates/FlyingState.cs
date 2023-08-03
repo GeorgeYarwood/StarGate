@@ -21,6 +21,12 @@ public class FlyingState : GameStateBase
 
     public override void OnStateEnter()
     {
+        if (GameController.Instance.LastGameState && (GameController.Instance.LastGameState.GetType()
+            != typeof(PauseGameState) && GameController.Instance.LastGameState.GetType() != typeof(LifeLostState)))
+        {
+            WorldScroller.Instance.ResetToZero(NewLevel: true);
+        }
+
         PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel);
         if (GameController.AllLevels.Count == 0)
         {
@@ -28,8 +34,8 @@ public class FlyingState : GameStateBase
             return;
         }
         if (!GameController.AllLevels[GameController.CurrentLevel].IsInitialised
-            && (!GameController.AllLevels[GameController.CurrentLevel].HasSublevel 
-            ||!GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised))
+            && (!GameController.AllLevels[GameController.CurrentLevel].HasSublevel
+            || !GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised))
         {
             GameController.Instance.ResetPlayerPosition();
             LoadLevel(GameController.AllLevels[GameController.CurrentLevel]);
@@ -50,10 +56,21 @@ public class FlyingState : GameStateBase
 
     void ResetEnemyPositions()
     {
+        if (GameController.AllLevels[GameController.CurrentLevel].HasSublevel)
+        {
+            for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count; e++)
+            {
+                GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e].transform.position
+                = ReturnRandomSpawnPositionInRange();
+            }
+        }
+
         for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
         {
+
             GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].transform.position
-                = ReturnRandomSpawnPositionInRange();
+                 = ReturnRandomSpawnPositionInRange();
+
         }
     }
 
@@ -63,13 +80,13 @@ public class FlyingState : GameStateBase
         Cursor.lockState = CursorLockMode.None;
         waitingForStateExit = false;
         ClearAllProjectiles();
-        if(GameController.CurrentLevel > 0)
+        if (GameController.CurrentLevel > 0)
         {
             AudioManager.Instance.PlayLoopedAudioClip(
             GameController.AllLevels[GameController.CurrentLevel - 1].LevelSong,
             EndLoop: true);
         }
-        if(GameController.CurrentLevel + 1 < GameController.AllLevels.Count)
+        if (GameController.CurrentLevel + 1 < GameController.AllLevels.Count)
         {
             PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel + 1);    //In case we go to menu without clicking on "Next level"
         }
@@ -161,11 +178,16 @@ public class FlyingState : GameStateBase
 
     public void RemoveEnemyFromList(EnemyBase EnemyToRemove)
     {
+        if(EnemyToRemove == null)
+        {
+            return;
+        }
         if (GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Contains(EnemyToRemove))
         {
             GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Remove(EnemyToRemove);
         }
-        else if (GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Contains(EnemyToRemove))
+        else if (GameController.AllLevels[GameController.CurrentLevel].SubLevel &&
+            GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Contains(EnemyToRemove))
         {
             GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Remove(EnemyToRemove);
         }
@@ -235,6 +257,12 @@ public class FlyingState : GameStateBase
     public void LoadLevel(LevelObject LevelToLoad)
     {
         ClearAllProjectiles();
+        if (LevelToLoad.IsSubLevel && LevelToLoad.UseParentLevelColour)
+        {
+            goto SkipColourSetup;
+        }
+        WorldColourController.Instance.SetWorldColours(LevelToLoad.StarsColour, LevelToLoad.BackgroundColour, LevelToLoad.ForegroundColour);
+    SkipColourSetup:
         if (LevelToLoad.IsInitialised)
         {
             int MaxIterator;
@@ -263,6 +291,7 @@ public class FlyingState : GameStateBase
                 LevelToLoad.EnemiesInScene[e].gameObject.SetActive(true);
             }
 
+            ResetEnemyPositions();
             return;
         }
         else if (LevelToLoad.IsSubLevel)
@@ -330,7 +359,7 @@ public class FlyingState : GameStateBase
         int RandomEnemyType = Random.Range(0, EnemyTypes.Length);
         if (EnemyTypes[RandomEnemyType].OnePerLevel)
         {
-            for(int e = 0; e < ListToAddTo.Count; e++)
+            for (int e = 0; e < ListToAddTo.Count; e++)
             {
                 if (ListToAddTo[e].ThisEnemyType == EnemyTypes[RandomEnemyType].ThisEnemyType)
                 {
@@ -346,18 +375,20 @@ public class FlyingState : GameStateBase
     Vector2 ReturnRandomSpawnPositionInRange()
     {
     GetNewPosition:
-        bool LeftSpawn = Convert.ToBoolean(Random.Range(0, 2));
 
         float SpawnVal = 0.0f;
+        bool LeftSpawn = Convert.ToBoolean(Random.Range(0, 2));
+
+
         if (LeftSpawn)
         {
-            SpawnVal = Random.Range(-GameController.GetMapBoundsXVal, PlayerShip.Instance.GetPos.x -
-                GameController.GetSpawnAdjustmentXVal);
+            SpawnVal = Random.Range(GameController.GetMapBoundsMinXVal, WorldScroller.Instance.GetCurrentCentre()
+                - GameController.GetSpawnAdjustmentXVal);
         }
         else
         {
-            SpawnVal = Random.Range(GameController.GetMapBoundsXVal, PlayerShip.Instance.GetPos.x +
-                GameController.GetSpawnAdjustmentXVal);
+            SpawnVal = Random.Range(GameController.GetMapBoundsMaxXVal, WorldScroller.Instance.GetCurrentCentre()
+               + GameController.GetSpawnAdjustmentXVal);
         }
 
         Vector2 RandomSpawnPosition = new(SpawnVal, Random.Range(GameController.GetMapBoundsYVal,

@@ -44,6 +44,21 @@ public class LaserProjectile : MonoBehaviour
         }
     }
 
+    public void ParentToBackground()
+    {
+        RaycastHit2D Centre = Physics2D.Raycast(transform.position, transform.forward);
+
+        if (Centre.collider)
+        {
+            transform.parent = Centre.collider.transform;
+        }
+    }
+
+    public void DetachFromParent()
+    {
+        transform.parent = null;
+    }
+
     void Update()
     {
         switch (projectileIsFacing)

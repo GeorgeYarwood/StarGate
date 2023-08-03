@@ -21,3 +21,7 @@ MonoBehaviour:
   hasSublevel: 0
   levelDialogue:
   - {fileID: 11400000, guid: ba30930ccac5b7b4db2916f9bfe80372, type: 2}
+  backgroundColour: {r: 0.6603774, g: 0.44025156, b: 0.59429276, a: 1}
+  starsColour: {r: 1, g: 1, b: 1, a: 2}
+  foregroundColour: {r: 0.6132076, g: 0, b: 0.09233851, a: 2}
+  useParentLevelColour: 0

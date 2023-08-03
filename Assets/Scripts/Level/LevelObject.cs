@@ -62,4 +62,26 @@ public class LevelObject : ScriptableObject
     {
         get { return levelDialogue;}
     }
+
+    [SerializeField] Color backgroundColour = Color.black;
+    public Color BackgroundColour
+    {
+        get { return backgroundColour; }
+    }
+    [SerializeField] Color starsColour = Color.red + Color.yellow;
+    public Color StarsColour
+    {
+        get { return starsColour; }
+    }
+    [SerializeField] Color foregroundColour = Color.red + Color.yellow;
+    public Color ForegroundColour
+    {
+        get { return foregroundColour; }
+    }
+
+    [SerializeField] bool useParentLevelColour = true;
+    public bool UseParentLevelColour
+    {
+        get { return useParentLevelColour; }
+    }
 }
