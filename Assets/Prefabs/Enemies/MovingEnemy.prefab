@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2449997915474525685}
   - component: {fileID: 2449997915474525687}
   - component: {fileID: 2449997915474525672}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: MovingEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1722084106049306257}
   - component: {fileID: 7210987045129718777}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: EnemySprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8651890942257821548, guid: 671e2afa5bb381c4c9ec12db434d022d, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

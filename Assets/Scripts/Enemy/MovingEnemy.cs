@@ -6,8 +6,8 @@ public class MovingEnemy : EnemyBase
 {
     [SerializeField] float moveSpeed = 1.5f;
     [SerializeField] float minDistanceToPlayer = 10.0f; //How close player must be before we start chasing
-    [SerializeField] float collisionAvoidRadius = 0.01f; //Radius for checking with collisions against other enemies
-    const float UNSTICK_AFTER_RANGE_HALT = 0.01f;
+    [SerializeField] float collisionAvoidRadius = 6.5f; //Radius for checking with collisions against other enemies
+
     public override void Tick()
     {
         TrackPlayer();
@@ -49,7 +49,7 @@ public class MovingEnemy : EnemyBase
                 return BaseVector;
             }
 
-            BaseVector += Hit.normal;
+            BaseVector = Hit.normal * 50.0f;
         }
 
         return Vector2.MoveTowards(transform.position,

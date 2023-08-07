@@ -36,6 +36,8 @@ public class EnemyBase : MonoBehaviour
 
     bool hasRunFirstEncounter = false;
 
+    const float MAP_EDGE_OFFSET = 7.5f;
+
     public bool OnePerLevel
     {
         get { return onePerLevel; }
@@ -57,6 +59,8 @@ public class EnemyBase : MonoBehaviour
     {
         get { return thisEnemyType; }
     }
+
+    internal int backgroundLayerMask;
 
     void OnTriggerEnter2D(Collider2D Collision)
     {
@@ -187,19 +191,32 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    public void ParentToBackground()
+    public void ParentToBackground(out SpriteRenderer HitBackground)
     {
-        RaycastHit2D Centre = Physics2D.Raycast(transform.position, transform.forward);
-
+        RaycastHit2D Centre = Physics2D.Raycast(transform.position, transform.forward, 5.0f, backgroundLayerMask);
+        HitBackground = null;
         if (Centre.collider)
         {
             transform.parent = Centre.collider.transform;
+            HitBackground = Centre.transform.GetComponent<SpriteRenderer>();
             return;
         }
-
-
+        //Just destroy this if it can't find a background to parent to so the game won't get softlocked
         GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Remove(this);
         Destroy(gameObject);
+    }
+
+    public void CorrectPosition(float Xadjustment, float Xmin, float Xmax, bool Positive)
+    {
+        //This will put the enemies on the inner edge, so to prevent visible pop-in, we need to push them out a bit
+        if(Positive)
+        {
+            transform.position = new(Mathf.Clamp(transform.position.x + Xadjustment - MAP_EDGE_OFFSET, Xmin, Xmax), transform.position.y, transform.position.z);
+        }
+        else
+        {
+            transform.position = new(Mathf.Clamp(transform.position.x - Xadjustment + MAP_EDGE_OFFSET, Xmin, Xmax), transform.position.y, transform.position.z);
+        }
     }
 
     public void DetachFromParent()
@@ -209,7 +226,8 @@ public class EnemyBase : MonoBehaviour
 
     public virtual void Init()
     {
-        ParentToBackground();
+        backgroundLayerMask = LayerMask.GetMask("Background");
+        ParentToBackground(out _);
     }
 
     public virtual void Tick()

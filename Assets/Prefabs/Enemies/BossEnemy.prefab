@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4672430360803590157}
   - component: {fileID: 6743660167046643171}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: Crack3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 2449997915474525685}
   - component: {fileID: 2449997915474525687}
   - component: {fileID: 4595976911009530009}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: BossEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,7 +207,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3306304072315500345}
   - component: {fileID: 8099705002207499808}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: Crack5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,7 +290,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5884185454305828170}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: HitDecals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,7 +327,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3276600571392972468}
   - component: {fileID: 1991575405538911330}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: Crack1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,7 +411,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1670403186539566185}
   - component: {fileID: 7820748261632177446}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: Crack2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -495,7 +495,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1722084106049306257}
   - component: {fileID: 7210987045129718777}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: EnemySprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -579,7 +579,7 @@ GameObject:
   m_Component:
   - component: {fileID: 658724059596686505}
   - component: {fileID: 7723690497961984828}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: Crack4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -743,7 +743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8651890942257821548, guid: 671e2afa5bb381c4c9ec12db434d022d, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -816,7 +816,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8651890942257821548, guid: 671e2afa5bb381c4c9ec12db434d022d, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2294187218363598421}
   - component: {fileID: 2294187218363598422}
   - component: {fileID: 3962613361770593165}
-  m_Layer: 2
+  m_Layer: 3
   m_Name: StaticEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8651890942257821548, guid: 671e2afa5bb381c4c9ec12db434d022d, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -296,7 +296,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8651890942257821548, guid: 671e2afa5bb381c4c9ec12db434d022d, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

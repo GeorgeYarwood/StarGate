@@ -32,6 +32,7 @@ public class BossEnemy : MovingEnemy
     void Start()
     {
         waves.OrderByDescending(X => X);
+        base.backgroundLayerMask = LayerMask.GetMask("Background"); //I guess double inheritance isn't a thing cus this don work in EnemyBase for BossEnemies
     }
 
     public override void OnHit(int DamageToDeduct)
