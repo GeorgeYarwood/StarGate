@@ -15,18 +15,6 @@ public class MovingEnemy : EnemyBase
 
     void TrackPlayer()
     {
-        ////Account for different width enemies
-        //if ((transform.position.x + spriteRenderer.bounds.extents.x) >= GameController.GetMapBoundsXVal)
-        //{
-        //    transform.position = new(transform.position.x - UNSTICK_AFTER_RANGE_HALT, transform.position.y);
-        //    return;
-        //}
-        //else if ((transform.position.x - spriteRenderer.bounds.extents.x) <= -GameController.GetMapBoundsXVal)
-        //{
-        //    transform.position = new(transform.position.x + UNSTICK_AFTER_RANGE_HALT, transform.position.y);
-        //    return;
-        //}
-
         if (Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= minDistanceToPlayer)
         {
             transform.position = GetNonOverlappingVector();
@@ -49,7 +37,7 @@ public class MovingEnemy : EnemyBase
                 return BaseVector;
             }
 
-            BaseVector = Hit.normal * 50.0f;
+            BaseVector += Hit.normal;
         }
 
         return Vector2.MoveTowards(transform.position,

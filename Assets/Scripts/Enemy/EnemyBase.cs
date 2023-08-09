@@ -11,6 +11,9 @@ public enum EnemyType //Used for comparison checks
 
 public class EnemyBase : MonoBehaviour
 {
+    const string BACKGROUND_LAYER_MASK = "Background";
+    const string WARNING_MESSAGE = "This enemy couldn't find a background to parent to, so has destroyed itself to prevent a softlock! This isn't good!";
+
     [SerializeField] int enemyHealth;
     public int EnemyHealth
     {
@@ -191,18 +194,17 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    public void ParentToBackground(out SpriteRenderer HitBackground)
+    public void ParentToBackground()
     {
         RaycastHit2D Centre = Physics2D.Raycast(transform.position, transform.forward, 5.0f, backgroundLayerMask);
-        HitBackground = null;
         if (Centre.collider)
         {
             transform.parent = Centre.collider.transform;
-            HitBackground = Centre.transform.GetComponent<SpriteRenderer>();
             return;
         }
         //Just destroy this if it can't find a background to parent to so the game won't get softlocked
         GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Remove(this);
+        Debug.LogWarning(WARNING_MESSAGE);
         Destroy(gameObject);
     }
 
@@ -226,8 +228,8 @@ public class EnemyBase : MonoBehaviour
 
     public virtual void Init()
     {
-        backgroundLayerMask = LayerMask.GetMask("Background");
-        ParentToBackground(out _);
+        backgroundLayerMask = LayerMask.GetMask(BACKGROUND_LAYER_MASK);
+        ParentToBackground();
     }
 
     public virtual void Tick()
