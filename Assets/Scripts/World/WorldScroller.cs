@@ -14,16 +14,18 @@ public enum BackgroundDirection
 public class WorldScroller : MonoBehaviour
 {
     [SerializeField] SpriteRenderer leftWorldSection;
+    [SerializeField] SpriteRenderer middleWorldSection;
     [SerializeField] SpriteRenderer rightWorldSection;
 
     [SerializeField] Transform leftWorldRayOrigin;
     [SerializeField] SpriteRenderer rightWorldRayOrigin;
 
     bool canRunBackgroundCheck = true;
-    const float BG_CHECK_DELAY = 0.5f;
+    const float BG_CHECK_DELAY = 1.0f;
     const float OUT_OF_RANGE_RESET = 1000.0f; //We reset the world position to 0 so we don't go on forever
 
     Vector2 leftWorldInitialPos;
+    Vector2 middleWorldInitialPos;
     Vector2 rightWorldInitialPos;
 
 
@@ -45,6 +47,7 @@ public class WorldScroller : MonoBehaviour
         }
 
         leftWorldInitialPos = leftWorldSection.transform.position;
+        middleWorldInitialPos = middleWorldSection.transform.position;
         rightWorldInitialPos = rightWorldSection.transform.position;
     }
 
@@ -69,13 +72,24 @@ public class WorldScroller : MonoBehaviour
         return true;
     }
 
-    void SwapSectionDirections()
+    void SwapSectionDirections(BackgroundDirection Direction)
     {
-        SpriteRenderer TempLeft, TempRight;
-        TempLeft = leftWorldSection;
-        TempRight = rightWorldSection;
-        leftWorldSection = TempRight;
-        rightWorldSection = TempLeft;
+        //Incase future me forgets again why these are here, it's because were assiging things to themselves so we need to cache them beforehand
+        SpriteRenderer TempLeft = leftWorldSection;
+        SpriteRenderer TempMiddle = middleWorldSection;
+        SpriteRenderer TempRight = rightWorldSection;
+        if(Direction == BackgroundDirection.LEFT)
+        {
+            leftWorldSection = TempRight;
+            middleWorldSection = TempLeft;
+            rightWorldSection = TempMiddle;
+        }
+        else if(Direction == BackgroundDirection.RIGHT)
+        {
+            leftWorldSection = TempMiddle;
+            middleWorldSection = TempRight;
+            rightWorldSection = TempLeft;
+        }
     }
 
     public void ResetToZero(bool NewLevel = false)
@@ -112,6 +126,7 @@ public class WorldScroller : MonoBehaviour
     void ResetPos()
     {
         leftWorldSection.transform.position = leftWorldInitialPos;
+        middleWorldSection.transform.position = middleWorldInitialPos;
         rightWorldSection.transform.position = rightWorldInitialPos;
     }
 
@@ -139,7 +154,7 @@ public class WorldScroller : MonoBehaviour
                     break;
             }
 
-            SwapSectionDirections();
+            SwapSectionDirections(DirectionToUpdate);
             StartCoroutine(WaitForBackgroundUpate());
         }
 
