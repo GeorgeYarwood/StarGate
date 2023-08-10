@@ -21,12 +21,6 @@ public class FlyingState : GameStateBase
 
     public override void OnStateEnter()
     {
-        if (GameController.Instance.LastGameState && (GameController.Instance.LastGameState.GetType()
-            != typeof(PauseGameState) && GameController.Instance.LastGameState.GetType() != typeof(LifeLostState)))
-        {
-            WorldScroller.Instance.ResetToZero(NewLevel: true);
-        }
-
         PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel);
         if (GameController.AllLevels.Count == 0)
         {
@@ -37,7 +31,8 @@ public class FlyingState : GameStateBase
             && (!GameController.AllLevels[GameController.CurrentLevel].HasSublevel
             || !GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised))
         {
-            GameController.Instance.ResetPlayerPosition();
+            WorldScroller.Instance.ResetToZero(NewLevel: true);
+            //GameController.Instance.ResetPlayerPosition();
             LoadLevel(GameController.AllLevels[GameController.CurrentLevel]);
         }
         else if (GameController.AllLevels[GameController.CurrentLevel].IsInitialised
@@ -61,16 +56,14 @@ public class FlyingState : GameStateBase
             for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count; e++)
             {
                 GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e].transform.position
-                = ReturnRandomSpawnPositionInRange();
+                    = ReturnRandomSpawnPositionInRange();
             }
         }
 
         for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
         {
-
             GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].transform.position
                  = ReturnRandomSpawnPositionInRange();
-
         }
     }
 
@@ -178,7 +171,7 @@ public class FlyingState : GameStateBase
 
     public void RemoveEnemyFromList(EnemyBase EnemyToRemove)
     {
-        if(EnemyToRemove == null)
+        if (EnemyToRemove == null)
         {
             return;
         }

@@ -194,7 +194,7 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    public void ParentToBackground()
+    public virtual void ParentToBackground()
     {
         RaycastHit2D Centre = Physics2D.Raycast(transform.position, transform.forward, 1.0f, backgroundLayerMask);
         if (Centre.collider)

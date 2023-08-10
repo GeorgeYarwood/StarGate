@@ -94,14 +94,28 @@ public class WorldScroller : MonoBehaviour
 
     public void ResetToZero(bool NewLevel = false)
     {
+        canRunBackgroundCheck = false;
         if (NewLevel)
         {
             ResetPos();
+            GameController.Instance.ResetPlayerPosition();
+            canRunBackgroundCheck = true;
             return;
         }
-        for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
+        if (SublevelEntrance.Instance.IsInSublevel)
         {
-            GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].ParentToBackground();
+            for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count; e++)
+            {
+                GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e].ParentToBackground();
+            }
+        }
+        else
+        {
+            for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
+            {
+
+                GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].ParentToBackground();
+            }
         }
 
         PlayerShip.Instance.ParentToBackground();
@@ -121,6 +135,7 @@ public class WorldScroller : MonoBehaviour
         }
 
         PlayerShip.Instance.DetachFromParent();
+        canRunBackgroundCheck = true;
     }
 
     void ResetPos()
@@ -135,9 +150,20 @@ public class WorldScroller : MonoBehaviour
         BackgroundDirection DirectionToUpdate;
         if (!CheckBackgroundInFrame(out DirectionToUpdate) && canRunBackgroundCheck)
         {
-            for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
+            if (SublevelEntrance.Instance.IsInSublevel)
             {
-                GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].ParentToBackground();
+                for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count; e++)
+                {
+                    GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e].ParentToBackground();
+                }
+            }
+            else
+            {
+                for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
+                {
+
+                    GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].ParentToBackground();
+                }
             }
 
             switch (DirectionToUpdate)
@@ -161,7 +187,7 @@ public class WorldScroller : MonoBehaviour
         if (leftWorldSection.transform.position.x > OUT_OF_RANGE_RESET || leftWorldSection.transform.position.x < -OUT_OF_RANGE_RESET
            || rightWorldSection.transform.position.x > OUT_OF_RANGE_RESET || rightWorldSection.transform.position.x < -OUT_OF_RANGE_RESET)
         {
-            //ResetToZero();
+            ResetToZero();
         }
     }
 
@@ -172,12 +198,12 @@ public class WorldScroller : MonoBehaviour
 
     public float GetMaxXBounds()
     {
-        return rightWorldSection.bounds.center.x + (rightWorldSection.bounds.size.x / 2.0f);
+        return rightWorldSection.bounds.center.x + Mathf.Abs((rightWorldSection.bounds.size.x / 2.0f));
     }
 
     public float GetCurrentCentre()
     {
-        return leftWorldSection.bounds.center.x + (leftWorldSection.bounds.size.x / 2);
+        return middleWorldSection.bounds.center.x;
     }
 
     IEnumerator WaitForBackgroundUpate()
