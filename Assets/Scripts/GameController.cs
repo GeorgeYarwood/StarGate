@@ -256,6 +256,7 @@ public class GameController : MonoBehaviour
 
     void EndGame()
     {
+        PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, 0); //If you die, you can't resume your last level
         StartCoroutine(WaitForDeathVfx());
     }
 

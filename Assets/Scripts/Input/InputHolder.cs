@@ -2,6 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ControllerInputDirection
+{
+    UP_BUTTONDOWN,
+    DOWN_BUTTONDOWN,
+    LEFT_BUTTONDOWN,
+    RIGHT_BUTTONDOWN,
+    NONE,
+    SELECT,
+    START,
+
+    UP_BUTTONUP,
+    DOWN_BUTTONUP,
+    LEFT_BUTTONUP,
+    RIGHT_BUTTONUP,
+}
+
 //Holds all the games input buttons, and also scene names and now playerprefs because I'm lazy as fuck
 public class InputHolder : MonoBehaviour
 {
@@ -19,6 +35,17 @@ public class InputHolder : MonoBehaviour
     public const string SPEED_BOOST = "SpeedBoost";
     public const string SKIP_DIALOGUE_BUTTON = "SkipDialogue";
     public const string DEVELOPER_MENU = "DeveloperMenu";
+
+    //Controller specific
+    public const string CONTROLLER_JOY_X = "ControllerJoyX";
+    public const string CONTROLLER_JOY_Y = "ControllerJoyY";
+    public const string CONTROLLER_DPAD_X = "ControllerDpadX";
+    public const string CONTROLLER_DPAD_Y = "ControllerDpadY";
+    public const string CONTROLLER_A_BUTTON = "ControllerA";
+    public const string CONTROLLER_START_BUTTON = "ControllerStart";
+    public const string CONTROLLER_Y_BUTTON = "ControllerY";
+    public const string CONTROLLER_X_BUTTON = "ControllerX";
+    public const string CONTROLLER_B_BUTTON = "ControllerB";
 
     //Playerprefs
     public const string LAST_LEVEL = "LastLevel";

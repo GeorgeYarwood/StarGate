@@ -1,4 +1,3 @@
-using Mono.Cecil.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -76,10 +75,10 @@ public class FlyingState : GameStateBase
         if (GameController.CurrentLevel > 0)
         {
             AudioManager.Instance.PlayLoopedAudioClip(
-            GameController.AllLevels[GameController.CurrentLevel - 1].LevelSong,
-            EndLoop: true);
+                GameController.AllLevels[GameController.CurrentLevel - 1].LevelSong,
+                EndLoop: true);
         }
-        if (GameController.CurrentLevel + 1 < GameController.AllLevels.Count)
+        if (GameController.CurrentLevel + 1 < GameController.AllLevels.Count && waitingForStateExit)
         {
             PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel + 1);    //In case we go to menu without clicking on "Next level"
         }
@@ -141,7 +140,6 @@ public class FlyingState : GameStateBase
                 StartCoroutine(EndLevel());
             }
         }
-
     }
 
     IEnumerator EndLevel()
@@ -186,6 +184,112 @@ public class FlyingState : GameStateBase
         }
     }
 
+
+    bool AnyControllerInput()
+    {
+        if(Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) !=0
+            || Input.GetAxis(InputHolder.CONTROLLER_JOY_X) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    ControllerInputDirection lastInput;
+    ControllerInputDirection ControllerInput()
+    {
+        if(Input.GetButton(InputHolder.CONTROLLER_A_BUTTON))
+        {
+            return ControllerInputDirection.SELECT;
+        }
+
+        if (Input.GetButtonDown(InputHolder.CONTROLLER_START_BUTTON))
+        {
+            return ControllerInputDirection.START;
+        }
+
+        //Button being pressed DOWN
+
+        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0 
+            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) < 0)
+        {
+            lastInput = ControllerInputDirection.DOWN_BUTTONDOWN;
+            return ControllerInputDirection.DOWN_BUTTONDOWN;
+        }
+
+        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0
+            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) > 0)
+        {
+            lastInput = ControllerInputDirection.UP_BUTTONDOWN;
+            return ControllerInputDirection.UP_BUTTONDOWN;
+        }
+
+        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) > 0
+            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) > 0)
+        {
+            lastInput = ControllerInputDirection.RIGHT_BUTTONDOWN;
+            return ControllerInputDirection.RIGHT_BUTTONDOWN;
+        }
+
+        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) < 0
+            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) < 0)
+        {
+            lastInput = ControllerInputDirection.LEFT_BUTTONDOWN;
+            return ControllerInputDirection.LEFT_BUTTONDOWN;
+        }
+
+        //Button being pressed UP
+
+        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0
+           || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0)
+        {
+            if(lastInput == ControllerInputDirection.DOWN_BUTTONDOWN)
+            {
+                StartCoroutine(WaitForFrame());
+                return ControllerInputDirection.DOWN_BUTTONUP;
+            }
+        }
+
+        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0
+            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0)
+        {
+            if (lastInput == ControllerInputDirection.UP_BUTTONDOWN)
+            {
+                StartCoroutine(WaitForFrame());
+                return ControllerInputDirection.UP_BUTTONUP;
+            }
+        }
+
+        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0
+            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0)
+        {
+            if (lastInput == ControllerInputDirection.RIGHT_BUTTONDOWN)
+            {
+                StartCoroutine(WaitForFrame());
+                return ControllerInputDirection.RIGHT_BUTTONUP;
+            }
+        }
+
+        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0
+            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0)
+        {
+            if (lastInput == ControllerInputDirection.LEFT_BUTTONDOWN)
+            {
+                StartCoroutine(WaitForFrame());
+                return ControllerInputDirection.LEFT_BUTTONUP;
+            }
+        }
+
+        return ControllerInputDirection.NONE;
+    }
+
+    IEnumerator WaitForFrame()
+    {
+        yield return new WaitForEndOfFrame();
+        lastInput = ControllerInputDirection.NONE;
+    }
+
     void GetInput()
     {
         if (PlayerShip.Instance.LockInput)
@@ -193,54 +297,54 @@ public class FlyingState : GameStateBase
             return;
         }
 
-        if (Input.GetButton(InputHolder.MOVE_UP))
+        if (Input.GetButton(InputHolder.MOVE_UP) || ControllerInput() == ControllerInputDirection.UP_BUTTONDOWN)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.UP);
         }
-        if (Input.GetButton(InputHolder.MOVE_DOWN))
+        if (Input.GetButton(InputHolder.MOVE_DOWN) || ControllerInput() == ControllerInputDirection.DOWN_BUTTONDOWN)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.DOWN);
         }
-        if (Input.GetButton(InputHolder.MOVE_LEFT))
-        {
+        if (Input.GetButton(InputHolder.MOVE_LEFT) || ControllerInput() == ControllerInputDirection.LEFT_BUTTONDOWN) 
+        { 
             PlayerShip.Instance.UpdatePosition(MoveDirection.LEFT);
         }
-        if (Input.GetButton(InputHolder.MOVE_RIGHT))
+        if (Input.GetButton(InputHolder.MOVE_RIGHT) || ControllerInput() == ControllerInputDirection.RIGHT_BUTTONDOWN)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.RIGHT);
         }
-        if (Input.GetButton(InputHolder.FIRE))
+        if (Input.GetButton(InputHolder.FIRE) || ControllerInput() == ControllerInputDirection.SELECT)
         {
             PlayerShip.Instance.FireProjectile();
         }
 
-        if (Input.GetButtonDown(InputHolder.PAUSE_MENU))
+        if (Input.GetButtonDown(InputHolder.PAUSE_MENU) || ControllerInput() == ControllerInputDirection.START)
         {
             GameController.Instance.GoToState(GameStates.PAUSE);
         }
         //Listen for release so we can coast
 
-        if (Input.anyKey)
+        if (Input.anyKey && AnyControllerInput())
         {
             return;
         }
 
-        if (Input.GetButtonUp(InputHolder.MOVE_UP))
+        if (Input.GetButtonUp(InputHolder.MOVE_UP) || ControllerInput() == ControllerInputDirection.UP_BUTTONUP)
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
-        if (Input.GetButtonUp(InputHolder.MOVE_DOWN))
+        if (Input.GetButtonUp(InputHolder.MOVE_DOWN) || ControllerInput() == ControllerInputDirection.DOWN_BUTTONUP)
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
-        if (Input.GetButtonUp(InputHolder.MOVE_LEFT))
+        if (Input.GetButtonUp(InputHolder.MOVE_LEFT) || ControllerInput() == ControllerInputDirection.LEFT_BUTTONUP)
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
-        if (Input.GetButtonUp(InputHolder.MOVE_RIGHT))
+        if (Input.GetButtonUp(InputHolder.MOVE_RIGHT) || ControllerInput() == ControllerInputDirection.RIGHT_BUTTONUP)
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
@@ -372,15 +476,14 @@ public class FlyingState : GameStateBase
         float SpawnVal = 0.0f;
         bool LeftSpawn = Convert.ToBoolean(Random.Range(0, 2));
 
-
         if (LeftSpawn)
         {
-            SpawnVal = Random.Range(GameController.GetMapBoundsMinXVal, WorldScroller.Instance.GetCurrentCentre()
+            SpawnVal = Random.Range(GameController.GetMapBoundsMinXVal, PlayerShip.Instance.GetPos.x//<- Use the player's position instead WorldScroller.Instance.GetCurrentCentre()
                 - GameController.GetSpawnAdjustmentXVal);
         }
         else
         {
-            SpawnVal = Random.Range(GameController.GetMapBoundsMaxXVal, WorldScroller.Instance.GetCurrentCentre()
+            SpawnVal = Random.Range(GameController.GetMapBoundsMaxXVal, PlayerShip.Instance.GetPos.x//WorldScroller.Instance.GetCurrentCentre()
                + GameController.GetSpawnAdjustmentXVal);
         }
 

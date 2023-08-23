@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 2449997915474525685}
   - component: {fileID: 2449997915474525687}
   - component: {fileID: 5165725826245076490}
+  - component: {fileID: -3899860301941591049}
   m_Layer: 3
   m_Name: MassiveEnemy
   m_TagString: Untagged
@@ -179,7 +180,7 @@ MonoBehaviour:
   thisEnemyType: 2
   moveSpeed: 0.5
   minDistanceToPlayer: 20
-  collisionAvoidRadius: 0.01
+  collisionAvoidRadius: 1.5
   waveDifficultyScale: 10
   waves:
   - HealthThreshhold: 400
@@ -202,6 +203,26 @@ MonoBehaviour:
     CrackImage: {fileID: 5754877275432082270}
   - HealthThreshhold: 10
     CrackImage: {fileID: 5577893691927336465}
+--- !u!95 &-3899860301941591049
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2449997915474525673}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 923c117ae10aa88419cc5ee721fbbacd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &3834201109925489074
 GameObject:
   m_ObjectHideFlags: 0

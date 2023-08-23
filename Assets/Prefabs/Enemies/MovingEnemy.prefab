@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2449997915474525685}
   - component: {fileID: 2449997915474525687}
   - component: {fileID: 2449997915474525672}
+  - component: {fileID: 7057465073912743466}
   m_Layer: 3
   m_Name: MovingEnemy
   m_TagString: Untagged
@@ -87,7 +88,27 @@ MonoBehaviour:
   thisEnemyType: 0
   moveSpeed: 1.5
   minDistanceToPlayer: 15
-  collisionAvoidRadius: 0.01
+  collisionAvoidRadius: 1.5
+--- !u!95 &7057465073912743466
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2449997915474525673}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 923c117ae10aa88419cc5ee721fbbacd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &8418229850324593048
 GameObject:
   m_ObjectHideFlags: 0
