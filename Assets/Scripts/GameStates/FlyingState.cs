@@ -184,112 +184,6 @@ public class FlyingState : GameStateBase
         }
     }
 
-
-    bool AnyControllerInput()
-    {
-        if(Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) !=0
-            || Input.GetAxis(InputHolder.CONTROLLER_JOY_X) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    ControllerInputDirection lastInput;
-    ControllerInputDirection ControllerInput()
-    {
-        if(Input.GetButton(InputHolder.CONTROLLER_A_BUTTON))
-        {
-            return ControllerInputDirection.SELECT;
-        }
-
-        if (Input.GetButtonDown(InputHolder.CONTROLLER_START_BUTTON))
-        {
-            return ControllerInputDirection.START;
-        }
-
-        //Button being pressed DOWN
-
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0 
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) < 0)
-        {
-            lastInput = ControllerInputDirection.DOWN_BUTTONDOWN;
-            return ControllerInputDirection.DOWN_BUTTONDOWN;
-        }
-
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) > 0)
-        {
-            lastInput = ControllerInputDirection.UP_BUTTONDOWN;
-            return ControllerInputDirection.UP_BUTTONDOWN;
-        }
-
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) > 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) > 0)
-        {
-            lastInput = ControllerInputDirection.RIGHT_BUTTONDOWN;
-            return ControllerInputDirection.RIGHT_BUTTONDOWN;
-        }
-
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) < 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) < 0)
-        {
-            lastInput = ControllerInputDirection.LEFT_BUTTONDOWN;
-            return ControllerInputDirection.LEFT_BUTTONDOWN;
-        }
-
-        //Button being pressed UP
-
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0
-           || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0)
-        {
-            if(lastInput == ControllerInputDirection.DOWN_BUTTONDOWN)
-            {
-                StartCoroutine(WaitForFrame());
-                return ControllerInputDirection.DOWN_BUTTONUP;
-            }
-        }
-
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0)
-        {
-            if (lastInput == ControllerInputDirection.UP_BUTTONDOWN)
-            {
-                StartCoroutine(WaitForFrame());
-                return ControllerInputDirection.UP_BUTTONUP;
-            }
-        }
-
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0)
-        {
-            if (lastInput == ControllerInputDirection.RIGHT_BUTTONDOWN)
-            {
-                StartCoroutine(WaitForFrame());
-                return ControllerInputDirection.RIGHT_BUTTONUP;
-            }
-        }
-
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0)
-        {
-            if (lastInput == ControllerInputDirection.LEFT_BUTTONDOWN)
-            {
-                StartCoroutine(WaitForFrame());
-                return ControllerInputDirection.LEFT_BUTTONUP;
-            }
-        }
-
-        return ControllerInputDirection.NONE;
-    }
-
-    IEnumerator WaitForFrame()
-    {
-        yield return new WaitForEndOfFrame();
-        lastInput = ControllerInputDirection.NONE;
-    }
-
     void GetInput()
     {
         if (PlayerShip.Instance.LockInput)
@@ -297,54 +191,54 @@ public class FlyingState : GameStateBase
             return;
         }
 
-        if (Input.GetButton(InputHolder.MOVE_UP) || ControllerInput() == ControllerInputDirection.UP_BUTTONDOWN)
+        if (Input.GetButton(InputHolder.MOVE_UP) || ControllerManager.GetInput == ControllerInput.UP_BUTTONDOWN)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.UP);
         }
-        if (Input.GetButton(InputHolder.MOVE_DOWN) || ControllerInput() == ControllerInputDirection.DOWN_BUTTONDOWN)
+        if (Input.GetButton(InputHolder.MOVE_DOWN) || ControllerManager.GetInput == ControllerInput.DOWN_BUTTONDOWN)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.DOWN);
         }
-        if (Input.GetButton(InputHolder.MOVE_LEFT) || ControllerInput() == ControllerInputDirection.LEFT_BUTTONDOWN) 
+        if (Input.GetButton(InputHolder.MOVE_LEFT) || ControllerManager.GetInput == ControllerInput.LEFT_BUTTONDOWN) 
         { 
             PlayerShip.Instance.UpdatePosition(MoveDirection.LEFT);
         }
-        if (Input.GetButton(InputHolder.MOVE_RIGHT) || ControllerInput() == ControllerInputDirection.RIGHT_BUTTONDOWN)
+        if (Input.GetButton(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput == ControllerInput.RIGHT_BUTTONDOWN)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.RIGHT);
         }
-        if (Input.GetButton(InputHolder.FIRE) || ControllerInput() == ControllerInputDirection.SELECT)
+        if (Input.GetButton(InputHolder.FIRE) || ControllerManager.GetInput == ControllerInput.SELECT)
         {
             PlayerShip.Instance.FireProjectile();
         }
 
-        if (Input.GetButtonDown(InputHolder.PAUSE_MENU) || ControllerInput() == ControllerInputDirection.START)
+        if (Input.GetButtonDown(InputHolder.PAUSE_MENU) || ControllerManager.GetInput == ControllerInput.START)
         {
             GameController.Instance.GoToState(GameStates.PAUSE);
         }
         //Listen for release so we can coast
 
-        if (Input.anyKey && AnyControllerInput())
+        if (Input.anyKey && ControllerManager.Instance.AnyControllerInput())
         {
             return;
         }
 
-        if (Input.GetButtonUp(InputHolder.MOVE_UP) || ControllerInput() == ControllerInputDirection.UP_BUTTONUP)
+        if (Input.GetButtonUp(InputHolder.MOVE_UP) || ControllerManager.GetInput == ControllerInput.UP_BUTTONUP)
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
-        if (Input.GetButtonUp(InputHolder.MOVE_DOWN) || ControllerInput() == ControllerInputDirection.DOWN_BUTTONUP)
+        if (Input.GetButtonUp(InputHolder.MOVE_DOWN) || ControllerManager.GetInput == ControllerInput.DOWN_BUTTONUP)
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
-        if (Input.GetButtonUp(InputHolder.MOVE_LEFT) || ControllerInput() == ControllerInputDirection.LEFT_BUTTONUP)
+        if (Input.GetButtonUp(InputHolder.MOVE_LEFT) || ControllerManager.GetInput == ControllerInput.LEFT_BUTTONUP)
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
-        if (Input.GetButtonUp(InputHolder.MOVE_RIGHT) || ControllerInput() == ControllerInputDirection.RIGHT_BUTTONUP)
+        if (Input.GetButtonUp(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput == ControllerInput.RIGHT_BUTTONUP)
         {
             PlayerShip.Instance.CoastPlayerCoroutine =
                 StartCoroutine(PlayerShip.Instance.CoastPlayer());

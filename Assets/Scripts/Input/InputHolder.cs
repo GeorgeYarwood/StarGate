@@ -2,21 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ControllerInputDirection
-{
-    UP_BUTTONDOWN,
-    DOWN_BUTTONDOWN,
-    LEFT_BUTTONDOWN,
-    RIGHT_BUTTONDOWN,
-    NONE,
-    SELECT,
-    START,
-
-    UP_BUTTONUP,
-    DOWN_BUTTONUP,
-    LEFT_BUTTONUP,
-    RIGHT_BUTTONUP,
-}
 
 //Holds all the games input buttons, and also scene names and now playerprefs because I'm lazy as fuck
 public class InputHolder : MonoBehaviour
