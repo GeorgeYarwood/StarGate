@@ -30,7 +30,7 @@ public class EndGameState : GameStateBase
 
     public override void Tick()
     {
-        if ((Input.anyKey || ControllerManager.GetInput == ControllerInput.SELECT) && canExitState)
+        if ((Input.anyKey || ControllerManager.GetInput[(int)ControllerInput.SELECT].Pressed) && canExitState)
         {
             SceneManager.LoadScene(MAIN_MENU_SCENE);
         }

@@ -5,18 +5,13 @@ using UnityEngine;
 
 public enum ControllerInput
 {
-    UP_BUTTONDOWN,
-    DOWN_BUTTONDOWN,
-    LEFT_BUTTONDOWN,
-    RIGHT_BUTTONDOWN,
+    UP_BUTTON,
+    DOWN_BUTTON,
+    LEFT_BUTTON,
+    RIGHT_BUTTON,
     NONE,
     SELECT,
-    START,
-
-    UP_BUTTONUP,
-    DOWN_BUTTONUP,
-    LEFT_BUTTONUP,
-    RIGHT_BUTTONUP,
+    START
 }
 
 public enum CurrentInputMethod
@@ -33,8 +28,8 @@ public class ControllerManager : MonoBehaviour
         get { return instance; }
     }
 
-    static ControllerInput currentInput;
-    public static ControllerInput GetInput
+    static InputButton[] currentInput = new InputButton[7];
+    public static InputButton[] GetInput
     {
         get { return currentInput; }
     }
@@ -75,6 +70,19 @@ public class ControllerManager : MonoBehaviour
         instance = this;
 
         DontDestroyOnLoad(this);
+        InitialiseInputArray();
+        StartCoroutine(PollController());
+    }
+
+    void InitialiseInputArray()
+    {
+        currentInput[0] = new(ControllerInput.UP_BUTTON);
+        currentInput[1] = new(ControllerInput.DOWN_BUTTON);
+        currentInput[2] = new(ControllerInput.LEFT_BUTTON);
+        currentInput[3] = new(ControllerInput.RIGHT_BUTTON);
+        currentInput[4] = new(ControllerInput.NONE);
+        currentInput[5] = new(ControllerInput.SELECT);
+        currentInput[6] = new(ControllerInput.START);
     }
 
     IEnumerator ConsumeInput()
@@ -87,8 +95,21 @@ public class ControllerManager : MonoBehaviour
 
     void Update()
     {
-        currentInput = PollController();
         inputMethod = GetCurrentInputMethod();
+        PollController();
+    }
+
+    public struct InputButton
+    {
+        public ControllerInput Map;
+        public bool Pressed;
+        public bool JustReleased;
+        public InputButton(ControllerInput NewMap)
+        {
+            Map = NewMap;
+            Pressed = false;
+            JustReleased = false;
+        }
     }
 
     Vector2 lastMousePos = Vector2.zero;
@@ -104,11 +125,11 @@ public class ControllerManager : MonoBehaviour
             ToReturn = CurrentInputMethod.CONTROLLER;
         }
 
-        if(ToReturn == CurrentInputMethod.KEYBOARD_MOUSE && inputMethod == CurrentInputMethod.CONTROLLER)
+        if (ToReturn == CurrentInputMethod.KEYBOARD_MOUSE && inputMethod == CurrentInputMethod.CONTROLLER)
         {
             switchToKeyboardMouse.Invoke();
         }
-        else if(ToReturn == CurrentInputMethod.CONTROLLER && inputMethod == CurrentInputMethod.KEYBOARD_MOUSE)
+        else if (ToReturn == CurrentInputMethod.CONTROLLER && inputMethod == CurrentInputMethod.KEYBOARD_MOUSE)
         {
             switchToController.Invoke();
         }
@@ -118,109 +139,160 @@ public class ControllerManager : MonoBehaviour
         return ToReturn;
     }
 
-
-    ControllerInput lastInput;
-    ControllerInput PollController()
+    IEnumerator PollController()
     {
-        bool HorizontalPriority = Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_X)) > Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_Y));
-        if (Input.GetButton(InputHolder.CONTROLLER_A_BUTTON))
+        while (true)
         {
-            StartCoroutine(ConsumeInput());
-            return ControllerInput.SELECT;
-        }
+            //List<ControllerInput> ConcurrentInputs = new List<ControllerInput>(); //This allows us to return multiple inputs at the same time
+            bool HorizontalPriority = Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_X)) > Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_Y));
+            List<ControllerInput> CurrentlyPressed = new List<ControllerInput>();
+            if (Input.GetButton(InputHolder.CONTROLLER_A_BUTTON))
+            {
+                StartCoroutine(ConsumeInput());
+                currentInput[(int)ControllerInput.SELECT].Pressed = true;
+                CurrentlyPressed.Add(ControllerInput.SELECT);
+            }
 
-        if (Input.GetButtonDown(InputHolder.CONTROLLER_START_BUTTON))
-        {
-            StartCoroutine(ConsumeInput());
-            return ControllerInput.START;
-        }
+            if (Input.GetButton(InputHolder.CONTROLLER_START_BUTTON))
+            {
+                StartCoroutine(ConsumeInput());
+                currentInput[(int)ControllerInput.START].Pressed = true;
+                CurrentlyPressed.Add(ControllerInput.START);
+            }
 
-        //Button being pressed DOWN
+            //Button being pressed DOWN
 
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) < 0)
-        {
-            if ((Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0 && !HorizontalPriority)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0
                 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) < 0)
             {
-                StartCoroutine(ConsumeInput());
-                lastInput = ControllerInput.DOWN_BUTTONDOWN;
-                return ControllerInput.DOWN_BUTTONDOWN;
+                if ((Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0 && !HorizontalPriority)
+                    || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) < 0)
+                {
+                    StartCoroutine(ConsumeInput());
+                    currentInput[(int)ControllerInput.DOWN_BUTTON].Pressed = true;
+                    CurrentlyPressed.Add(ControllerInput.DOWN_BUTTON);
+                }
             }
-        }
 
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) > 0)
-        {
-            if ((Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0 && !HorizontalPriority)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0
                 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) > 0)
             {
+                if ((Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0 && !HorizontalPriority)
+                    || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) > 0)
+                {
+                    StartCoroutine(ConsumeInput());
+                    currentInput[(int)ControllerInput.UP_BUTTON].Pressed = true;
+                    CurrentlyPressed.Add(ControllerInput.UP_BUTTON);
+                }
+            }
+
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) > 0
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) > 0)
+            {
                 StartCoroutine(ConsumeInput());
-                lastInput = ControllerInput.UP_BUTTONDOWN;
-                return ControllerInput.UP_BUTTONDOWN;
+                currentInput[(int)ControllerInput.RIGHT_BUTTON].Pressed = true;
+                CurrentlyPressed.Add(ControllerInput.RIGHT_BUTTON);
             }
-        }
 
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) > 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) > 0)
-        {
-            StartCoroutine(ConsumeInput());
-            lastInput = ControllerInput.RIGHT_BUTTONDOWN;
-            return ControllerInput.RIGHT_BUTTONDOWN;
-        }
-
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) < 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) < 0)
-        {
-            StartCoroutine(ConsumeInput());
-            lastInput = ControllerInput.LEFT_BUTTONDOWN;
-            return ControllerInput.LEFT_BUTTONDOWN;
-        }
-
-        //Button being pressed UP
-
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0
-           || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0)
-        {
-            if (lastInput == ControllerInput.DOWN_BUTTONDOWN)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) < 0
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) < 0)
             {
-                StartCoroutine(WaitForFrame());
-                return ControllerInput.DOWN_BUTTONUP;
+                StartCoroutine(ConsumeInput());
+                currentInput[(int)ControllerInput.LEFT_BUTTON].Pressed = true;
+                CurrentlyPressed.Add(ControllerInput.LEFT_BUTTON);
             }
-        }
 
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0)
-        {
-            if (lastInput == ControllerInput.UP_BUTTONDOWN)
+            //Button being RELEASED
+
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0
+               || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0)
             {
-                StartCoroutine(WaitForFrame());
-                return ControllerInput.UP_BUTTONUP;
-            }
-        }
+                if (!CurrentlyPressed.Contains(ControllerInput.DOWN_BUTTON))
+                {
+                    currentInput[(int)ControllerInput.DOWN_BUTTON].Pressed = false;
 
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0)
-        {
-            if (lastInput == ControllerInput.RIGHT_BUTTONDOWN)
+                    if (lastInput[(int)ControllerInput.DOWN_BUTTON].Pressed)
+                    {
+                        StartCoroutine(WaitForFrame(ControllerInput.DOWN_BUTTON));
+                        currentInput[(int)ControllerInput.DOWN_BUTTON].JustReleased = true;
+                    }
+                }
+            }
+
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0)
             {
-                StartCoroutine(WaitForFrame());
-                return ControllerInput.RIGHT_BUTTONUP;
+                if (!CurrentlyPressed.Contains(ControllerInput.UP_BUTTON))
+                {
+                    currentInput[(int)ControllerInput.UP_BUTTON].Pressed = false;
+                    if (lastInput[(int)ControllerInput.UP_BUTTON].Pressed)
+                    {
+                        StartCoroutine(WaitForFrame(ControllerInput.UP_BUTTON));
+                        currentInput[(int)ControllerInput.UP_BUTTON].JustReleased = true;
+                    }
+                }
             }
-        }
 
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0
-            || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0)
-        {
-            if (lastInput == ControllerInput.LEFT_BUTTONDOWN)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0)
             {
-                StartCoroutine(WaitForFrame());
-                return ControllerInput.LEFT_BUTTONUP;
-            }
-        }
+                if (!CurrentlyPressed.Contains(ControllerInput.RIGHT_BUTTON))
+                {
+                    currentInput[(int)ControllerInput.RIGHT_BUTTON].Pressed = false;
 
-        return ControllerInput.NONE;
+                    if (lastInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
+                    {
+                        StartCoroutine(WaitForFrame(ControllerInput.RIGHT_BUTTON));
+                        currentInput[(int)ControllerInput.RIGHT_BUTTON].JustReleased = true;
+                    }
+                }
+            }
+
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0)
+            {
+                if (!CurrentlyPressed.Contains(ControllerInput.LEFT_BUTTON))
+                {
+                    currentInput[(int)ControllerInput.LEFT_BUTTON].Pressed = false;
+
+                    if (lastInput[(int)ControllerInput.LEFT_BUTTON].Pressed)
+                    {
+                        StartCoroutine(WaitForFrame(ControllerInput.LEFT_BUTTON));
+                        currentInput[(int)ControllerInput.LEFT_BUTTON].JustReleased = true;
+                    }
+                }
+            }
+
+            if (!Input.GetButton(InputHolder.CONTROLLER_A_BUTTON))
+            {
+                if (!CurrentlyPressed.Contains(ControllerInput.SELECT))
+                {
+                    currentInput[(int)ControllerInput.SELECT].Pressed = false;
+                }
+            }
+
+            if (!Input.GetButton(InputHolder.CONTROLLER_START_BUTTON))
+            {
+                if (!CurrentlyPressed.Contains(ControllerInput.START))
+                {
+                    currentInput[(int)ControllerInput.START].Pressed = false;
+                }
+            }
+
+            lastInput = currentInput;
+            yield return new WaitForEndOfFrame();
+        }
     }
+
+    InputButton[] lastInput = new InputButton[7];
+    //IEnumerator PollController()
+    //{
+    //    while (true)
+    //    {
+
+    //        yield return new WaitForEndOfFrame();
+    //    }
+    //}
 
     public bool AnyControllerInput()
     {
@@ -233,9 +305,10 @@ public class ControllerManager : MonoBehaviour
         return false;
     }
 
-    IEnumerator WaitForFrame()
+    IEnumerator WaitForFrame(ControllerInput JustReleased)
     {
-        yield return new WaitForEndOfFrame();
-        lastInput = ControllerInput.NONE;
+        //yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(0.2f);
+        lastInput[(int)JustReleased].JustReleased = false;
     }
 }

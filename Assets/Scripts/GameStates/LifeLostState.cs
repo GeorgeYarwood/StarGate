@@ -24,7 +24,7 @@ public class LifeLostState : GameStateBase
 
     public override void Tick()
     {
-        if((Input.anyKey || ControllerManager.GetInput == ControllerInput.SELECT) && canExitState)
+        if((Input.anyKey || ControllerManager.GetInput[(int)ControllerInput.SELECT].Pressed) && canExitState)
         {
             GameController.Instance.GoToPreviousGameState();
         }

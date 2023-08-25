@@ -97,81 +97,88 @@ public class MenuControllerNav : MonoBehaviour
             return;
         }
 
-        switch (ControllerManager.GetInput)
+        for(int i = 0; i < ControllerManager.GetInput.Length; i++)
         {
-            case ControllerInput.UP_BUTTONDOWN:
-                if(currentArea.AreaNavType == NavigationDirection.VERTICAL && selectionIndex - 1 >= 0)
-                {
-                    if (currentArea.AreaNavSelectables[selectionIndex - 1].gameObject.activeInHierarchy)
+            if (!ControllerManager.GetInput[i].Pressed)
+            {
+                continue;
+            }
+            switch (ControllerManager.GetInput[i].Map)
+            {
+                case ControllerInput.UP_BUTTON:
+                    if (currentArea.AreaNavType == NavigationDirection.VERTICAL && selectionIndex - 1 >= 0)
                     {
-                        HighlightSelected(false);
-                        selectionIndex--;
-                        HighlightSelected(true);
+                        if (currentArea.AreaNavSelectables[selectionIndex - 1].gameObject.activeInHierarchy)
+                        {
+                            HighlightSelected(false);
+                            selectionIndex--;
+                            HighlightSelected(true);
+                        }
                     }
-                }
-                else if(currentArea.ExitDirection == NavigationDirection.VERTICAL)
-                {
-                    SwitchToArea(currentAreaIndex - 1);
-                }
-                break;
-            case ControllerInput.DOWN_BUTTONDOWN:
-                if(currentArea.AreaNavType == NavigationDirection.VERTICAL && selectionIndex < currentArea.AreaNavSelectables.Length - 1)
-                {
-                    if (currentArea.AreaNavSelectables[selectionIndex + 1].gameObject.activeInHierarchy)
+                    else if (currentArea.ExitDirection == NavigationDirection.VERTICAL)
                     {
-                        HighlightSelected(false);
-                        selectionIndex++;
-                        HighlightSelected(true);
+                        SwitchToArea(currentAreaIndex - 1);
                     }
-                }
-                else if (currentArea.ExitDirection == NavigationDirection.VERTICAL)
-                {
-                    SwitchToArea(currentAreaIndex + 1);
-                }
-                break;
-            case ControllerInput.LEFT_BUTTONDOWN:
-                if (currentArea.AreaNavType == NavigationDirection.VERTICAL && InteractingWithSlider())
-                {
-                    InteractingWithSlider().value -= InteractingWithSlider().maxValue / SLIDER_ADJUST_VAL;
-                }
-                else if (currentArea.AreaNavType == NavigationDirection.HORIZONTAL && selectionIndex - 1 >= 0)
-                {
-                    if (currentArea.AreaNavSelectables[selectionIndex - 1].gameObject.activeInHierarchy)
+                    break;
+                case ControllerInput.DOWN_BUTTON:
+                    if (currentArea.AreaNavType == NavigationDirection.VERTICAL && selectionIndex < currentArea.AreaNavSelectables.Length - 1)
                     {
-                        HighlightSelected(false);
-                        selectionIndex--;
-                        HighlightSelected(true);
+                        if (currentArea.AreaNavSelectables[selectionIndex + 1].gameObject.activeInHierarchy)
+                        {
+                            HighlightSelected(false);
+                            selectionIndex++;
+                            HighlightSelected(true);
+                        }
                     }
-                }
-                else if (currentArea.ExitDirection == NavigationDirection.HORIZONTAL && selectionIndex == 0
-                    && currentAreaIndex > 0)
-                {
-                    SwitchToArea(currentAreaIndex - 1);
-                }
-                break;
-            case ControllerInput.RIGHT_BUTTONDOWN:
-                if (currentArea.AreaNavType == NavigationDirection.VERTICAL && InteractingWithSlider())
-                {
-                    InteractingWithSlider().value += InteractingWithSlider().maxValue / SLIDER_ADJUST_VAL;
-                }
-                else if (currentArea.AreaNavType == NavigationDirection.HORIZONTAL && selectionIndex < currentArea.AreaNavSelectables.Length - 1)
-                {
-                    if (currentArea.AreaNavSelectables[selectionIndex + 1].gameObject.activeInHierarchy)
+                    else if (currentArea.ExitDirection == NavigationDirection.VERTICAL)
                     {
-                        HighlightSelected(false);
-                        selectionIndex++;
-                        HighlightSelected(true);
+                        SwitchToArea(currentAreaIndex + 1);
                     }
-                }
-                else if (currentArea.ExitDirection == NavigationDirection.HORIZONTAL && selectionIndex == currentArea.AreaNavSelectables.Length - 1
-                    && currentAreaIndex < allAreas.Length - 1)
-                {
-                    SwitchToArea(currentAreaIndex + 1);
-                }
-                break;
-            case ControllerInput.SELECT:
-                InteractWithSelectable();
-                break;
+                    break;
+                case ControllerInput.LEFT_BUTTON:
+                    if (currentArea.AreaNavType == NavigationDirection.VERTICAL && InteractingWithSlider())
+                    {
+                        InteractingWithSlider().value -= InteractingWithSlider().maxValue / SLIDER_ADJUST_VAL;
+                    }
+                    else if (currentArea.AreaNavType == NavigationDirection.HORIZONTAL && selectionIndex - 1 >= 0)
+                    {
+                        if (currentArea.AreaNavSelectables[selectionIndex - 1].gameObject.activeInHierarchy)
+                        {
+                            HighlightSelected(false);
+                            selectionIndex--;
+                            HighlightSelected(true);
+                        }
+                    }
+                    else if (currentArea.ExitDirection == NavigationDirection.HORIZONTAL && selectionIndex == 0
+                        && currentAreaIndex > 0)
+                    {
+                        SwitchToArea(currentAreaIndex - 1);
+                    }
+                    break;
+                case ControllerInput.RIGHT_BUTTON:
+                    if (currentArea.AreaNavType == NavigationDirection.VERTICAL && InteractingWithSlider())
+                    {
+                        InteractingWithSlider().value += InteractingWithSlider().maxValue / SLIDER_ADJUST_VAL;
+                    }
+                    else if (currentArea.AreaNavType == NavigationDirection.HORIZONTAL && selectionIndex < currentArea.AreaNavSelectables.Length - 1)
+                    {
+                        if (currentArea.AreaNavSelectables[selectionIndex + 1].gameObject.activeInHierarchy)
+                        {
+                            HighlightSelected(false);
+                            selectionIndex++;
+                            HighlightSelected(true);
+                        }
+                    }
+                    else if (currentArea.ExitDirection == NavigationDirection.HORIZONTAL && selectionIndex == currentArea.AreaNavSelectables.Length - 1
+                        && currentAreaIndex < allAreas.Length - 1)
+                    {
+                        SwitchToArea(currentAreaIndex + 1);
+                    }
+                    break;
+                case ControllerInput.SELECT:
+                    InteractWithSelectable();
+                    break;
+            }
         }
     }
 
