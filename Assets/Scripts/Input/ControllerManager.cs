@@ -144,6 +144,9 @@ public class ControllerManager : MonoBehaviour
     List<ControllerInput> lastInput = new List<ControllerInput>();
     IEnumerator PollController()
     {
+        //This checks every mapped input on the controller to see what is being pressd. Writing/clearing a list every frame was too slow,
+        //so we are using a pre-populated array of every available input, which we then toggle its values accordingly. The enum maps directly to the inputs in the array so it can be used
+        //to access each button by casting to an int.
         while (true)
         {
             bool HorizontalPriority = Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_X)) > Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_Y));

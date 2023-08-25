@@ -20,6 +20,7 @@ public class FlyingState : GameStateBase
 
     public override void OnStateEnter()
     {
+        acceptInput = false;
         PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel);
         if (GameController.AllLevels.Count == 0)
         {
@@ -78,7 +79,6 @@ public class FlyingState : GameStateBase
 
     public override void OnStateExit()
     {
-        acceptInput = false;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         waitingForStateExit = false;
