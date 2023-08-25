@@ -96,7 +96,6 @@ public class ControllerManager : MonoBehaviour
     void Update()
     {
         inputMethod = GetCurrentInputMethod();
-        PollController();
     }
 
     public struct InputButton
@@ -127,11 +126,11 @@ public class ControllerManager : MonoBehaviour
 
         if (ToReturn == CurrentInputMethod.KEYBOARD_MOUSE && inputMethod == CurrentInputMethod.CONTROLLER)
         {
-            switchToKeyboardMouse.Invoke();
+            switchToKeyboardMouse?.Invoke();
         }
         else if (ToReturn == CurrentInputMethod.CONTROLLER && inputMethod == CurrentInputMethod.KEYBOARD_MOUSE)
         {
-            switchToController.Invoke();
+            switchToController?.Invoke();
         }
 
         lastMousePos = Input.mousePosition;
@@ -139,11 +138,11 @@ public class ControllerManager : MonoBehaviour
         return ToReturn;
     }
 
+    List<ControllerInput> lastInput = new List<ControllerInput>();
     IEnumerator PollController()
     {
         while (true)
         {
-            //List<ControllerInput> ConcurrentInputs = new List<ControllerInput>(); //This allows us to return multiple inputs at the same time
             bool HorizontalPriority = Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_X)) > Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_Y));
             List<ControllerInput> CurrentlyPressed = new List<ControllerInput>();
             if (Input.GetButton(InputHolder.CONTROLLER_A_BUTTON))
@@ -211,10 +210,9 @@ public class ControllerManager : MonoBehaviour
                 {
                     currentInput[(int)ControllerInput.DOWN_BUTTON].Pressed = false;
 
-                    if (lastInput[(int)ControllerInput.DOWN_BUTTON].Pressed)
+                    if (lastInput.Contains(ControllerInput.DOWN_BUTTON))
                     {
                         StartCoroutine(WaitForFrame(ControllerInput.DOWN_BUTTON));
-                        currentInput[(int)ControllerInput.DOWN_BUTTON].JustReleased = true;
                     }
                 }
             }
@@ -225,10 +223,9 @@ public class ControllerManager : MonoBehaviour
                 if (!CurrentlyPressed.Contains(ControllerInput.UP_BUTTON))
                 {
                     currentInput[(int)ControllerInput.UP_BUTTON].Pressed = false;
-                    if (lastInput[(int)ControllerInput.UP_BUTTON].Pressed)
+                    if (lastInput.Contains(ControllerInput.UP_BUTTON))
                     {
                         StartCoroutine(WaitForFrame(ControllerInput.UP_BUTTON));
-                        currentInput[(int)ControllerInput.UP_BUTTON].JustReleased = true;
                     }
                 }
             }
@@ -240,10 +237,9 @@ public class ControllerManager : MonoBehaviour
                 {
                     currentInput[(int)ControllerInput.RIGHT_BUTTON].Pressed = false;
 
-                    if (lastInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
+                    if (lastInput.Contains(ControllerInput.RIGHT_BUTTON))
                     {
                         StartCoroutine(WaitForFrame(ControllerInput.RIGHT_BUTTON));
-                        currentInput[(int)ControllerInput.RIGHT_BUTTON].JustReleased = true;
                     }
                 }
             }
@@ -255,10 +251,9 @@ public class ControllerManager : MonoBehaviour
                 {
                     currentInput[(int)ControllerInput.LEFT_BUTTON].Pressed = false;
 
-                    if (lastInput[(int)ControllerInput.LEFT_BUTTON].Pressed)
+                    if (lastInput.Contains(ControllerInput.LEFT_BUTTON))
                     {
                         StartCoroutine(WaitForFrame(ControllerInput.LEFT_BUTTON));
-                        currentInput[(int)ControllerInput.LEFT_BUTTON].JustReleased = true;
                     }
                 }
             }
@@ -279,20 +274,10 @@ public class ControllerManager : MonoBehaviour
                 }
             }
 
-            lastInput = currentInput;
+            lastInput = CurrentlyPressed;
             yield return new WaitForEndOfFrame();
         }
     }
-
-    InputButton[] lastInput = new InputButton[7];
-    //IEnumerator PollController()
-    //{
-    //    while (true)
-    //    {
-
-    //        yield return new WaitForEndOfFrame();
-    //    }
-    //}
 
     public bool AnyControllerInput()
     {
@@ -307,8 +292,8 @@ public class ControllerManager : MonoBehaviour
 
     IEnumerator WaitForFrame(ControllerInput JustReleased)
     {
-        //yield return new WaitForEndOfFrame();
-        yield return new WaitForSeconds(0.2f);
-        lastInput[(int)JustReleased].JustReleased = false;
+        currentInput[(int)JustReleased].JustReleased = true;
+        yield return new WaitForEndOfFrame();
+        currentInput[(int)JustReleased].JustReleased = false;
     }
 }

@@ -56,6 +56,10 @@ public class FlyingState : GameStateBase
         {
             for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count; e++)
             {
+                if (!GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e])
+                {
+                    continue;
+                }
                 GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e].transform.position
                     = ReturnRandomSpawnPositionInRange();
             }
@@ -63,6 +67,10 @@ public class FlyingState : GameStateBase
 
         for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
         {
+            if (!GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e])
+            {
+                continue;
+            }
             GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].transform.position
                  = ReturnRandomSpawnPositionInRange();
         }
@@ -283,10 +291,18 @@ public class FlyingState : GameStateBase
             {
                 if (LevelToLoad.IsSubLevel)
                 {
+                    if (!GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e])
+                    {
+                        continue;
+                    }
                     GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].gameObject.SetActive(false);
                 }
                 else
                 {
+                    if (!GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e])
+                    {
+                        continue;
+                    }
                     GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e].gameObject.SetActive(false);
                 }
             }
@@ -305,6 +321,10 @@ public class FlyingState : GameStateBase
             {
                 for (int e = 0; e < LevelToLoad.ParentLevel.EnemiesInScene.Count; e++)
                 {
+                    if (!LevelToLoad.ParentLevel.EnemiesInScene[e])
+                    {
+                        continue;
+                    }
                     LevelToLoad.ParentLevel.EnemiesInScene[e].gameObject.SetActive(false);
                 }
             }

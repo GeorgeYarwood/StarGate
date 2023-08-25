@@ -154,6 +154,10 @@ public class WorldScroller : MonoBehaviour
             {
                 for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count; e++)
                 {
+                    if (!GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e])
+                    {
+                        continue;
+                    }
                     GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e].ParentToBackground();
                 }
             }
@@ -161,7 +165,10 @@ public class WorldScroller : MonoBehaviour
             {
                 for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
                 {
-
+                    if (!GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e])
+                    {
+                        continue;
+                    }
                     GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].ParentToBackground();
                 }
             }
