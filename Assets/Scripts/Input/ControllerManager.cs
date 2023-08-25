@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum ControllerInput
 {
@@ -64,12 +65,14 @@ public class ControllerManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Destroy(instance);
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
         }
 
-        instance = this;
-
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
         InitialiseInputArray();
         StartCoroutine(PollController());
     }

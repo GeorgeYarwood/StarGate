@@ -2316,6 +2316,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ControllerManager
       objectReference: {fileID: 0}
+    - target: {fileID: 1626978527672938800, guid: 1f992567184997147b9cbafa0bd1ae5c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7806665218887999018, guid: 1f992567184997147b9cbafa0bd1ae5c, type: 3}
       propertyPath: m_RootOrder
       value: 16
@@ -3022,6 +3026,7 @@ MonoBehaviour:
     - {fileID: 674531003}
     AreaNavType: 1
     ExitDirection: 0
+  previousNav: {fileID: 0}
 --- !u!1 &725454517
 GameObject:
   m_ObjectHideFlags: 0
@@ -4814,6 +4819,7 @@ MonoBehaviour:
     - {fileID: 1473647157}
     AreaNavType: 1
     ExitDirection: 0
+  previousNav: {fileID: 0}
 --- !u!1 &1339493251
 GameObject:
   m_ObjectHideFlags: 0
