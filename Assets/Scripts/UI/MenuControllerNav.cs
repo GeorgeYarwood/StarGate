@@ -115,7 +115,7 @@ public class MenuControllerNav : MonoBehaviour
                             HighlightSelected(true);
                         }
                     }
-                    else if (currentArea.ExitDirection == NavigationDirection.VERTICAL)
+                    else if (currentArea.ExitDirection == NavigationDirection.VERTICAL && currentAreaIndex > 0)
                     {
                         SwitchToArea(currentAreaIndex - 1);
                     }
@@ -130,7 +130,7 @@ public class MenuControllerNav : MonoBehaviour
                             HighlightSelected(true);
                         }
                     }
-                    else if (currentArea.ExitDirection == NavigationDirection.VERTICAL)
+                    else if (currentArea.ExitDirection == NavigationDirection.VERTICAL && currentAreaIndex + 1 <= allAreas.Length - 1)
                     {
                         SwitchToArea(currentAreaIndex + 1);
                     }

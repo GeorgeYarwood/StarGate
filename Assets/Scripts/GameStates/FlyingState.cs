@@ -78,6 +78,7 @@ public class FlyingState : GameStateBase
 
     public override void OnStateExit()
     {
+        acceptInput = false;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         waitingForStateExit = false;
