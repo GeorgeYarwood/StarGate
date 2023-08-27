@@ -309,6 +309,10 @@ public class FlyingState : GameStateBase
             }
             for (int e = 0; e < LevelToLoad.EnemiesInScene.Count; e++)
             {
+                if (!LevelToLoad.EnemiesInScene[e])
+                {
+                    continue;
+                }
                 LevelToLoad.EnemiesInScene[e].gameObject.SetActive(true);
             }
 
