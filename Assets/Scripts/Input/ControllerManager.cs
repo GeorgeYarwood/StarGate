@@ -12,7 +12,8 @@ public enum ControllerInput
     RIGHT_BUTTON,
     NONE,
     SELECT,
-    START
+    START,
+    X_BUTTON
 }
 
 public enum CurrentInputMethod
@@ -29,7 +30,7 @@ public class ControllerManager : MonoBehaviour
         get { return instance; }
     }
 
-    static InputButton[] currentInput = new InputButton[7];
+    static InputButton[] currentInput = new InputButton[8];
     public static InputButton[] GetInput
     {
         get { return currentInput; }
@@ -86,6 +87,7 @@ public class ControllerManager : MonoBehaviour
         currentInput[4] = new(ControllerInput.NONE);
         currentInput[5] = new(ControllerInput.SELECT);
         currentInput[6] = new(ControllerInput.START);
+        currentInput[7] = new(ControllerInput.X_BUTTON);
     }
 
     IEnumerator ConsumeInput()
@@ -163,6 +165,13 @@ public class ControllerManager : MonoBehaviour
                 StartCoroutine(ConsumeInput());
                 currentInput[(int)ControllerInput.START].Pressed = true;
                 CurrentlyPressed.Add(ControllerInput.START);
+            }
+
+            if (Input.GetButton(InputHolder.CONTROLLER_X_BUTTON))
+            {
+                StartCoroutine(ConsumeInput());
+                currentInput[(int)ControllerInput.X_BUTTON].Pressed = true;
+                CurrentlyPressed.Add(ControllerInput.X_BUTTON);
             }
 
             //Button being pressed DOWN
@@ -277,6 +286,14 @@ public class ControllerManager : MonoBehaviour
                 if (!CurrentlyPressed.Contains(ControllerInput.START))
                 {
                     currentInput[(int)ControllerInput.START].Pressed = false;
+                }
+            }
+
+            if (!Input.GetButton(InputHolder.CONTROLLER_X_BUTTON))
+            {
+                if (!CurrentlyPressed.Contains(ControllerInput.X_BUTTON))
+                {
+                    currentInput[(int)ControllerInput.X_BUTTON].Pressed = false;
                 }
             }
 
