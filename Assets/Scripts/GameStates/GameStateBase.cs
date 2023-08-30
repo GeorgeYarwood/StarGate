@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class GameStateBase : MonoBehaviour
 {
+    internal bool allowCursorVisible = true;
+    public bool AllowCursorVisible
+    {
+        get { return allowCursorVisible; }
+    }
     public virtual void OnStateEnter()
     {
 

@@ -31,25 +31,19 @@ public class MenuControllerNav : MonoBehaviour
 
     NavigationArea currentArea;
 
-    void Start()
+    void OnEnable()
     {
         if (previousNav)
         {
             previousNav.SetActive(false);
         }
+    }
 
+    void Start()
+    {
         currentArea = allAreas[currentAreaIndex];
         ControllerManager.Instance.SwitchToKeyboardMouse += (() => HighlightSelected(false));
         ControllerManager.Instance.SwitchToController += (() => HighlightSelected(true));
-
-        //if(ControllerManager.InputMethod == CurrentInputMethod.KEYBOARD_MOUSE)
-        //{
-        //    HighlightSelected(false);
-        //}
-        //else if(ControllerManager.InputMethod == CurrentInputMethod.CONTROLLER)
-        //{
-        //    HighlightSelected(true);
-        //}
     }
 
     void OnDisable()

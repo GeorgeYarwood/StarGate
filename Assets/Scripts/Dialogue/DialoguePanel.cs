@@ -60,7 +60,7 @@ public class DialoguePanel : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetButtonDown(InputHolder.SKIP_DIALOGUE_BUTTON) || ControllerManager.GetInput[(int)ControllerInput.X_BUTTON].Pressed)
+        if(Input.GetButtonDown(InputHolder.SKIP_DIALOGUE_BUTTON) || (ControllerManager.GetInput[(int)ControllerInput.X_BUTTON].Pressed && !ControllerManager.Consumed))
         {
             if (isPrinting)
             {

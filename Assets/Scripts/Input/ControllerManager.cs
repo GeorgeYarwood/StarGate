@@ -24,6 +24,8 @@ public enum CurrentInputMethod
 
 public class ControllerManager : MonoBehaviour
 {
+    const string MAIN_MENU = "MainMenu";
+
     static ControllerManager instance;
     public static ControllerManager Instance
     {
@@ -76,6 +78,15 @@ public class ControllerManager : MonoBehaviour
         //DontDestroyOnLoad(this);
         InitialiseInputArray();
         StartCoroutine(PollController());
+
+        switchToKeyboardMouse += OnSwitchToKeyboardMouse;
+        SwitchToController += OnSwitchToController;
+    }
+
+    void OnDestroy()
+    {
+        switchToKeyboardMouse -= OnSwitchToKeyboardMouse;
+        SwitchToController -= OnSwitchToController;
     }
 
     void InitialiseInputArray()
@@ -116,11 +127,34 @@ public class ControllerManager : MonoBehaviour
         }
     }
 
+    void OnSwitchToKeyboardMouse()
+    {
+        //Main menu isn't a state so we need to hardcode it
+        if (SceneManager.GetActiveScene().name == MAIN_MENU)
+        {
+            Cursor.visible = true;
+            return;
+        }
+
+        Cursor.visible = GameController.Instance.GetCurrentGameState.AllowCursorVisible;
+    }
+
+    void OnSwitchToController()
+    {
+        Cursor.visible = false;
+    }
+
+    bool AnyKeyboardMouseInput() //Input.anyKey was being a dick so I just wrote my own
+    {
+        return Input.GetButton(InputHolder.MOVE_UP) || Input.GetButton(InputHolder.MOVE_DOWN) || Input.GetButton(InputHolder.MOVE_LEFT) || Input.GetButton(InputHolder.MOVE_RIGHT)
+            || Input.GetButton(InputHolder.FIRE) || Input.mousePosition != (Vector3)lastMousePos;
+    }
+
     Vector2 lastMousePos = Vector2.zero;
     CurrentInputMethod GetCurrentInputMethod()
     {
         CurrentInputMethod ToReturn = inputMethod;
-        if (Input.anyKey || Input.mousePosition != (Vector3)lastMousePos)
+        if (AnyKeyboardMouseInput())
         {
             ToReturn = CurrentInputMethod.KEYBOARD_MOUSE;
         }
@@ -304,13 +338,8 @@ public class ControllerManager : MonoBehaviour
 
     public bool AnyControllerInput()
     {
-        if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0
-            || Input.GetAxis(InputHolder.CONTROLLER_JOY_X) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0)
-        {
-            return true;
-        }
-
-        return false;
+        return Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0
+            || Input.GetAxis(InputHolder.CONTROLLER_JOY_X) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0;
     }
 
     IEnumerator WaitForFrame(ControllerInput JustReleased)

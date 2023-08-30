@@ -24,9 +24,9 @@ public class WorldScroller : MonoBehaviour
     const float BG_CHECK_DELAY = 1.0f;
     const float OUT_OF_RANGE_RESET = 1000.0f; //We reset the world position to 0 so we don't go on forever
 
-    Vector2 leftWorldInitialPos;
-    Vector2 middleWorldInitialPos;
-    Vector2 rightWorldInitialPos;
+    Vector2Int leftWorldInitialPos;
+    Vector2Int middleWorldInitialPos;
+    Vector2Int rightWorldInitialPos;
 
 
     static WorldScroller instance;
@@ -46,9 +46,10 @@ public class WorldScroller : MonoBehaviour
             Destroy(this);
         }
 
-        leftWorldInitialPos = leftWorldSection.transform.position;
-        middleWorldInitialPos = middleWorldSection.transform.position;
-        rightWorldInitialPos = rightWorldSection.transform.position;
+        //Vector2Int prevents drifting throughout play
+        leftWorldInitialPos = Vector2Int.RoundToInt(leftWorldSection.transform.position);
+        middleWorldInitialPos = Vector2Int.RoundToInt(middleWorldSection.transform.position);
+        rightWorldInitialPos = Vector2Int.RoundToInt(rightWorldSection.transform.position);
     }
 
     bool CheckBackgroundInFrame(out BackgroundDirection Direction)
@@ -140,9 +141,9 @@ public class WorldScroller : MonoBehaviour
 
     void ResetPos()
     {
-        leftWorldSection.transform.position = leftWorldInitialPos;
-        middleWorldSection.transform.position = middleWorldInitialPos;
-        rightWorldSection.transform.position = rightWorldInitialPos;
+        leftWorldSection.transform.position = (Vector2)leftWorldInitialPos;
+        middleWorldSection.transform.position = (Vector2)middleWorldInitialPos;
+        rightWorldSection.transform.position = (Vector2)rightWorldInitialPos;
     }
 
     void Update()

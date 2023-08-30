@@ -82,6 +82,11 @@ public class EnemyBase : MonoBehaviour
 
     public virtual void OnHit(int DamageToDeduct)
     {
+        if (waitingToDie)
+        {
+            return;
+        }
+
         if (enemyHealth - DamageToDeduct > 0)
         {
             enemyHealth -= DamageToDeduct;
