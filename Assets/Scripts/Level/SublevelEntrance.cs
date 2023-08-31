@@ -14,7 +14,6 @@ public class SublevelEntrance : MonoBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] BoxCollider2D boxCollider;
     [SerializeField] AudioClip portalEnterSfx;
-
     //Just one entrance for all levels at the moment
     static SublevelEntrance instance;
     static public SublevelEntrance Instance
@@ -45,6 +44,7 @@ public class SublevelEntrance : MonoBehaviour
     {
         if(Collision.TryGetComponent(out PlayerShip _) && canReEnter)
         {
+            VFXManager.Instance.PlayEffect(Effects.PULSE_CHROMATIC_ABERRATION);
             GameController.Instance.DestroyAllProjectiles();
             StartCoroutine(BlockInteractionForTime()); //Stop us immediately going straight back in
             portalEnterVfx.Play();
