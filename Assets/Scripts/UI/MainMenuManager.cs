@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
+    const float DEFAULT_VOLUME = 0.75f;
     [SerializeField] Button startGameButton;
     [SerializeField] Button continueGameButton;
     [SerializeField] Button quitButton;
@@ -19,9 +20,27 @@ public class MainMenuManager : MonoBehaviour
         AudioManager.Instance.StopAllMusicLoops();
         AudioManager.Instance.PlayLoopedAudioClip(
             mainMenuSong, OnlyPermitOne: true, IsMusic: true);
+        InitPrefs();
+    }
 
-        musicVolumeSlider.value = PlayerPrefs.GetFloat(InputHolder.MUSIC_VOLUME);
-        sfxVolumeSlider.value = PlayerPrefs.GetFloat(InputHolder.SFX_VOLUME);
+    void InitPrefs()
+    {
+        if (PlayerPrefs.HasKey(InputHolder.MUSIC_VOLUME))
+        {
+            musicVolumeSlider.value = PlayerPrefs.GetFloat(InputHolder.MUSIC_VOLUME);
+        }
+        else
+        {
+            musicVolumeSlider.value = DEFAULT_VOLUME;
+        }
+        if (PlayerPrefs.HasKey(InputHolder.SFX_VOLUME))
+        {
+            sfxVolumeSlider.value = PlayerPrefs.GetFloat(InputHolder.SFX_VOLUME);
+        }
+        else
+        {
+            sfxVolumeSlider.value = DEFAULT_VOLUME;
+        }
     }
 
     void SetupButtons()
