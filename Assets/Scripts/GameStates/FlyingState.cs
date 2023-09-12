@@ -20,7 +20,7 @@ public class FlyingState : GameStateBase
 
     public override void OnStateEnter()
     {
-        base.allowCursorVisible = false;
+        //base.allowCursorVisible = false;
         acceptInput = false;
         PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel);
         if (GameController.AllLevels.Count == 0)
@@ -42,8 +42,8 @@ public class FlyingState : GameStateBase
             ResetEnemyPositions();
         }
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
 
         AudioManager.Instance.PlayLoopedAudioClip(
             GameController.AllLevels[GameController.CurrentLevel].LevelSong,

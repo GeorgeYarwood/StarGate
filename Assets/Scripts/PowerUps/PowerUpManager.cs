@@ -13,6 +13,7 @@ public enum PowerUpType
 
 public class PowerUpManager : MonoBehaviour
 {
+    TestInterface test;
     static PowerUpManager instance;
     public static PowerUpManager Instance
     {
@@ -41,7 +42,7 @@ public class PowerUpManager : MonoBehaviour
 
     void Start()
     {
-        if(instance != null)
+        if (instance != null)
         {
             Destroy(this);
         }

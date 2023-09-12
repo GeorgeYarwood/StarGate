@@ -36,6 +36,7 @@ public class ControllerManager : MonoBehaviour
     public static InputButton[] GetInput
     {
         get { return currentInput; }
+        set { currentInput = value; } //Hacky but we need to write to it for touch
     }
 
     static CurrentInputMethod inputMethod;
@@ -342,7 +343,7 @@ public class ControllerManager : MonoBehaviour
             || Input.GetAxis(InputHolder.CONTROLLER_JOY_X) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0;
     }
 
-    IEnumerator WaitForFrame(ControllerInput JustReleased)
+    public IEnumerator WaitForFrame(ControllerInput JustReleased)
     {
         currentInput[(int)JustReleased].JustReleased = true;
         yield return new WaitForEndOfFrame();

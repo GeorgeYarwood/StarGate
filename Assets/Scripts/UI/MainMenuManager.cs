@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainMenuManager : MonoBehaviour
+public class MainMenuManager : MonoBehaviour, TestInterface
 {
     const float DEFAULT_VOLUME = 0.75f;
     [SerializeField] Button startGameButton;
@@ -97,5 +97,10 @@ public class MainMenuManager : MonoBehaviour
         startGameButton.onClick.RemoveAllListeners();
         quitButton.onClick.RemoveAllListeners();
         AudioManager.Instance.PlayLoopedAudioClip(mainMenuSong, EndLoop: true);
+    }
+
+    public void testFunction()
+    {
+        throw new System.NotImplementedException();
     }
 }
