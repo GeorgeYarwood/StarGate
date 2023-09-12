@@ -222,6 +222,7 @@ public class FlyingState : GameStateBase
         if (Input.GetButton(InputHolder.MOVE_DOWN) || ControllerManager.GetInput[(int)ControllerInput.DOWN_BUTTON].Pressed)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.DOWN);
+            Debug.Log("Down");
         }
         if (Input.GetButton(InputHolder.MOVE_LEFT) || ControllerManager.GetInput[(int)ControllerInput.LEFT_BUTTON].Pressed) 
         { 

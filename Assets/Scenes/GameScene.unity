@@ -5562,7 +5562,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
-  toToggle: 02000000
+  toToggle: 05000000
 --- !u!114 &1310886074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6169,7 +6169,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
-  toToggle: 03000000
+  toToggle: 05000000
 --- !u!114 &1420124681
 MonoBehaviour:
   m_ObjectHideFlags: 0
