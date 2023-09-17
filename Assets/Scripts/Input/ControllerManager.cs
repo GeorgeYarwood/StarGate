@@ -184,7 +184,12 @@ public class ControllerManager : MonoBehaviour
         //This checks every mapped input on the controller to see what is being pressd. Writing/clearing a list every frame was too slow,
         //so we are using a pre-populated array of every available input, which we then toggle its values accordingly. The enum maps directly to the inputs in the array so it can be used
         //to access each button by casting to an int.
-        while (1 == 2)
+#if FOR_MOBILE
+        while (1 == 2)  //Mobile input is a bit of hack and modifies each input instead of this coroutine, so we don't run it on mobile
+#else
+        while (true)
+#endif
+
         {
             bool HorizontalPriority = Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_X)) > Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_Y));
             List<ControllerInput> CurrentlyPressed = new List<ControllerInput>();
