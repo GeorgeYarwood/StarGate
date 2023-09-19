@@ -44,9 +44,7 @@ public class CameraController : MonoBehaviour
         transform.position = new(FinalTrack.x, FinalTrack.y, transform.position.z);
     }
 
-    void Update() => MatchBackgroundToLevel();
-
-    void MatchBackgroundToLevel()
+    public void MatchBackgroundToLevel()
     {
         Color CurrentLevelColour = GameController.AllLevels[GameController.CurrentLevel].BackgroundColour;
         thisCamera.backgroundColor = CurrentLevelColour;

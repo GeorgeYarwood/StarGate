@@ -209,7 +209,7 @@ public class EnemyBase : MonoBehaviour
         }
         //Just destroy this if it can't find a background to parent to so the game won't get softlocked
         GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Remove(this);
-        Debug.LogWarning(WARNING_MESSAGE);
+        Debug.LogWarning(name + " " + WARNING_MESSAGE);
         Destroy(gameObject);
     }
 

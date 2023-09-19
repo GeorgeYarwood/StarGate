@@ -35,6 +35,7 @@ public class FlyingState : GameStateBase
             || !GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised))
         {
             WorldScroller.Instance.ResetToZero(NewLevel: true);
+            CameraController.Instance.MatchBackgroundToLevel();
             //GameController.Instance.ResetPlayerPosition();
             LoadLevel(GameController.AllLevels[GameController.CurrentLevel]);
         }
@@ -400,8 +401,14 @@ public class FlyingState : GameStateBase
                 }
             }
         }
+        Vector3 SpawnPos = ReturnRandomSpawnPositionInRange();
+        if (EnemyTypes[RandomEnemyType].GetType() == typeof(StaticEnemy))
+        {
+            SpawnPos.y = 0;
+        }
+
         EnemyBase ThisEnemy = Instantiate(EnemyTypes[RandomEnemyType],
-            ReturnRandomSpawnPositionInRange(), Quaternion.identity);
+            SpawnPos, Quaternion.identity);
         ListToAddTo.Add(ThisEnemy);
     }
 

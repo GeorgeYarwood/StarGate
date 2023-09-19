@@ -6,6 +6,8 @@ using UnityEngine;
 //Kind of poorly named as we can animate this
 public class StaticEnemy : EnemyBase
 {
+    const string BACKGROUND_LAYER_MASK = "Background";
+
     [SerializeField] float timeBetweenShots = 1.5f;
     [SerializeField] bool shootAtPlayer;
 
@@ -15,6 +17,10 @@ public class StaticEnemy : EnemyBase
 
     FacingDirection lastFacingDirection = FacingDirection.RIGHT;
 
+    void Start()
+    {
+        base.backgroundLayerMask = LayerMask.GetMask(BACKGROUND_LAYER_MASK);
+    }
 
     public override void Init()
     {
