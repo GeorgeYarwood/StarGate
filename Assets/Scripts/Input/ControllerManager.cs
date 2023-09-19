@@ -138,6 +138,7 @@ public class ControllerManager : MonoBehaviour
         }
 
         Cursor.visible = GameController.Instance.GetCurrentGameState.AllowCursorVisible;
+        Cursor.lockState = GameController.Instance.GetCurrentGameState.AllowCursorVisible ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
     void OnSwitchToController()

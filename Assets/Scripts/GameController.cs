@@ -223,6 +223,8 @@ public class GameController : MonoBehaviour
     {
         AudioManager.Instance.StopAllLoops();
         StateToEnter.OnStateEnter();
+        Cursor.visible = StateToEnter.AllowCursorVisible;
+        Cursor.lockState = StateToEnter.AllowCursorVisible ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
     void TickCurrentState()

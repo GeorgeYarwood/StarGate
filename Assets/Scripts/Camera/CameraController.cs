@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum TrackAxis { X_AXIS, Y_AXIS, BOTH_AXIS }
@@ -7,6 +5,7 @@ public enum TrackAxis { X_AXIS, Y_AXIS, BOTH_AXIS }
 public class CameraController : MonoBehaviour
 {
     [SerializeField] Camera thisCamera;
+    [SerializeField] Camera backgroundCamera;
 
     static CameraController instance;
     public static CameraController Instance
@@ -43,6 +42,15 @@ public class CameraController : MonoBehaviour
                 break;
         }
         transform.position = new(FinalTrack.x, FinalTrack.y, transform.position.z);
+    }
+
+    void Update() => MatchBackgroundToLevel();
+
+    void MatchBackgroundToLevel()
+    {
+        Color CurrentLevelColour = GameController.AllLevels[GameController.CurrentLevel].BackgroundColour;
+        thisCamera.backgroundColor = CurrentLevelColour;
+        backgroundCamera.backgroundColor = CurrentLevelColour;
     }
 }
 

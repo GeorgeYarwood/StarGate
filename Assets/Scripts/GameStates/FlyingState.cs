@@ -20,7 +20,9 @@ public class FlyingState : GameStateBase
 
     public override void OnStateEnter()
     {
-        //base.allowCursorVisible = false;
+#if !FOR_MOBILE
+        base.allowCursorVisible = false;
+#endif
         acceptInput = false;
         PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel);
         if (GameController.AllLevels.Count == 0)
@@ -222,7 +224,6 @@ public class FlyingState : GameStateBase
         if (Input.GetButton(InputHolder.MOVE_DOWN) || ControllerManager.GetInput[(int)ControllerInput.DOWN_BUTTON].Pressed)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.DOWN);
-            Debug.Log("Down");
         }
         if (Input.GetButton(InputHolder.MOVE_LEFT) || ControllerManager.GetInput[(int)ControllerInput.LEFT_BUTTON].Pressed) 
         { 

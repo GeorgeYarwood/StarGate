@@ -2883,6 +2883,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thisCamera: {fileID: 519420031}
+  backgroundCamera: {fileID: 1465161347}
 --- !u!1 &521762913
 GameObject:
   m_ObjectHideFlags: 0
@@ -5300,8 +5301,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -46.475708, y: -63}
-  m_SizeDelta: {x: 592.9514, y: 269.0162}
+  m_AnchoredPosition: {x: -46.475708, y: -67.253}
+  m_SizeDelta: {x: 592.9514, y: 134.51}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1250535119
 MonoBehaviour:
@@ -5327,9 +5328,9 @@ MonoBehaviour:
   m_UVRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.25
     width: 1
-    height: 1
+    height: 0.4
 --- !u!222 &1250535120
 CanvasRenderer:
   m_ObjectHideFlags: 0
