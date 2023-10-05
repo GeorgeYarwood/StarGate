@@ -20,10 +20,6 @@ public class StaticEnemy : EnemyBase
     void Start()
     {
         base.backgroundLayerMask = LayerMask.GetMask(BACKGROUND_LAYER_MASK);
-    }
-
-    public override void Init()
-    {
         if (shootAtPlayer)
         {
             StartCoroutine(FireAtPlayer());

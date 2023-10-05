@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum EnemyType //Used for comparison checks
@@ -100,11 +98,22 @@ public class EnemyBase : MonoBehaviour
             }
 
             HandleDialogue(DialogueQueuePoint.AT_HP);
+
             return;
         }
+#if FOR_MOBILE
+        Handheld.Vibrate();
+#else
+        if (ControllerManager.InputMethod is CurrentInputMethod.CONTROLLER)
+        {
+            ControllerManager.Instance.VibrateController();
+        }
+#endif
 
         OnDie();
     }
+
+   
 
     public virtual void OnDie()
     {

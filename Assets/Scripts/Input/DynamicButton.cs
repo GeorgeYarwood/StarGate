@@ -16,7 +16,7 @@ public class DynamicButton : MonoBehaviour
 
     void OnEnable()
     {
-        SwitchButtonSprite(ControllerManager.InputMethod);
+        //SwitchButtonSprite(ControllerManager.InputMethod);
     }
 
     void SwitchButtonSprite(CurrentInputMethod NewMethod)

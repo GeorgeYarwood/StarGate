@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using XInputDotNetPure;
 
 public enum ControllerInput
 {
@@ -64,6 +65,9 @@ public class ControllerManager : MonoBehaviour
         get { return switchToController; }
         set { switchToController = value; }
     }
+
+    const float VIBRATION_PULSE_TIMER = 0.15f;
+    const float VIBRATION_PULSE_AMOUNT= 0.4f;
 
     void Start()
     {
@@ -150,6 +154,18 @@ public class ControllerManager : MonoBehaviour
     {
         return Input.GetButton(InputHolder.MOVE_UP) || Input.GetButton(InputHolder.MOVE_DOWN) || Input.GetButton(InputHolder.MOVE_LEFT) || Input.GetButton(InputHolder.MOVE_RIGHT)
             || Input.GetButton(InputHolder.FIRE) || Input.mousePosition != (Vector3)lastMousePos;
+    }
+
+    public void VibrateController()
+    {
+        StartCoroutine(HandleVibration());
+    }
+
+    IEnumerator HandleVibration()
+    {
+        GamePad.SetVibration(0, VIBRATION_PULSE_AMOUNT, VIBRATION_PULSE_AMOUNT); //Unity doesn't have this?? So need to use an XInput library
+        yield return new WaitForSeconds(VIBRATION_PULSE_TIMER);
+        GamePad.SetVibration(0, 0.0f, 0.0f);
     }
 
     Vector2 lastMousePos = Vector2.zero;

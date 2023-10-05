@@ -30,7 +30,6 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
         }
         held = true;
 
-
         Vector2 NormalisedMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (NormalisedMousePos.y > 1.5f)
         {
