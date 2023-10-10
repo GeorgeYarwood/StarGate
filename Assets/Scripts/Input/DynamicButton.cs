@@ -17,6 +17,9 @@ public class DynamicButton : MonoBehaviour
     void OnEnable()
     {
         //SwitchButtonSprite(ControllerManager.InputMethod);
+#if FOR_MOBILE //Mobile just uses a tap
+        gameObject.SetActive(false);
+#endif
     }
 
     void SwitchButtonSprite(CurrentInputMethod NewMethod)

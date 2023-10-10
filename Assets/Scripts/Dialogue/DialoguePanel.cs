@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class DialoguePanel : MonoBehaviour
+public class DialoguePanel : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] TextMeshProUGUI dialogueText;
     [SerializeField] GameObject panelGo;    //What we hide and show
@@ -29,7 +30,8 @@ public class DialoguePanel : MonoBehaviour
 
     bool InPauseMenu
     {
-        get {
+        get
+        {
             return GameController.Instance.GetCurrentGameState.GetType()
             == typeof(PauseGameState);
         }
@@ -45,7 +47,7 @@ public class DialoguePanel : MonoBehaviour
 
     void Start()
     {
-        if(instance != null)
+        if (instance != null)
         {
             Destroy(this);
         }
@@ -58,30 +60,37 @@ public class DialoguePanel : MonoBehaviour
 
     bool pauseResume = false;
 
+    void SkipDialogue()
+    {
+        if (isPrinting)
+        {
+            StopAllCoroutines();
+            dialogueText.text = lastText;
+            isPrinting = false;
+        }
+        else
+        {
+            panelGo.SetActive(false);
+        }
+    }
+
     void Update()
     {
-        if(Input.GetButtonDown(InputHolder.SKIP_DIALOGUE_BUTTON) || (ControllerManager.GetInput[(int)ControllerInput.X_BUTTON].Pressed && !ControllerManager.Consumed))
+#if !FOR_MOBILE
+        if (Input.GetButtonDown(InputHolder.SKIP_DIALOGUE_BUTTON) || (ControllerManager.GetInput[(int)ControllerInput.X_BUTTON].Pressed && !ControllerManager.Consumed))
         {
-            if (isPrinting)
-            {
-                StopAllCoroutines();
-                dialogueText.text = lastText;
-                isPrinting = false;
-            }
-            else
-            {
-                panelGo.SetActive(false);
-            }
+            SkipDialogue();
         }
+#endif
 
-        if(GameController.Instance.GetCurrentGameState.GetType()
+        if (GameController.Instance.GetCurrentGameState.GetType()
             == typeof(PauseGameState) && panelGo.activeInHierarchy)
         {
             panelGo.SetActive(false);
             StopAllCoroutines();
             pauseResume = true;
         }
-        else if(GameController.Instance.LastGameState &&
+        else if (GameController.Instance.LastGameState &&
             GameController.Instance.LastGameState.GetType()
             == typeof(PauseGameState) && pauseResume)
         {
@@ -90,7 +99,7 @@ public class DialoguePanel : MonoBehaviour
             pauseResume = false;
         }
 
-        if(!isPrinting && panelGo.activeInHierarchy)    //Close the panel after time
+        if (!isPrinting && panelGo.activeInHierarchy)    //Close the panel after time
         {
             StartCoroutine(AutoClosePanel());
         }
@@ -104,7 +113,7 @@ public class DialoguePanel : MonoBehaviour
             ThisTime -= 1.0f * Time.deltaTime;
             yield return null;
         }
-        if(!isPrinting)
+        if (!isPrinting)
         {
             panelGo.SetActive(false);
         }
@@ -115,7 +124,7 @@ public class DialoguePanel : MonoBehaviour
     {
         panelGo.SetActive(true);
         isPrinting = true;
-        if(Iterator == 0)
+        if (Iterator == 0)
         {
             lastText = Text;
             dialogueText.text = "";
@@ -145,5 +154,12 @@ public class DialoguePanel : MonoBehaviour
             }
         }
         isPrinting = false;
+    }
+
+    public void OnPointerClick(PointerEventData _)
+    {
+#if FOR_MOBILE
+        SkipDialogue();
+#endif
     }
 }
