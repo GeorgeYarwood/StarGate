@@ -153,7 +153,7 @@ public class ControllerManager : MonoBehaviour
     bool AnyKeyboardMouseInput() //Input.anyKey was being a dick so I just wrote my own
     {
         return Input.GetButton(InputHolder.MOVE_UP) || Input.GetButton(InputHolder.MOVE_DOWN) || Input.GetButton(InputHolder.MOVE_LEFT) || Input.GetButton(InputHolder.MOVE_RIGHT)
-            || Input.GetButton(InputHolder.FIRE) || Input.mousePosition != (Vector3)lastMousePos;
+            || Input.GetButton(InputHolder.FIRE) || Input.mousePosition != lastMousePos;
     }
 
     public void VibrateController()
@@ -168,7 +168,7 @@ public class ControllerManager : MonoBehaviour
         GamePad.SetVibration(0, 0.0f, 0.0f);
     }
 
-    Vector2 lastMousePos = Vector2.zero;
+    Vector3 lastMousePos = Vector3.zero;
     CurrentInputMethod GetCurrentInputMethod()
     {
         CurrentInputMethod ToReturn = inputMethod;
@@ -206,7 +206,6 @@ public class ControllerManager : MonoBehaviour
 #else
         while (true)
 #endif
-
         {
             bool HorizontalPriority = Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_X)) > Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_Y));
             List<ControllerInput> CurrentlyPressed = new List<ControllerInput>();
@@ -362,7 +361,10 @@ public class ControllerManager : MonoBehaviour
     public bool AnyControllerInput()
     {
         return Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0
-            || Input.GetAxis(InputHolder.CONTROLLER_JOY_X) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0;
+            || Input.GetAxis(InputHolder.CONTROLLER_JOY_X) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0
+            || Input.GetButton(InputHolder.CONTROLLER_A_BUTTON) /*|| Input.GetButton(InputHolder.CONTROLLER_B_BUTTON) Never actually set this one up lmao*/
+            || Input.GetButton(InputHolder.CONTROLLER_X_BUTTON) /* || Input.GetButton(InputHolder.CONTROLLER_Y_BUTTON) or this one*/
+            || Input.GetButton(InputHolder.CONTROLLER_START_BUTTON);
     }
 
     public IEnumerator WaitForFrame(ControllerInput JustReleased)
