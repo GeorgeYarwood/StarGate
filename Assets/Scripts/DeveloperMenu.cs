@@ -84,6 +84,7 @@ public class DeveloperMenu : MonoBehaviour
 
     void Update()
     {
+#if UNITY_EDITOR
         if (Input.GetButtonDown(InputHolder.DEVELOPER_MENU))
         {
             menuOpen = !menuOpen;
@@ -97,5 +98,6 @@ public class DeveloperMenu : MonoBehaviour
                 Cursor.lockState = CursorLockMode.Locked;
             }
         }
+#endif
     }
 }
