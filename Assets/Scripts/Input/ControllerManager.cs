@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if !FOR_MOBILE
 using XInputDotNetPure;
-
+#endif
 public enum ControllerInput
 {
     UP_BUTTON,
@@ -163,9 +164,13 @@ public class ControllerManager : MonoBehaviour
 
     IEnumerator HandleVibration()
     {
+ #if !FOR_MOBILE
         GamePad.SetVibration(0, VIBRATION_PULSE_AMOUNT, VIBRATION_PULSE_AMOUNT); //Unity doesn't have this?? So need to use an XInput library
+#endif
         yield return new WaitForSeconds(VIBRATION_PULSE_TIMER);
+#if !FOR_MOBILE
         GamePad.SetVibration(0, 0.0f, 0.0f);
+#endif
     }
 
     Vector3 lastMousePos = Vector3.zero;
