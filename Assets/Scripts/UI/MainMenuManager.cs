@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class MainMenuManager : MonoBehaviour, TestInterface
     [SerializeField] AudioClip mainMenuSong;
     [SerializeField] Slider musicVolumeSlider;
     [SerializeField] Slider sfxVolumeSlider;
+    [SerializeField] Toggle toggleVibration;
 
     void OnEnable()
     {
@@ -40,6 +42,14 @@ public class MainMenuManager : MonoBehaviour, TestInterface
         else
         {
             sfxVolumeSlider.value = DEFAULT_VOLUME;
+        }
+        if(PlayerPrefs.HasKey(InputHolder.VIBRATION))
+        {
+            toggleVibration.isOn = Convert.ToBoolean(PlayerPrefs.GetInt(InputHolder.VIBRATION));
+        }
+        else
+        {
+            toggleVibration.isOn = true;
         }
     }
 
@@ -85,6 +95,11 @@ public class MainMenuManager : MonoBehaviour, TestInterface
     {
         PlayerPrefs.SetFloat(InputHolder.MUSIC_VOLUME, ThisSlider.value);
         AudioManager.Instance.ForceUpdateSourceVolumes();
+    }
+
+    public void SetVibrationEnabled(bool Setting)
+    {
+        PlayerPrefs.SetInt(InputHolder.VIBRATION, Convert.ToInt32(Setting));
     }
 
     void QuitGame()

@@ -37,10 +37,7 @@ public class MenuControllerNav : MonoBehaviour
         {
             previousNav.SetActive(false);
         }
-    }
 
-    void Start()
-    {
         currentArea = allAreas[currentAreaIndex];
         ControllerManager.Instance.SwitchToKeyboardMouse += (() => HighlightSelected(false));
         ControllerManager.Instance.SwitchToController += (() => HighlightSelected(true));
@@ -178,7 +175,12 @@ public class MenuControllerNav : MonoBehaviour
 
     void InteractWithSelectable()
     {
-        (currentArea.AreaNavSelectables[selectionIndex].ToInteractWith as Button).onClick.Invoke();
+        (currentArea.AreaNavSelectables[selectionIndex].ToInteractWith as Button)?.onClick.Invoke();
+        if(currentArea.AreaNavSelectables[selectionIndex].ToInteractWith as Toggle)
+        {
+            (currentArea.AreaNavSelectables[selectionIndex].ToInteractWith as Toggle).isOn =
+                !(currentArea.AreaNavSelectables[selectionIndex].ToInteractWith as Toggle).isOn;
+        }
     }
 
     Slider InteractingWithSlider()

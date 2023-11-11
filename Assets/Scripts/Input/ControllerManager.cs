@@ -159,6 +159,10 @@ public class ControllerManager : MonoBehaviour
 
     public void VibrateController()
     {
+        if (!GameController.VibrationEnabled)
+        {
+            return;
+        }
         StartCoroutine(HandleVibration());
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -102,6 +103,11 @@ public class GameController : MonoBehaviour
     public bool BlockStateExit
     {
         set { blockStateExit = value; }
+    }
+
+    public static bool VibrationEnabled
+    {
+        get { return Convert.ToBoolean(PlayerPrefs.GetInt(InputHolder.VIBRATION)); }
     }
 
     void Start()
@@ -236,10 +242,7 @@ public class GameController : MonoBehaviour
         gameStates.Peek().Tick();
     }
 
-    void Update()
-    {
-        TickCurrentState();
-    }
+    void Update() => TickCurrentState();
 
     public void OnPlayerDeath()
     {

@@ -101,14 +101,17 @@ public class EnemyBase : MonoBehaviour
 
             return;
         }
+        if (GameController.VibrationEnabled)
+        {
 #if FOR_MOBILE
         Handheld.Vibrate();
 #else
-        if (ControllerManager.InputMethod is CurrentInputMethod.CONTROLLER)
-        {
-            ControllerManager.Instance.VibrateController();
-        }
+            if (ControllerManager.InputMethod is CurrentInputMethod.CONTROLLER)
+            {
+                ControllerManager.Instance.VibrateController();
+            }
 #endif
+        }
 
         OnDie();
     }

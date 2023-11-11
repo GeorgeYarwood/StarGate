@@ -114,7 +114,7 @@ public class FlyingState : GameStateBase
     bool acceptInput = false;
     IEnumerator WaitFrameForInput()
     {
-        //One-time consuing of 'a' button on state enter
+        //One-time consuming of 'a' button on state enter
         acceptInput = false;
         yield return new WaitUntil(() => !ControllerManager.GetInput[(int)ControllerInput.SELECT].Pressed);
         acceptInput = true;

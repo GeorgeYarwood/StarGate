@@ -36,4 +36,5 @@ public class InputHolder : MonoBehaviour
     public const string LAST_LEVEL = "LastLevel";
     public const string MUSIC_VOLUME = "MusicVolume";
     public const string SFX_VOLUME = "SfxVolume";
+    public const string VIBRATION = "Vibration";
 }
