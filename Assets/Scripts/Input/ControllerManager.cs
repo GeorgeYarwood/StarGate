@@ -70,7 +70,7 @@ public class ControllerManager : MonoBehaviour
     const float VIBRATION_PULSE_TIMER = 0.15f;
     const float VIBRATION_PULSE_AMOUNT= 0.4f;
 
-    void Start()
+    void Awake()
     {
         if (instance != null)
         {
