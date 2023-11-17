@@ -121,7 +121,7 @@ public class GameController : MonoBehaviour
             Destroy(this);
         }
 
-        if(CurrentLevel > 0) 
+        if(CurrentLevel > 0 && PlayerPrefs.HasKey(InputHolder.CURRENT_LIVES)) //Keep compatibility with older prefs
         {
             currentLives = PlayerPrefs.GetInt(InputHolder.CURRENT_LIVES);
         }
