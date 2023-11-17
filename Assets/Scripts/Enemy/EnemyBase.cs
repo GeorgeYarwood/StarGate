@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public enum EnemyType //Used for comparison checks
@@ -9,6 +10,7 @@ public enum EnemyType //Used for comparison checks
 
 public class EnemyBase : MonoBehaviour
 {
+    const float CLEANUP_TIMER = 10.0f; //Will check to see if we're not on a background at this interval and destroy if so
     const string BACKGROUND_LAYER_MASK = "Background";
     const string WARNING_MESSAGE = "This enemy couldn't find a background to parent to, so has destroyed itself to prevent a softlock! This isn't good!";
 
@@ -116,8 +118,6 @@ public class EnemyBase : MonoBehaviour
         OnDie();
     }
 
-   
-
     public virtual void OnDie()
     {
         GameController.Instance.AddScore(scoreAddition);
@@ -180,16 +180,32 @@ public class EnemyBase : MonoBehaviour
         {
             return; //Only tick enemies in flyingstate
         }
+
         if (Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= encounterDistance
             && !hasRunFirstEncounter)
         {
             HandleDialogue(DialogueQueuePoint.ON_ENCOUNTER);
             hasRunFirstEncounter = true;
         }
+
         Tick();
+
         if (waitingToDie && !deathVfx.isPlaying)
         {
             Destroy(gameObject);
+        }
+    }
+
+    IEnumerator CleanUpTimer()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(CLEANUP_TIMER);
+
+            if (!OnBackground(out _))
+            {
+                DestroyToPeventSoftlock();
+            }
         }
     }
 
@@ -211,18 +227,34 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    public void ParentToBackground()
+    bool OnBackground(out Transform ColliderTransform)
     {
+        ColliderTransform = null;
         RaycastHit2D Centre = Physics2D.Raycast(transform.position, transform.forward, 1.0f, backgroundLayerMask);
         if (Centre.collider)
         {
-            transform.parent = Centre.collider.transform;
-            return;
+            ColliderTransform = Centre.collider.transform;
         }
-        //Just destroy this if it can't find a background to parent to so the game won't get softlocked
+        return Centre.collider;
+    }
+
+    void DestroyToPeventSoftlock()
+    {
         GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Remove(this);
         Debug.LogWarning(name + " " + WARNING_MESSAGE);
         Destroy(gameObject);
+    }
+
+    public void ParentToBackground()
+    {
+        Transform Hit;
+        if (OnBackground(out Hit))
+        {
+            transform.parent = Hit;
+            return;
+        }
+        //Just destroy this if it can't find a background to parent to so the game won't get softlocked
+        DestroyToPeventSoftlock();
     }
 
     public void CorrectPosition(float Xadjustment, float Xmin, float Xmax, bool Positive)
@@ -247,6 +279,7 @@ public class EnemyBase : MonoBehaviour
     {
         backgroundLayerMask = LayerMask.GetMask(BACKGROUND_LAYER_MASK);
         ParentToBackground();
+        StartCoroutine(CleanUpTimer());
     }
 
     public virtual void Tick()

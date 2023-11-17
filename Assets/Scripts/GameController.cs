@@ -121,7 +121,16 @@ public class GameController : MonoBehaviour
             Destroy(this);
         }
 
-        currentLives = startingLives;
+        if(CurrentLevel > 0) 
+        {
+            currentLives = PlayerPrefs.GetInt(InputHolder.CURRENT_LIVES);
+        }
+        else
+        {
+            currentLives = startingLives;
+            PlayerPrefs.SetInt(InputHolder.CURRENT_LIVES, currentLives);
+        }
+
         ResetAllLevels();
         ResetPlayerPosition();
         //Temp until menu/state loading is added
@@ -249,6 +258,7 @@ public class GameController : MonoBehaviour
         if(currentLives - 1 >= 0)
         {
             currentLives--;
+            PlayerPrefs.SetInt(InputHolder.CURRENT_LIVES, currentLives);    //Save this so we can't cheat by exiting and re-entering
             PowerUpManager.Instance.EndAllPowerUps();
             PowerUpManager.Instance.ClearPowerUps();
             DestroyAllProjectiles();
