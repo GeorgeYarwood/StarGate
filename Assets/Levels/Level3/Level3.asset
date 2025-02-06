@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level3
   m_EditorClassIdentifier: 
   levelSong: {fileID: 8300000, guid: c137917247d9a39448f5b609f45f7233, type: 3}
-  enemiesPerLevel: 15
+  enemiesPerLevel: 1
   enemyTypesToSpawn:
   - {fileID: 4595976911009530009, guid: 4926f7e9b0c22b04196b4fb1d1cd05d3, type: 3}
   subLevel: {fileID: 0}

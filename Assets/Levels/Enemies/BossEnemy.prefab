@@ -166,7 +166,7 @@ MonoBehaviour:
   hitVfx: {fileID: 7709306502991214686}
   deathSfx: {fileID: 8300000, guid: 5bc7d9c3a4a65524f8dea6b7905b802f, type: 3}
   hitSfx: {fileID: 8300000, guid: d9f636ef0697b3c47b0483e4cdf0c06e, type: 3}
-  canDropOnDeath: {fileID: 0}
+  canDropOnDeath: []
   alwaysDrop: 0
   enemyDialogue:
   - {fileID: 11400000, guid: 54bc4f51311826c49996b20175d8de12, type: 2}

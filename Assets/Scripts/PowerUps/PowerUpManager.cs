@@ -8,8 +8,13 @@ using Random = UnityEngine.Random;
 public enum PowerUpType 
 {
     RAPID_FIRE,
-    SPEED_BOOST
+    SPEED_BOOST,
+    DOUBLE_LASER
 }
+
+//Powerup ideas
+//Invincibility
+//Double lasers
 
 public class PowerUpManager : MonoBehaviour
 {
@@ -71,6 +76,7 @@ public class PowerUpManager : MonoBehaviour
     {
         allPowerups.Add(PowerUpType.RAPID_FIRE, new PowerUpContainer(PlayerShip.Instance.RapidFirePowerUp, PlayerShip.Instance.EndRapidFirePowerUp));
         allPowerups.Add(PowerUpType.SPEED_BOOST, new PowerUpContainer(PlayerShip.Instance.SpeedBoostPowerUp, PlayerShip.Instance.EndSpeedBoostPowerUp));
+        allPowerups.Add(PowerUpType.DOUBLE_LASER, new PowerUpContainer(PlayerShip.Instance.DoubleLaserPowerUp, PlayerShip.Instance.EndDoubleLaserPowerUp));
     }
     
     public void EndAllPowerUps()

@@ -12,6 +12,7 @@ public enum MoveDirection
 
 public enum FacingDirection
 {
+    NONE,
     LEFT,
     RIGHT
 }
@@ -19,7 +20,8 @@ public enum FacingDirection
 public enum WeaponFireMode
 {
     SINGLE,
-    RAPID
+    RAPID,
+    DOUBLE
 }
 
 public class PlayerShip : MonoBehaviour
@@ -47,7 +49,8 @@ public class PlayerShip : MonoBehaviour
     const float PROJECTILE_SPAWN_MODIFIER = 1.2f;
     const float SINGLE_FIRE_LOCKOUT_TIMER = 1.0f;
     const float RAPID_FIRE_LOCKOUT_TIMER = 0.15f;
-    const float RAPID_FIRE_EFFECT_TIMER = 3.0f;
+    const float RAPID_FIRE_EFFECT_TIMER = 5.0f;
+    const float DOUBLE_LASER_TIMER = 4.0f;
     const float PLAYER_COAST_TIMER = 1.2f; //How long the player will coast after releasing input
     const float BOOST_EFFECT_TIMER = 2.0f; //Stops player just holding boost forever
 
@@ -100,6 +103,18 @@ public class PlayerShip : MonoBehaviour
     public Action EndSpeedBoostPowerUp
     {
         get { return endSpeedBoostPowerUp; }
+    }
+
+    Action doubleLaserPowerUp;
+    public Action DoubleLaserPowerUp
+    {
+        get { return doubleLaserPowerUp; }
+    }
+
+    Action endDoubleLaserPowerUp;
+    public Action EndDoubleLaserPowerUp
+    {
+        get { return endDoubleLaserPowerUp; }
     }
 
     public void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false, bool FastSpeed = false)
@@ -207,7 +222,7 @@ public class PlayerShip : MonoBehaviour
         transform.position = Vector3.zero;
     }
 
-    public void FireProjectile()
+    public void FireProjectile(FacingDirection ForceDir = FacingDirection.NONE)
     {
         if (!canFire)
         {
@@ -216,20 +231,30 @@ public class PlayerShip : MonoBehaviour
 
         Vector2 FireDirection = new();
         Vector2 ActualProjectileSpawn = ProjectileSpawn.transform.position;
-        switch (playerIsFacing)
+
+        FacingDirection Dir = ForceDir == FacingDirection.NONE ? playerIsFacing : ForceDir;
+        switch (Dir)
         {
             case FacingDirection.LEFT:
                 FireDirection = -Vector2.right;
                 ActualProjectileSpawn.x -= PROJECTILE_SPAWN_MODIFIER;
+                if(currentFireMode == WeaponFireMode.DOUBLE && ForceDir == FacingDirection.NONE) 
+                {
+                    FireProjectile(ForceDir: FacingDirection.RIGHT);
+                }
                 break;
             case FacingDirection.RIGHT:
                 FireDirection = Vector2.right;
                 ActualProjectileSpawn.x += PROJECTILE_SPAWN_MODIFIER;
+                if (currentFireMode == WeaponFireMode.DOUBLE && ForceDir == FacingDirection.NONE)
+                {
+                    FireProjectile(ForceDir: FacingDirection.LEFT);
+                }
                 break;
         }
 
         LaserProjectile ProjectileToSpawn;
-        if (currentFireMode == WeaponFireMode.SINGLE)
+        if (currentFireMode != WeaponFireMode.RAPID)
         {
             ProjectileToSpawn = singleFireProjectilePrefab;
         }
@@ -240,7 +265,7 @@ public class PlayerShip : MonoBehaviour
         //Make sure we spawn infront/behind player not inside
         LaserProjectile ProjectileInstance =
             Instantiate(ProjectileToSpawn, ActualProjectileSpawn, Quaternion.Euler(FireDirection));
-        ProjectileInstance.ProjectileIsFacing = playerIsFacing;
+        ProjectileInstance.ProjectileIsFacing = Dir;
         GameController.Instance.FlyingStateInstance.
             ProjectilesInScene.Add(ProjectileInstance.gameObject);
         AudioManager.Instance.PlayAudioClip(fireSfx, RandomPitch: true);
@@ -255,6 +280,28 @@ public class PlayerShip : MonoBehaviour
     void EndSpeedBoostEffect()
     {
         isBoosting = false;
+    }
+
+    void HandleDoubleLaserEffect() 
+    {   
+        //TODO extend currently held effects
+        if (currentFireMode == WeaponFireMode.DOUBLE) 
+        {
+            return;
+        }
+        StartCoroutine(DoubleLaserTimer());
+    }
+
+    IEnumerator DoubleLaserTimer()
+    {
+        currentFireMode = WeaponFireMode.DOUBLE;
+        yield return new WaitForSeconds(DOUBLE_LASER_TIMER);
+        EndDoubleLaserEffect();
+    }
+
+    void EndDoubleLaserEffect()
+    {
+        currentFireMode = WeaponFireMode.SINGLE;
     }
 
     //IEnumerator HandleMapLoopSpeedBoost(bool Positive) //Speeds us past the janky map repeating so no one sees how bad it is
@@ -323,6 +370,9 @@ public class PlayerShip : MonoBehaviour
 
         speedBoostPowerUp += HandleSpeedBoostEffect;
         endSpeedBoostPowerUp += EndSpeedBoostEffect;
+
+        doubleLaserPowerUp += HandleDoubleLaserEffect;
+        endDoubleLaserPowerUp += EndDoubleLaserEffect;
     }
 
     IEnumerator FireLockOutTimer()

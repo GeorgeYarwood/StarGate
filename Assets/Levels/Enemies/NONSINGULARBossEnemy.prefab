@@ -72,6 +72,10 @@ PrefabInstance:
       propertyPath: onePerLevel
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4595976911009530009, guid: 4926f7e9b0c22b04196b4fb1d1cd05d3, type: 3}
+      propertyPath: canDropOnDeath.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 4926f7e9b0c22b04196b4fb1d1cd05d3, type: 3}

@@ -31,7 +31,7 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] ParticleSystem hitVfx;
     [SerializeField] AudioClip deathSfx;
     [SerializeField] AudioClip hitSfx;
-    [SerializeField] PowerUp canDropOnDeath;
+    [SerializeField] PowerUp[] canDropOnDeath = new PowerUp[0];
     [SerializeField] bool alwaysDrop = false;
     [SerializeField] Dialogue[] enemyDialogue = new Dialogue[3];
     [SerializeField] bool onePerLevel = false;
@@ -123,9 +123,14 @@ public class EnemyBase : MonoBehaviour
         GameController.Instance.AddScore(scoreAddition);
         GameController.Instance.FlyingStateInstance.RemoveEnemyFromList(this);
         HandleDialogue(DialogueQueuePoint.ON_DEATH);
-        if (canDropOnDeath)
+        if (canDropOnDeath.Length > 0)
         {
-            PowerUpManager.Instance.DropRandomPowerUpAtPosition(transform.position, canDropOnDeath, ForceSpawn: alwaysDrop);
+            PowerUp toDrop = canDropOnDeath[0];
+            if (!alwaysDrop && canDropOnDeath.Length > 1) 
+            {
+                toDrop = canDropOnDeath[Random.Range(0, canDropOnDeath.Length - 1)];
+            }
+            PowerUpManager.Instance.DropRandomPowerUpAtPosition(transform.position, toDrop, ForceSpawn: alwaysDrop);
         }
         if (deathSfx)
         {
