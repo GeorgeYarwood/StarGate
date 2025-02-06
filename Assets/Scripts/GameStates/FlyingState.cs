@@ -249,25 +249,12 @@ public class FlyingState : GameStateBase
             return;
         }
 
-        if (Input.GetButtonUp(InputHolder.MOVE_UP) || ControllerManager.GetInput[(int)ControllerInput.UP_BUTTON].JustReleased)
+        if (Input.GetButtonUp(InputHolder.MOVE_UP) || ControllerManager.GetInput[(int)ControllerInput.UP_BUTTON].JustReleased
+            || Input.GetButtonUp(InputHolder.MOVE_DOWN) || ControllerManager.GetInput[(int)ControllerInput.DOWN_BUTTON].JustReleased
+            || Input.GetButtonUp(InputHolder.MOVE_LEFT) || ControllerManager.GetInput[(int)ControllerInput.LEFT_BUTTON].JustReleased
+            || Input.GetButtonUp(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].JustReleased)
         {   
-            PlayerShip.Instance.CoastPlayerCoroutine =
-                StartCoroutine(PlayerShip.Instance.CoastPlayer());
-        }
-        if (Input.GetButtonUp(InputHolder.MOVE_DOWN) || ControllerManager.GetInput[(int)ControllerInput.DOWN_BUTTON].JustReleased)
-        {
-            PlayerShip.Instance.CoastPlayerCoroutine =
-                StartCoroutine(PlayerShip.Instance.CoastPlayer());
-        }
-        if (Input.GetButtonUp(InputHolder.MOVE_LEFT) || ControllerManager.GetInput[(int)ControllerInput.LEFT_BUTTON].JustReleased)
-        {
-            PlayerShip.Instance.CoastPlayerCoroutine =
-                StartCoroutine(PlayerShip.Instance.CoastPlayer());
-        }
-        if (Input.GetButtonUp(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].JustReleased)
-        {
-            PlayerShip.Instance.CoastPlayerCoroutine =
-                StartCoroutine(PlayerShip.Instance.CoastPlayer());
+            StartCoroutine(PlayerShip.Instance.CoastPlayer());
         }
     }
 

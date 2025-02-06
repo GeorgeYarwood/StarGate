@@ -196,19 +196,6 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    IEnumerator CleanUpTimer()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(CLEANUP_TIMER);
-
-            if (!OnBackground(out _))
-            {
-                DestroyToPeventSoftlock();
-            }
-        }
-    }
-
     void OnEnable()
     {
         ResetDialogue();
@@ -230,7 +217,8 @@ public class EnemyBase : MonoBehaviour
     bool OnBackground(out Transform ColliderTransform)
     {
         ColliderTransform = null;
-        RaycastHit2D Centre = Physics2D.Raycast(transform.position, transform.forward, 1.0f, backgroundLayerMask);
+        Vector2 BoxSize = new Vector2(spriteRenderer.sprite.bounds.size.x, spriteRenderer.sprite.bounds.size.y);
+        RaycastHit2D Centre = Physics2D.BoxCast(transform.position, BoxSize, 0.0f, transform.forward, 1.0f, backgroundLayerMask);
         if (Centre.collider)
         {
             ColliderTransform = Centre.collider.transform;
@@ -245,7 +233,28 @@ public class EnemyBase : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void ParentToBackground()
+    void ParentToRandomBackground()
+    {
+        Vector3 NewPos = Vector3.zero;
+        int Sel = Random.Range(1, 3);
+        if(Sel == 1)
+        {
+            NewPos = WorldScroller.Instance.LeftWorldSection.transform.position;
+        }
+        else if(Sel == 1)
+        {
+            NewPos = WorldScroller.Instance.MiddleWorldSection.transform.position;
+        }
+        else
+        {
+            NewPos = WorldScroller.Instance.RightWorldSection.transform.position;
+        }
+
+        transform.position = NewPos;
+        ParentToBackground(DestroyIfFail: true);
+    }
+
+    public void ParentToBackground(bool DestroyIfFail = false)
     {
         Transform Hit;
         if (OnBackground(out Hit))
@@ -253,8 +262,15 @@ public class EnemyBase : MonoBehaviour
             transform.parent = Hit;
             return;
         }
-        //Just destroy this if it can't find a background to parent to so the game won't get softlocked
-        DestroyToPeventSoftlock();
+
+        if (DestroyIfFail)
+        {
+            DestroyToPeventSoftlock();
+            return;
+        }
+
+        //Unable to parent to background, so just TP to random one
+        ParentToRandomBackground();
     }
 
     public void CorrectPosition(float Xadjustment, float Xmin, float Xmax, bool Positive)
@@ -279,7 +295,6 @@ public class EnemyBase : MonoBehaviour
     {
         backgroundLayerMask = LayerMask.GetMask(BACKGROUND_LAYER_MASK);
         ParentToBackground();
-        StartCoroutine(CleanUpTimer());
     }
 
     public virtual void Tick()

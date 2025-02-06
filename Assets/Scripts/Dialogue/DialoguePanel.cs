@@ -64,9 +64,8 @@ public class DialoguePanel : MonoBehaviour, IPointerClickHandler
     {
         if (isPrinting)
         {
-            StopAllCoroutines();
-            dialogueText.text = lastText;
             isPrinting = false;
+            dialogueText.text = lastText;
         }
         else
         {
@@ -129,9 +128,9 @@ public class DialoguePanel : MonoBehaviour, IPointerClickHandler
             lastText = Text;
             dialogueText.text = "";
         }
-        while (dialogueText.text.Length < Text.Length)
+        while (Iterator < Text.Length)
         {
-            if (InPauseMenu)
+            if (InPauseMenu || !isPrinting)
             {
                 break;
             }
@@ -152,6 +151,11 @@ public class DialoguePanel : MonoBehaviour, IPointerClickHandler
             {
                 yield return new WaitForSeconds(PRINTING_SPEED);
             }
+        }
+
+        if (!isPrinting)
+        {
+            lastIterator = 0;
         }
         isPrinting = false;
     }

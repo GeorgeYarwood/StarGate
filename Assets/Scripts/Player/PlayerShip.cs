@@ -67,12 +67,6 @@ public class PlayerShip : MonoBehaviour
     MoveDirection lastDirection;
     WeaponFireMode currentFireMode = WeaponFireMode.SINGLE;
 
-    Coroutine coastPlayerCoroutine;
-    public Coroutine CoastPlayerCoroutine
-    {
-        set { coastPlayerCoroutine = value; }
-    }
-
     static PlayerShip instance;
     public static PlayerShip Instance
     {
@@ -122,12 +116,7 @@ public class PlayerShip : MonoBehaviour
             }
             AudioManager.Instance.PlayLoopedAudioClip(engineSfx, EndLoop: true);
         }
-        else if (coastPlayerCoroutine != null)
-        {
-            StopCoroutine(coastPlayerCoroutine);
-        }
-
-        if (!Coasting)
+       else
         {
             AudioManager.Instance.PlayLoopedAudioClip(engineSfx);
             if (isBoosting)
@@ -366,8 +355,12 @@ public class PlayerShip : MonoBehaviour
             UpdatePosition(lastDirection, Coasting: true);
             ThisTimer -= 1.0f * Time.deltaTime;
             yield return null;
+
+            if (Input.anyKey)
+            {
+                break;
+            }
         }
-        coastPlayerCoroutine = null;
     }
 
     void OnDestroy()

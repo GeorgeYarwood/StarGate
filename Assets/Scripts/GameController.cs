@@ -203,7 +203,7 @@ public class GameController : MonoBehaviour
             ExitPrevState(gameStates.Peek());
         }
 
-        GameStateBase StateToLoad = new();
+        GameStateBase StateToLoad = null;
 
         switch (State)
         {
@@ -222,6 +222,11 @@ public class GameController : MonoBehaviour
             case GameStates.PAUSE:
                 StateToLoad = pauseGameState;
                 break;
+        }
+
+        if (!StateToLoad)
+        {
+            return;
         }
 
         gameStates.Push(StateToLoad);

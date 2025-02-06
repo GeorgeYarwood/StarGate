@@ -11,8 +11,21 @@ public enum BackgroundDirection
 public class WorldScroller : MonoBehaviour
 {
     [SerializeField] SpriteRenderer leftWorldSection;
+    public SpriteRenderer LeftWorldSection
+    {
+        get { return leftWorldSection; }
+    }
+
     [SerializeField] SpriteRenderer middleWorldSection;
+    public SpriteRenderer MiddleWorldSection
+    {
+        get { return middleWorldSection; }
+    }
     [SerializeField] SpriteRenderer rightWorldSection;
+    public SpriteRenderer RightWorldSection
+    {
+        get { return rightWorldSection; }
+    }
 
     [SerializeField] Transform leftWorldRayOrigin;
     [SerializeField] SpriteRenderer rightWorldRayOrigin;
@@ -72,17 +85,17 @@ public class WorldScroller : MonoBehaviour
 
     void SwapSectionDirections(BackgroundDirection Direction)
     {
-        //Incase future me forgets again why these are here, it's because were assiging things to themselves so we need to cache them beforehand
+        //Incase future me forgets again why these are here, it's because we're assiging things to themselves so we need to cache them beforehand
         SpriteRenderer TempLeft = leftWorldSection;
         SpriteRenderer TempMiddle = middleWorldSection;
         SpriteRenderer TempRight = rightWorldSection;
-        if(Direction == BackgroundDirection.LEFT)
+        if (Direction == BackgroundDirection.LEFT)
         {
             leftWorldSection = TempRight;
             middleWorldSection = TempLeft;
             rightWorldSection = TempMiddle;
         }
-        else if(Direction == BackgroundDirection.RIGHT)
+        else if (Direction == BackgroundDirection.RIGHT)
         {
             leftWorldSection = TempMiddle;
             middleWorldSection = TempRight;
