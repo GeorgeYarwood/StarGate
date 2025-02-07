@@ -283,6 +283,7 @@ public class GameController : MonoBehaviour
     public void OnLevelComplete()
     {
         DestroyAllProjectiles();
+        PowerUpManager.Instance.EndAllPowerUps();
         currentLevel++;
         PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, CurrentLevel);
         GoToState(levelCompleteState);

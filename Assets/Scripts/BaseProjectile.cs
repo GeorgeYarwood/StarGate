@@ -40,6 +40,11 @@ public class BaseProjectile : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D Collision)
     {
+        if (dead)
+        {
+            return;
+        }
+
         bool ColSuccess = false;
         if (Collision.TryGetComponent(out EnemyBase _) && !ignoreEnemy)
         {

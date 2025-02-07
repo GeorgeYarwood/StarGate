@@ -82,7 +82,6 @@ MonoBehaviour:
   hitSfx: {fileID: 0}
   canDropOnDeath:
   - {fileID: -1806860569846721500, guid: 4eb7ebf5a2845b4409043eaea066ea95, type: 3}
-  - {fileID: -1806860569846721500, guid: b8877c9ab581248478b95541092b2acc, type: 3}
   alwaysDrop: 0
   enemyDialogue: []
   onePerLevel: 0
@@ -94,6 +93,7 @@ MonoBehaviour:
   moveSpeed: 1.5
   minDistanceToPlayer: 15
   collisionAvoidRadius: 1.5
+  minShootDistance: 5
 --- !u!95 &7057465073912743466
 Animator:
   serializedVersion: 4

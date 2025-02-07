@@ -12,6 +12,16 @@ public enum PowerUpType
     DOUBLE_LASER
 }
 
+public struct PowerUpContainer
+{
+    public float Time;
+
+    public PowerUpContainer(float SetTime)
+    {
+        Time = SetTime;
+    }
+}
+
 //Powerup ideas
 //Invincibility
 //Double lasers
@@ -33,17 +43,7 @@ public class PowerUpManager : MonoBehaviour
 
     [SerializeField] AudioClip powerUpEndClip;
 
-    public struct PowerUpContainer
-    {
-        public Action powerUpStart;
-        public Action powerUpEnd;
 
-        public PowerUpContainer(Action StartAction, Action EndAction)
-        {
-            powerUpStart = StartAction;
-            powerUpEnd = EndAction;
-        }
-    }
 
     void Start()
     {
@@ -63,7 +63,7 @@ public class PowerUpManager : MonoBehaviour
     {
         if(allPowerups.TryGetValue(ThisPowerUp, out PowerUpContainer ThisPowerUpContainer))
         {
-            ThisPowerUpContainer.powerUpStart.Invoke();
+            PlayerShip.Instance.ApplyPowerup(ThisPowerUp, ThisPowerUpContainer);
         }
     }
 
@@ -74,17 +74,14 @@ public class PowerUpManager : MonoBehaviour
 
     void InitPowerUpList() //New powerups get added here, along with their action to run
     {
-        allPowerups.Add(PowerUpType.RAPID_FIRE, new PowerUpContainer(PlayerShip.Instance.RapidFirePowerUp, PlayerShip.Instance.EndRapidFirePowerUp));
-        allPowerups.Add(PowerUpType.SPEED_BOOST, new PowerUpContainer(PlayerShip.Instance.SpeedBoostPowerUp, PlayerShip.Instance.EndSpeedBoostPowerUp));
-        allPowerups.Add(PowerUpType.DOUBLE_LASER, new PowerUpContainer(PlayerShip.Instance.DoubleLaserPowerUp, PlayerShip.Instance.EndDoubleLaserPowerUp));
+        allPowerups.Add(PowerUpType.RAPID_FIRE, new PowerUpContainer(5.0f));
+        allPowerups.Add(PowerUpType.SPEED_BOOST, new PowerUpContainer(8.0f));
+        allPowerups.Add(PowerUpType.DOUBLE_LASER, new PowerUpContainer(7.5f));
     }
     
     public void EndAllPowerUps()
     {
-        for(int p = 0; p < allPowerups.Count; p++)
-        {
-            allPowerups.ElementAt(p).Value.powerUpEnd.Invoke();
-        }
+        PlayerShip.Instance.EndAllPowerups();
     }
 
     public void DropRandomPowerUpAtPosition(Vector2 PositionToSpawn, PowerUp PowerUpToDrop, bool ForceSpawn = false)

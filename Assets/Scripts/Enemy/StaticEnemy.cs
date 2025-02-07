@@ -6,15 +6,13 @@ using UnityEngine;
 //Kind of poorly named as we can animate this
 public class StaticEnemy : EnemyBase
 {
-    const string BACKGROUND_LAYER_MASK = "Background";
-
     FacingDirection lastFacingDirection = FacingDirection.RIGHT;
 
-    void Start()
+    public override void Init()
     {
-        base.backgroundLayerMask = LayerMask.GetMask(BACKGROUND_LAYER_MASK);
+        base.Init();
     }
-    
+
     public override void LaunchProjectile()
     {
         BaseProjectile NewProjectile = Instantiate(Projectile, transform.position, Quaternion.identity);
@@ -33,8 +31,6 @@ public class StaticEnemy : EnemyBase
         AsLaser.ProjectileIsFacing = lastFacingDirection;
         SpawnedProjectiles.Add(AsLaser);
     }
-
-    
 
     public override void Tick()
     {

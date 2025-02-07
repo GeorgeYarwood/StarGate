@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum MoveDirection
@@ -15,13 +16,6 @@ public enum FacingDirection
     NONE,
     LEFT,
     RIGHT
-}
-
-public enum WeaponFireMode
-{
-    SINGLE,
-    RAPID,
-    DOUBLE
 }
 
 public class PlayerShip : MonoBehaviour
@@ -49,17 +43,12 @@ public class PlayerShip : MonoBehaviour
     const float PROJECTILE_SPAWN_MODIFIER = 2.5f;
     const float SINGLE_FIRE_LOCKOUT_TIMER = 1.0f;
     const float RAPID_FIRE_LOCKOUT_TIMER = 0.15f;
-    const float RAPID_FIRE_EFFECT_TIMER = 5.0f;
-    const float DOUBLE_LASER_TIMER = 4.0f;
     const float PLAYER_COAST_TIMER = 1.2f; //How long the player will coast after releasing input
-    const float BOOST_EFFECT_TIMER = 2.0f; //Stops player just holding boost forever
 
     const float LEFT_ROT_Y_VAL = 180.0f;
     const float RIGHT_ROT_Y_VAL = 0.0f;
-    const float STOP_BEFORE_COLLISION = 1.35f; //When we speed through the edges of the map for the reset, how far off the limit (Where enemies may be) we stop (Too low and we'll collide with enemies)
 
     bool canFire = true;
-    bool isBoosting = false;
     bool lockInput = false;
     public bool LockInput
     {
@@ -68,7 +57,6 @@ public class PlayerShip : MonoBehaviour
 
     FacingDirection playerIsFacing;
     MoveDirection lastDirection;
-    WeaponFireMode currentFireMode = WeaponFireMode.SINGLE;
 
     static PlayerShip instance;
     public static PlayerShip Instance
@@ -81,40 +69,31 @@ public class PlayerShip : MonoBehaviour
         get { return transform.position; }
     }
 
-    Action rapidFirePowerUp;
-    public Action RapidFirePowerUp
+    bool debugInvincible = false;
+    public bool DebugInvincible
     {
-        get { return rapidFirePowerUp; }
+        get { return debugInvincible; }
+        set { debugInvincible = value; }
     }
 
-    Action endRapidFirePowerUp;
-    public Action EndRapidFirePowerUp
+    Dictionary<PowerUpType, ActivePowerUp> heldPowerups = new Dictionary<PowerUpType, ActivePowerUp>();
+    public Dictionary<PowerUpType, ActivePowerUp> HeldPowerups
     {
-        get { return endRapidFirePowerUp; }
+        get { return heldPowerups; }
     }
 
-    Action speedBoostPowerUp;
-    public Action SpeedBoostPowerUp
+    public class ActivePowerUp 
     {
-        get { return speedBoostPowerUp; }
-    }
+        public float RemainingTime;
+        public bool IsActive() 
+        {
+            return RemainingTime > 0.0f;
+        }
 
-    Action endSpeedBoostPowerUp;
-    public Action EndSpeedBoostPowerUp
-    {
-        get { return endSpeedBoostPowerUp; }
-    }
-
-    Action doubleLaserPowerUp;
-    public Action DoubleLaserPowerUp
-    {
-        get { return doubleLaserPowerUp; }
-    }
-
-    Action endDoubleLaserPowerUp;
-    public Action EndDoubleLaserPowerUp
-    {
-        get { return endDoubleLaserPowerUp; }
+        public ActivePowerUp(float SetTime) 
+        {
+            RemainingTime = SetTime;
+        }
     }
 
     public void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false, bool FastSpeed = false)
@@ -134,7 +113,7 @@ public class PlayerShip : MonoBehaviour
        else
         {
             AudioManager.Instance.PlayLoopedAudioClip(engineSfx);
-            if (isBoosting)
+            if (HasPowerUp(PowerUpType.SPEED_BOOST))
             {
                 ActualSpeed += PLAYER_BOOST_ADJUSTMENT;
             }
@@ -182,24 +161,6 @@ public class PlayerShip : MonoBehaviour
         {
             transform.position = new(transform.position.x, -GameController.GetMapBoundsYVal);
         }
-        //if (RawX > GameController.GetMapBoundsXVal + GameController.GetMapRepeatBufferVal)  //We go on a bit further so we don't see the enemies popping in and out as we repeat the map
-        //{
-        //    //transform.position = new(GameController.GetMapBoundsXVal, transform.position.y);  //Changed for infinite "repeat" scrolling due to player feedback
-        //    transform.position = new(-GameController.GetMapBoundsXVal - GameController.GetMapRepeatBufferVal, transform.position.y);
-        //    WorldScroller.Instance.ForceUpdateWorldScoller(BackgroundDirection.LEFT);
-        //    GameController.Instance.DestroyAllProjectiles();
-        //    //MapRepeat.Instance.TriggerAnimation();
-        //    //StartCoroutine(HandleMapLoopSpeedBoost(false));
-        //}
-        //else if (RawX < -GameController.GetMapBoundsXVal - GameController.GetMapRepeatBufferVal)
-        //{
-        //    //transform.position = new(-GameController.GetMapBoundsXVal, transform.position.y);
-        //    transform.position = new(GameController.GetMapBoundsXVal + GameController.GetMapRepeatBufferVal, transform.position.y);
-        //    WorldScroller.Instance.ForceUpdateWorldScoller(BackgroundDirection.RIGHT);
-        //    GameController.Instance.DestroyAllProjectiles(); //Partly so we can't see our own projectiles going the opposite way but also for balance reasons
-        //    //MapRepeat.Instance.TriggerAnimation();
-        //    //StartCoroutine(HandleMapLoopSpeedBoost(true));
-        //}
     }
 
     public void ParentToBackground()
@@ -238,7 +199,7 @@ public class PlayerShip : MonoBehaviour
             case FacingDirection.LEFT:
                 FireDirection = -Vector2.right;
                 ActualProjectileSpawn.x -= PROJECTILE_SPAWN_MODIFIER;
-                if(currentFireMode == WeaponFireMode.DOUBLE && ForceDir == FacingDirection.NONE) 
+                if(HasPowerUp(PowerUpType.DOUBLE_LASER) && ForceDir == FacingDirection.NONE) 
                 {
                     FireProjectile(ForceDir: FacingDirection.RIGHT);
                 }
@@ -246,7 +207,7 @@ public class PlayerShip : MonoBehaviour
             case FacingDirection.RIGHT:
                 FireDirection = Vector2.right;
                 ActualProjectileSpawn.x += PROJECTILE_SPAWN_MODIFIER;
-                if (currentFireMode == WeaponFireMode.DOUBLE && ForceDir == FacingDirection.NONE)
+                if (HasPowerUp(PowerUpType.DOUBLE_LASER) && ForceDir == FacingDirection.NONE)
                 {
                     FireProjectile(ForceDir: FacingDirection.LEFT);
                 }
@@ -254,7 +215,7 @@ public class PlayerShip : MonoBehaviour
         }
 
         LaserProjectile ProjectileToSpawn;
-        if (currentFireMode != WeaponFireMode.RAPID)
+        if (!HasPowerUp(PowerUpType.RAPID_FIRE))
         {
             ProjectileToSpawn = singleFireProjectilePrefab;
         }
@@ -272,84 +233,58 @@ public class PlayerShip : MonoBehaviour
         StartCoroutine(FireLockOutTimer());
     }
 
-    void HandleSpeedBoostEffect()
+    public void EndAllPowerups()
     {
-        StartCoroutine(SpeedBoostTimer());
-    }
-
-    void EndSpeedBoostEffect()
-    {
-        isBoosting = false;
-    }
-
-    void HandleDoubleLaserEffect() 
-    {   
-        //TODO extend currently held effects
-        if (currentFireMode == WeaponFireMode.DOUBLE) 
+        foreach (KeyValuePair<PowerUpType, ActivePowerUp> Entry in HeldPowerups)
         {
-            return;
+            Entry.Value.RemainingTime = 0.0f;
         }
-        StartCoroutine(DoubleLaserTimer());
     }
 
-    IEnumerator DoubleLaserTimer()
+    public void ApplyPowerup(PowerUpType PUType, PowerUpContainer PUContainer)
     {
-        currentFireMode = WeaponFireMode.DOUBLE;
-        yield return new WaitForSeconds(DOUBLE_LASER_TIMER);
-        EndDoubleLaserEffect();
+        ActivePowerUp NewEntry = null;
+
+        if (HeldPowerups.TryGetValue(PUType, out ActivePowerUp ThisActivePU))
+        {
+            NewEntry = ThisActivePU;
+            NewEntry.RemainingTime += PUContainer.Time;
+        }
+        else
+        {
+            NewEntry = new ActivePowerUp(PUContainer.Time);
+        }
+           
+        HeldPowerups[PUType] = NewEntry;
     }
 
-    void EndDoubleLaserEffect()
+    bool HasPowerUp(PowerUpType PUType) 
     {
-        currentFireMode = WeaponFireMode.SINGLE;
+        if (HeldPowerups.TryGetValue(PUType, out ActivePowerUp ThisActivePU)) 
+        {
+            return ThisActivePU.IsActive();
+        }
+
+        return false;
     }
 
-    //IEnumerator HandleMapLoopSpeedBoost(bool Positive) //Speeds us past the janky map repeating so no one sees how bad it is
-    //{
-    //    lockInput = true;
-    //    AudioManager.Instance.PlayAudioClip(mapRepeatBoostSfx);
-    //    if (Positive)
-    //    {
-    //        while (GetPos.x >= GameController.GetMapBoundsXVal + STOP_BEFORE_COLLISION)
-    //        {
-    //            UpdatePosition(lastDirection, Coasting: true, FastSpeed: true);
-    //            yield return null;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        while (GetPos.x <= -GameController.GetMapBoundsXVal - STOP_BEFORE_COLLISION)
-    //        {
-    //            UpdatePosition(lastDirection, Coasting: true, FastSpeed: true);
-    //            yield return null;
-    //        }
-    //    }
-    //    lockInput = false;
-    //}
-
-    IEnumerator SpeedBoostTimer()
+    IEnumerator TickPowerups() 
     {
-        isBoosting = true;
-        yield return new WaitForSeconds(BOOST_EFFECT_TIMER);
-        EndSpeedBoostEffect();
-    }
-
-    void HandleRapidFireEffect()
-    {
-        StartCoroutine(RapidFireTimer());
-    }
-
-    void EndRapidFireEffect()
-    {
-        currentFireMode = WeaponFireMode.SINGLE;
-        PowerUpManager.Instance.OnPowerUpEnd();
-    }
-
-    IEnumerator RapidFireTimer()
-    {
-        currentFireMode = WeaponFireMode.RAPID;
-        yield return new WaitForSeconds(RAPID_FIRE_EFFECT_TIMER);
-        EndRapidFireEffect();
+        while (true) 
+        {
+            foreach(KeyValuePair<PowerUpType, ActivePowerUp> Entry in HeldPowerups) 
+            {
+                if (Entry.Value.IsActive()) 
+                {
+                    Entry.Value.RemainingTime -= 1.0f;
+                    if(Entry.Value.RemainingTime < 0.0f)
+                    {
+                        Entry.Value.RemainingTime = 0.0f;
+                    }
+                }
+            }
+            yield return new WaitForSeconds(1.0f);
+        }
     }
 
     void OnEnable()
@@ -364,21 +299,17 @@ public class PlayerShip : MonoBehaviour
         }
 
         playerIsFacing = FacingDirection.RIGHT;
+    }
 
-        rapidFirePowerUp += HandleRapidFireEffect;
-        endRapidFirePowerUp += EndRapidFireEffect;
-
-        speedBoostPowerUp += HandleSpeedBoostEffect;
-        endSpeedBoostPowerUp += EndSpeedBoostEffect;
-
-        doubleLaserPowerUp += HandleDoubleLaserEffect;
-        endDoubleLaserPowerUp += EndDoubleLaserEffect;
+    void Start()
+    {
+        StartCoroutine(TickPowerups());
     }
 
     IEnumerator FireLockOutTimer()
     {
         canFire = false;
-        if (currentFireMode == WeaponFireMode.SINGLE)
+        if (!HasPowerUp(PowerUpType.RAPID_FIRE))
         {
             yield return new WaitForSeconds(SINGLE_FIRE_LOCKOUT_TIMER);
         }
@@ -391,6 +322,11 @@ public class PlayerShip : MonoBehaviour
 
     public void OnCollisionWithEnemy()
     {
+        if (debugInvincible)
+        {
+            return;
+        }
+
         deathVfx.Play();
         AudioManager.Instance.PlayAudioClip(deathSfx);
         GameController.Instance.OnPlayerDeath();

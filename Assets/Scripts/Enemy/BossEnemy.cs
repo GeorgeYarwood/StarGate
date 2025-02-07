@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class BossEnemy : MovingEnemy
 {
-    const string BACKGROUND_LAYER_MASK = "Background";
-
     [SerializeField] int waveDifficultyScale = 3; //Amount of enemies added on for each wave level
 
     [SerializeField] List<EnemyWave> waves = new List<EnemyWave>();
@@ -31,10 +29,9 @@ public class BossEnemy : MovingEnemy
         public GameObject CrackImage;
     }
 
-    void Start()
+    public override void Init() 
     {
         waves.OrderByDescending(X => X);
-        base.backgroundLayerMask = LayerMask.GetMask(BACKGROUND_LAYER_MASK); //I guess double inheritance isn't a thing cus this don work in EnemyBase for BossEnemies
     }
 
     public override void OnHit(int DamageToDeduct)
