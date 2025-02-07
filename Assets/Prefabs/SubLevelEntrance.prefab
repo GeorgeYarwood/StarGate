@@ -52,7 +52,7 @@ ParticleSystem:
   prewarm: 0
   playOnAwake: 0
   useUnscaledTime: 0
-  autoRandomSeed: 1
+  autoRandomSeed: 0
   startDelay:
     serializedVersion: 2
     minMaxState: 0
@@ -4889,6 +4889,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   portalEnterVfx: {fileID: 3778999769885413030}
+  spriteRenderer: {fileID: 0}
+  boxCollider: {fileID: 0}
+  portalEnterSfx: {fileID: 0}
 --- !u!1 &4746540032711142427
 GameObject:
   m_ObjectHideFlags: 0

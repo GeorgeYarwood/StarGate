@@ -282,7 +282,9 @@ public class GameController : MonoBehaviour
 
     public void OnLevelComplete()
     {
+        DestroyAllProjectiles();
         currentLevel++;
+        PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, CurrentLevel);
         GoToState(levelCompleteState);
     }
 
@@ -300,7 +302,7 @@ public class GameController : MonoBehaviour
     public void DestroyAllProjectiles(bool EnemyOnly = false)
     {
         //I could be less lazy and like cache these or something but cba
-        LaserProjectile[] FoundProjectiles = FindObjectsOfType<LaserProjectile>();
+        BaseProjectile[] FoundProjectiles = FindObjectsOfType<BaseProjectile>();
         for(int l = 0; l < FoundProjectiles.Length; l++)
         {
             if(EnemyOnly && !FoundProjectiles[l].IgnoreEnemy)
@@ -311,8 +313,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public LaserProjectile[] GetAllProjectiles()
+    public BaseProjectile[] GetAllProjectiles()
     {
-        return FindObjectsOfType<LaserProjectile>();
+        return FindObjectsOfType<BaseProjectile>();
     }
 }

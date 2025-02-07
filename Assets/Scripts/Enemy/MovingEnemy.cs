@@ -7,6 +7,7 @@ public class MovingEnemy : EnemyBase
     [SerializeField] float moveSpeed = 1.5f;
     [SerializeField] float minDistanceToPlayer = 10.0f; //How close player must be before we start chasing
     [SerializeField] float collisionAvoidRadius = 6.5f; //Radius for checking with collisions against other enemies
+    [SerializeField] float minShootDistance = 5.0f; //How close player must be before we start shooting
 
     public override void Tick()
     {
@@ -19,6 +20,20 @@ public class MovingEnemy : EnemyBase
         {
             transform.position = GetNonOverlappingVector();
         }
+    }
+
+    public override void LaunchProjectile()
+    {
+        BaseProjectile NewProjectile = Instantiate(Projectile, transform.position, Quaternion.identity);
+        EnemyProjectile AsEnemyProjectile = (EnemyProjectile)NewProjectile;
+
+        AsEnemyProjectile.Target = PlayerShip.Instance.GetPos;
+        SpawnedProjectiles.Add(AsEnemyProjectile);
+    }
+
+    public override bool CanFireAtPlayer()
+    {
+        return Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= minShootDistance;
     }
 
     Vector2 GetNonOverlappingVector()

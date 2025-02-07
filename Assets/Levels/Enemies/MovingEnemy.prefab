@@ -87,7 +87,10 @@ MonoBehaviour:
   enemyDialogue: []
   onePerLevel: 0
   encounterDistance: 5
+  projectile: {fileID: 4422580154169399911, guid: 20c946a5d24bf634ebd43ed6b4d6d50b, type: 3}
+  shootAtPlayer: 1
   thisEnemyType: 0
+  timeBetweenShots: 15
   moveSpeed: 1.5
   minDistanceToPlayer: 15
   collisionAvoidRadius: 1.5

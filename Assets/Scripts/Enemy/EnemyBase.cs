@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum EnemyType //Used for comparison checks
@@ -36,6 +37,17 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] Dialogue[] enemyDialogue = new Dialogue[3];
     [SerializeField] bool onePerLevel = false;
     [SerializeField] float encounterDistance = 5.0f;    //How close until ON_ENCOUNTER dialogue is triggered
+    [SerializeField] BaseProjectile projectile;
+
+    public BaseProjectile Projectile
+    {
+        get { return projectile; }
+    }
+    [SerializeField] bool shootAtPlayer = false;
+    public bool ShootAtPlayer
+    {
+        get { return shootAtPlayer; }
+    }
 
     bool hasRunFirstEncounter = false;
 
@@ -52,10 +64,7 @@ public class EnemyBase : MonoBehaviour
     }
     bool waitingToDie = false;
 
-    void Start()
-    {
-        Init();
-    }
+    
 
     [SerializeField] EnemyType thisEnemyType;
     public EnemyType ThisEnemyType
@@ -64,6 +73,51 @@ public class EnemyBase : MonoBehaviour
     }
 
     internal int backgroundLayerMask;
+
+    [SerializeField] float timeBetweenShots = 1.5f;
+
+    List<BaseProjectile> spawnedProjectiles = new List<BaseProjectile>();
+    public List<BaseProjectile> SpawnedProjectiles
+    {
+        get { return spawnedProjectiles; }
+        set { spawnedProjectiles = value; }
+    }
+
+   
+    void Start()
+    {
+        if (ShootAtPlayer)
+        {
+            StartCoroutine(FireAtPlayer());
+        }
+        Init();
+    }
+
+    IEnumerator FireAtPlayer()
+    {
+        while (true && !waitingToDie)
+        {
+            if (GameController.Instance.GetCurrentGameState
+                is FlyingState && CanFireAtPlayer())
+            {
+                LaunchProjectile();
+                yield return new WaitForSeconds(timeBetweenShots);
+            }
+            yield return null;
+        }
+    }
+
+    public virtual void LaunchProjectile()
+    {
+        //Handle in derived
+    }
+
+    public virtual bool CanFireAtPlayer() 
+    {
+        //Handle in derived
+
+        return true;
+    }
 
     void OnTriggerEnter2D(Collider2D Collision)
     {
@@ -198,6 +252,32 @@ public class EnemyBase : MonoBehaviour
         if (waitingToDie && !deathVfx.isPlaying)
         {
             Destroy(gameObject);
+        }
+
+        CleanList();
+    }
+
+    void ClearAllProjectiles()
+    {
+        for (int p = 0; p < spawnedProjectiles.Count; p++)
+        {
+            if (spawnedProjectiles[p])
+            {
+                Destroy(spawnedProjectiles[p].gameObject);
+            }
+        }
+
+        spawnedProjectiles.Clear();
+    }
+
+    void CleanList() //Ensure we don't have dead references
+    {
+        for (int p = 0; p < spawnedProjectiles.Count; p++)
+        {
+            if (!spawnedProjectiles[p])
+            {
+                spawnedProjectiles.RemoveAt(p);
+            }
         }
     }
 

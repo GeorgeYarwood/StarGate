@@ -131,7 +131,7 @@ public class WorldScroller : MonoBehaviour
 
         PlayerShip.Instance.ParentToBackground();
 
-        LaserProjectile[] Projectiles = GameController.Instance.GetAllProjectiles();
+        BaseProjectile[] Projectiles = GameController.Instance.GetAllProjectiles();
 
         for (int p = 0; p < Projectiles.Length; p++)
         {

@@ -8,41 +8,18 @@ public class StaticEnemy : EnemyBase
 {
     const string BACKGROUND_LAYER_MASK = "Background";
 
-    [SerializeField] float timeBetweenShots = 1.5f;
-    [SerializeField] bool shootAtPlayer;
-
-    [SerializeField] LaserProjectile projectile;
-
-    List<LaserProjectile> spawnedProjectiles = new List<LaserProjectile>();
-
     FacingDirection lastFacingDirection = FacingDirection.RIGHT;
 
     void Start()
     {
         base.backgroundLayerMask = LayerMask.GetMask(BACKGROUND_LAYER_MASK);
-        if (shootAtPlayer)
-        {
-            StartCoroutine(FireAtPlayer());
-        }
     }
-
-    IEnumerator FireAtPlayer()
+    
+    public override void LaunchProjectile()
     {
-        while(true)
-        {
-            if (GameController.Instance.GetCurrentGameState
-                is FlyingState)
-            {
-                LaunchProjectile();
-                yield return new WaitForSeconds(timeBetweenShots);
-            }
-            yield return null;
-        }
-    }
+        BaseProjectile NewProjectile = Instantiate(Projectile, transform.position, Quaternion.identity);
 
-    void LaunchProjectile()
-    {
-        LaserProjectile ThisProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
+        LaserProjectile AsLaser = (LaserProjectile)NewProjectile;
         switch(lastFacingDirection)
         {
             case FacingDirection.LEFT:
@@ -53,45 +30,13 @@ public class StaticEnemy : EnemyBase
                 break;
         }
 
-        ThisProjectile.ProjectileIsFacing = lastFacingDirection;
-        spawnedProjectiles.Add(ThisProjectile);
+        AsLaser.ProjectileIsFacing = lastFacingDirection;
+        SpawnedProjectiles.Add(AsLaser);
     }
 
-    void ClearAllProjectiles()
-    {
-        for (int p = 0; p < spawnedProjectiles.Count; p++)
-        {
-            if (spawnedProjectiles[p])
-            {
-                Destroy(spawnedProjectiles[p].gameObject);
-            }
-        }
-
-        spawnedProjectiles.Clear();
-    }
-
-    void CleanList() //Ensure we don't have dead references
-    {
-        for (int p = 0; p < spawnedProjectiles.Count; p++)
-        {
-            if (!spawnedProjectiles[p])
-            {
-                spawnedProjectiles.RemoveAt(p);
-            }
-        }
-    }
+    
 
     public override void Tick()
     {
-        if(GameController.Instance.GetCurrentGameState
-            is PauseGameState && spawnedProjectiles.Count > 0)
-        {
-            ClearAllProjectiles();
-        }
-
-        else
-        {
-            CleanList();
-        }
     }
 }

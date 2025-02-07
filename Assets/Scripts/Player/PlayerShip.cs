@@ -46,7 +46,7 @@ public class PlayerShip : MonoBehaviour
     const float PLAYER_COAST_SPEED = 0.75f;
     const float PLAYER_MAP_REPEAT_BOOST_SPEED = 10.5f;
 
-    const float PROJECTILE_SPAWN_MODIFIER = 1.2f;
+    const float PROJECTILE_SPAWN_MODIFIER = 2.5f;
     const float SINGLE_FIRE_LOCKOUT_TIMER = 1.0f;
     const float RAPID_FIRE_LOCKOUT_TIMER = 0.15f;
     const float RAPID_FIRE_EFFECT_TIMER = 5.0f;
