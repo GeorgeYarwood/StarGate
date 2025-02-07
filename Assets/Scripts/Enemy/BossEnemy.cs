@@ -31,6 +31,7 @@ public class BossEnemy : MovingEnemy
 
     public override void Init() 
     {
+        base.Init();
         waves.OrderByDescending(X => X);
     }
 

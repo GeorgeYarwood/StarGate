@@ -40,7 +40,7 @@ public class BaseProjectile : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D Collision)
     {
-        if (dead)
+        if (dead || !gameObject)
         {
             return;
         }

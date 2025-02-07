@@ -91,10 +91,10 @@ public class FlyingState : GameStateBase
                 GameController.AllLevels[GameController.CurrentLevel - 1].LevelSong,
                 EndLoop: true);
         }
-        if (GameController.CurrentLevel + 1 < GameController.AllLevels.Count && waitingForStateExit)
-        {
-            PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel + 1);    //In case we go to menu without clicking on "Next level"
-        }
+        //if (GameController.CurrentLevel + 1 < GameController.AllLevels.Count && waitingForStateExit)
+        //{
+        //    PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel + 1);    //In case we go to menu without clicking on "Next level"
+        //}
     }
 
     public void ClearAllProjectiles()
@@ -228,7 +228,9 @@ public class FlyingState : GameStateBase
         { 
             PlayerShip.Instance.UpdatePosition(MoveDirection.LEFT);
         }
-        if (Input.GetButton(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
+
+        if (Input.GetButtonDown(InputHolder.PAUSE_MENU) || ControllerManager.GetInput[(int)ControllerInput.START].Pressed)
+        {        if (Input.GetButton(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.RIGHT);
         }
@@ -237,13 +239,11 @@ public class FlyingState : GameStateBase
             PlayerShip.Instance.FireProjectile();
         }
 
-        if (Input.GetButtonDown(InputHolder.PAUSE_MENU) || ControllerManager.GetInput[(int)ControllerInput.START].Pressed)
-        {
             GameController.Instance.GoToState(GameStates.PAUSE);
         }
         //Listen for release so we can coast
 
-        if (Input.anyKey && ControllerManager.Instance.AnyControllerInput())
+        if (Input.anyKey || ControllerManager.Instance.AnyControllerInput())
         {
             return;
         }

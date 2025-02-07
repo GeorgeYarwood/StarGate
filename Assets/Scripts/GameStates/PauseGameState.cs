@@ -17,7 +17,7 @@ public class PauseGameState : GameStateBase
     {
         pausePanel.SetActive(true);
         AddListeners();
-        GameController.Instance.DestroyAllProjectiles(EnemyOnly: true);
+        //GameController.Instance.DestroyAllProjectiles(EnemyOnly: true);
     }
 
     void AddListeners()

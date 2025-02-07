@@ -370,7 +370,7 @@ public class ControllerManager : MonoBehaviour
     public bool AnyControllerInput()
     {
         return Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0
-            || Input.GetAxis(InputHolder.CONTROLLER_JOY_X) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0
+            || Input.GetAxis(InputHolder.CONTROLLER_JOY_X) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) != 0
             || Input.GetButton(InputHolder.CONTROLLER_A_BUTTON) /*|| Input.GetButton(InputHolder.CONTROLLER_B_BUTTON) Never actually set this one up lmao*/
             || Input.GetButton(InputHolder.CONTROLLER_X_BUTTON) /* || Input.GetButton(InputHolder.CONTROLLER_Y_BUTTON) or this one*/
             || Input.GetButton(InputHolder.CONTROLLER_START_BUTTON);

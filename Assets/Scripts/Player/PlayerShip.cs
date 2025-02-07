@@ -342,7 +342,7 @@ public class PlayerShip : MonoBehaviour
             ThisTimer -= 1.0f * Time.deltaTime;
             yield return null;
 
-            if (Input.anyKey)
+            if (Input.anyKey || ControllerManager.Instance.AnyControllerInput())
             {
                 break;
             }
