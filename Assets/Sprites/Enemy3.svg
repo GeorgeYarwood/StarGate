@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg851"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="Enemy3.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview853"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="3.8449214"
+     inkscape:cx="339.40876"
+     inkscape:cy="220.81075"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="3832"
+     inkscape:window-y="178"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs848">
+    <linearGradient
+       id="linearGradient3325"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop3323" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2375"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop2373" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2369"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop2367" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2375"
+       id="linearGradient2377"
+       x1="52.642496"
+       y1="76.864924"
+       x2="62.069975"
+       y2="76.864924"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3325"
+       id="linearGradient3327"
+       x1="81.55189"
+       y1="69.557533"
+       x2="91.624228"
+       y2="69.557533"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(1.0218316,0.65689172)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3325"
+       id="linearGradient3359"
+       gradientUnits="userSpaceOnUse"
+       x1="81.55189"
+       y1="69.557533"
+       x2="91.624228"
+       y2="69.557533"
+       gradientTransform="rotate(-89.954696,86.603604,80.290964)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3325"
+       id="linearGradient3380"
+       gradientUnits="userSpaceOnUse"
+       x1="81.55189"
+       y1="69.557533"
+       x2="91.624228"
+       y2="69.557533"
+       gradientTransform="matrix(0.5098266,0.88262123,-0.86328985,0.52124298,110.73952,-45.334041)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3325"
+       id="linearGradient3413"
+       gradientUnits="userSpaceOnUse"
+       x1="81.55189"
+       y1="69.557533"
+       x2="91.624228"
+       y2="69.557533"
+       gradientTransform="matrix(0.98452349,0,0,-1.2226896,1.6463226,177.08333)" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#ffffff;fill-opacity:0;stroke:url(#linearGradient2377);stroke-width:1;stroke-dasharray:none;stroke-opacity:1"
+       d="m 55.524319,71.143601 3.738542,0.03441 2.807111,3.588094 3e-6,3.578314 -2.649328,3.234245 -4.094415,0.03441 -2.683736,-3.440686 0.03441,-3.853568 z"
+       id="path2317"
+       sodipodi:nodetypes="ccccccccc" />
+    <path
+       style="fill:#ffffff;fill-opacity:0;stroke:url(#linearGradient3327);stroke-width:1;stroke-dasharray:none;stroke-opacity:1"
+       d="M 87.488244,65.762157 82.573722,74.66669 H 92.64606 Z"
+       id="path3321"
+       inkscape:export-filename="Enemy3.png"
+       inkscape:export-xdpi="120"
+       inkscape:export-ydpi="120" />
+    <path
+       style="fill:#ffffff;fill-opacity:0;stroke:url(#linearGradient3413);stroke-width:1.09716;stroke-dasharray:none;stroke-opacity:1"
+       d="m 86.774536,97.479805 -4.838462,-10.88748 h 9.916453 z"
+       id="path3321-5" />
+    <path
+       style="fill:#ffffff;fill-opacity:0;stroke:url(#linearGradient3359);stroke-width:1;stroke-dasharray:none;stroke-opacity:1"
+       d="m 71.417803,80.416149 8.900645,4.921561 0.008,-10.072335 z"
+       id="path3321-2" />
+    <path
+       style="fill:#ffffff;fill-opacity:0;stroke:url(#linearGradient3380);stroke-width:1.01376;stroke-dasharray:none;stroke-opacity:1"
+       d="m 98.617703,64.91871 -10.19275,0.303766 5.135149,8.890061 z"
+       id="path3321-0" />
+  </g>
+</svg>

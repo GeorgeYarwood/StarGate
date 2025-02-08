@@ -230,16 +230,18 @@ public class FlyingState : GameStateBase
         }
 
         if (Input.GetButtonDown(InputHolder.PAUSE_MENU) || ControllerManager.GetInput[(int)ControllerInput.START].Pressed)
-        {        if (Input.GetButton(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
+        {
+            GameController.Instance.GoToState(GameStates.PAUSE);
+
+        }
+
+        if (Input.GetButton(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.RIGHT);
         }
         if ((Input.GetButton(InputHolder.FIRE) || ControllerManager.GetInput[(int)ControllerInput.SELECT].Pressed))
         {
             PlayerShip.Instance.FireProjectile();
-        }
-
-            GameController.Instance.GoToState(GameStates.PAUSE);
         }
         //Listen for release so we can coast
 

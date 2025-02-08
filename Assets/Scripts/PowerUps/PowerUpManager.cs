@@ -72,7 +72,7 @@ public class PowerUpManager : MonoBehaviour
         AudioManager.Instance.PlayAudioClip(powerUpEndClip);
     }
 
-    void InitPowerUpList() //New powerups get added here, along with their action to run
+    void InitPowerUpList() //New powerups get added here, along with their duration
     {
         allPowerups.Add(PowerUpType.RAPID_FIRE, new PowerUpContainer(5.0f));
         allPowerups.Add(PowerUpType.SPEED_BOOST, new PowerUpContainer(8.0f));
