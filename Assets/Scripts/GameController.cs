@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum GameStates 
@@ -90,6 +91,9 @@ public class GameController : MonoBehaviour
     [SerializeField] LevelCompleteState levelCompleteState;
     [SerializeField] LifeLostState lifeLostState;
     [SerializeField] PauseGameState pauseGameState;
+
+
+    [SerializeField] TextMeshProUGUI scoreText;
 
     const float TIME_TO_WAIT_VFX = 0.25f;
     //Map bounds
@@ -298,6 +302,7 @@ public class GameController : MonoBehaviour
     public void AddScore(int ScoreToAdd)
     {
         currentScore += ScoreToAdd;
+        scoreText.text = currentScore.ToString();
     }
 
     public void DestroyAllProjectiles(bool EnemyOnly = false)

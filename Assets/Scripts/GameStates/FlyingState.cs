@@ -28,54 +28,52 @@ public class FlyingState : GameStateBase
             Debug.Log(ERROR_MESSAGE);
             return;
         }
-        if (!GameController.AllLevels[GameController.CurrentLevel].IsInitialised
-            && (!GameController.AllLevels[GameController.CurrentLevel].HasSublevel
-            || !GameController.AllLevels[GameController.CurrentLevel].SubLevel.IsInitialised))
+        LevelObject CurrentLevel = GetCurrentLevel();
+
+        if (!CurrentLevel.IsInitialised && (!CurrentLevel.HasSublevel || !CurrentLevel.SubLevel.IsInitialised))
         {
             WorldScroller.Instance.ResetToZero(NewLevel: true);
             CameraController.Instance.MatchBackgroundToLevel();
             //GameController.Instance.ResetPlayerPosition();
-            LoadLevel(GameController.AllLevels[GameController.CurrentLevel]);
+            LoadLevel(CurrentLevel);
         }
-        else if (GameController.AllLevels[GameController.CurrentLevel].IsInitialised
-            && GameController.Instance.LastGameState is not PauseGameState) //Reset spawns if we're already in the level
+        else if (CurrentLevel.IsInitialised && GameController.Instance.LastGameState is not PauseGameState) //Reset spawns if we're already in the level
         {
             ResetEnemyPositions();
         }
 
-        //Cursor.visible = false;
-        //Cursor.lockState = CursorLockMode.Locked;
-
-        AudioManager.Instance.PlayLoopedAudioClip(
-            GameController.AllLevels[GameController.CurrentLevel].LevelSong,
-            OnlyPermitOne: true, IsMusic: true);
-
+        AudioManager.Instance.PlayLoopedAudioClip(CurrentLevel.LevelSong, OnlyPermitOne: true, IsMusic: true);
         StartCoroutine(WaitFrameForInput());
+    }
+
+    LevelObject GetCurrentLevel()
+    {
+        return GameController.AllLevels[GameController.CurrentLevel];
     }
 
     void ResetEnemyPositions()
     {
-        if (GameController.AllLevels[GameController.CurrentLevel].HasSublevel)
+        LevelObject CurrentLevel = GetCurrentLevel();
+        if (CurrentLevel.HasSublevel)
         {
-            for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count; e++)
+            for (int e = 0; e < CurrentLevel.SubLevel.EnemiesInScene.Count; e++)
             {
-                if (!GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e])
+                if (!CurrentLevel.SubLevel.EnemiesInScene[e])
                 {
                     continue;
                 }
-                GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e].transform.position
+                CurrentLevel.SubLevel.EnemiesInScene[e].transform.position
                     = ReturnRandomSpawnPositionInRange();
             }
         }
 
-        for (int e = 0; e < GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count; e++)
+        for (int e = 0; e < CurrentLevel.EnemiesInScene.Count; e++)
         {
-            if (!GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e])
+            if (!CurrentLevel.EnemiesInScene[e])
             {
                 continue;
             }
-            GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].transform.position
-                 = ReturnRandomSpawnPositionInRange();
+            CurrentLevel.EnemiesInScene[e].transform.position = ReturnRandomSpawnPositionInRange();
         }
     }
 
@@ -91,10 +89,6 @@ public class FlyingState : GameStateBase
                 GameController.AllLevels[GameController.CurrentLevel - 1].LevelSong,
                 EndLoop: true);
         }
-        //if (GameController.CurrentLevel + 1 < GameController.AllLevels.Count && waitingForStateExit)
-        //{
-        //    PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, GameController.CurrentLevel + 1);    //In case we go to menu without clicking on "Next level"
-        //}
     }
 
     public void ClearAllProjectiles()
@@ -148,7 +142,7 @@ public class FlyingState : GameStateBase
             return;
         }
 
-        LevelObject CurrentLevel = GameController.AllLevels[GameController.CurrentLevel];
+        LevelObject CurrentLevel = GetCurrentLevel();
 
         if (CurrentLevel.HasSublevel)
         {
@@ -170,10 +164,12 @@ public class FlyingState : GameStateBase
     IEnumerator EndLevel()
     {
         waitingForStateExit = true;
-        yield return new WaitUntil(() => HandleDialogue(DialogueQueuePoint.LEVEL_END, GameController.AllLevels[GameController.CurrentLevel]));
-        if (GameController.AllLevels[GameController.CurrentLevel].SubLevel)
+        LevelObject CurrentLevel = GetCurrentLevel();
+
+        yield return new WaitUntil(() => HandleDialogue(DialogueQueuePoint.LEVEL_END, CurrentLevel));
+        if (CurrentLevel.SubLevel)
         {
-            yield return new WaitUntil(() => HandleDialogue(DialogueQueuePoint.LEVEL_END, GameController.AllLevels[GameController.CurrentLevel].SubLevel));
+            yield return new WaitUntil(() => HandleDialogue(DialogueQueuePoint.LEVEL_END, CurrentLevel.SubLevel));
         }
 
         StartCoroutine(WaitForEndOfDialogue());
@@ -198,14 +194,17 @@ public class FlyingState : GameStateBase
         {
             return;
         }
-        if (GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Contains(EnemyToRemove))
+
+        LevelObject CurrentLevel = GetCurrentLevel();
+
+        if (CurrentLevel.EnemiesInScene.Contains(EnemyToRemove))
         {
-            GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Remove(EnemyToRemove);
+            CurrentLevel.EnemiesInScene.Remove(EnemyToRemove);
         }
-        else if (GameController.AllLevels[GameController.CurrentLevel].SubLevel &&
-            GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Contains(EnemyToRemove))
+        else if (CurrentLevel.SubLevel &&
+            CurrentLevel.SubLevel.EnemiesInScene.Contains(EnemyToRemove))
         {
-            GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Remove(EnemyToRemove);
+            CurrentLevel.SubLevel.EnemiesInScene.Remove(EnemyToRemove);
         }
     }
 
@@ -262,41 +261,42 @@ public class FlyingState : GameStateBase
     public void LoadLevel(LevelObject LevelToLoad)
     {
         ClearAllProjectiles();
-        if (LevelToLoad.IsSubLevel && LevelToLoad.UseParentLevelColour)
+        if (!(LevelToLoad.IsSubLevel && LevelToLoad.UseParentLevelColour))
         {
-            goto SkipColourSetup;
+            WorldColourController.Instance.SetWorldColours(LevelToLoad.StarsColour, LevelToLoad.BackgroundColour, LevelToLoad.ForegroundColour);
         }
-        WorldColourController.Instance.SetWorldColours(LevelToLoad.StarsColour, LevelToLoad.BackgroundColour, LevelToLoad.ForegroundColour);
-    SkipColourSetup:
+
+        LevelObject CurrentLevel = GetCurrentLevel();
+
         if (LevelToLoad.IsInitialised)
         {
             int MaxIterator;
             if (LevelToLoad.IsSubLevel) //We will never load a sublevel directly so we don't need to worry about it being the sublevel of a different level
             {
-                MaxIterator = GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene.Count;
+                MaxIterator = CurrentLevel.EnemiesInScene.Count;
             }
             else
             {
                 //Disable enemies in the level we're LEAVING
-                MaxIterator = GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene.Count;
+                MaxIterator = CurrentLevel.SubLevel.EnemiesInScene.Count;
             }
             for (int e = 0; e < MaxIterator; e++)
             {
                 if (LevelToLoad.IsSubLevel)
                 {
-                    if (!GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e])
+                    if (!CurrentLevel.EnemiesInScene[e])
                     {
                         continue;
                     }
-                    GameController.AllLevels[GameController.CurrentLevel].EnemiesInScene[e].gameObject.SetActive(false);
+                    CurrentLevel.EnemiesInScene[e].gameObject.SetActive(false);
                 }
                 else
                 {
-                    if (!GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e])
+                    if (!CurrentLevel.SubLevel.EnemiesInScene[e])
                     {
                         continue;
                     }
-                    GameController.AllLevels[GameController.CurrentLevel].SubLevel.EnemiesInScene[e].gameObject.SetActive(false);
+                    CurrentLevel.SubLevel.EnemiesInScene[e].gameObject.SetActive(false);
                 }
             }
             for (int e = 0; e < LevelToLoad.EnemiesInScene.Count; e++)
@@ -401,8 +401,6 @@ public class FlyingState : GameStateBase
 
     Vector2 ReturnRandomSpawnPositionInRange()
     {
-    GetNewPosition:
-
         float SpawnVal = 0.0f;
         bool LeftSpawn = Convert.ToBoolean(Random.Range(0, 2));
 
@@ -419,11 +417,13 @@ public class FlyingState : GameStateBase
 
         Vector2 RandomSpawnPosition = new(SpawnVal, Random.Range(GameController.GetMapBoundsYVal,
             -GameController.GetMapBoundsYVal));
+
         if (Mathf.Approximately(PlayerShip.Instance.transform.position.x, RandomSpawnPosition.x)
             || Mathf.Approximately(PlayerShip.Instance.transform.position.y, RandomSpawnPosition.y))
         {
-            goto GetNewPosition;    //Programming like it's 1970
+            return ReturnRandomSpawnPositionInRange();
         }
+
         return RandomSpawnPosition;
     }
 }

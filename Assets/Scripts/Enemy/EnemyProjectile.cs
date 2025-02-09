@@ -11,33 +11,9 @@ public class EnemyProjectile : BaseProjectile
     {
         set { target = value; }
     }
-
-    void Start()
+    public override void Init()
     {
-        //Colour = inverted level starts colour
-
-        //Color NewColour = GameController.AllLevels[GameController.CurrentLevel].StarsColour
-        //    - Color.white;
-
-        //if(NewColour.r < 0.0f) 
-        //{
-        //    NewColour.r= 0.0f;  
-        //}
-
-        //if (NewColour.g < 0.0f)
-        //{
-        //    NewColour.g = 0.0f;
-        //}
-
-        //if (NewColour.b < 0.0f)
-        //{
-        //    NewColour.b = 0.0f;
-        //}
-
-        //if (NewColour != Color.black)
-        //{
-        //    sRenderer.color = NewColour;
-        //}
+        base.Init();
         startPos = transform.position;
     }
 

@@ -35,6 +35,7 @@ public class BaseProjectile : MonoBehaviour
 
     void Start()
     {
+        Init();
         StartCoroutine(AwaitAllowDestroy());
     }
 
@@ -46,8 +47,9 @@ public class BaseProjectile : MonoBehaviour
         }
 
         bool ColSuccess = false;
-        if (Collision.TryGetComponent(out EnemyBase _) && !ignoreEnemy)
+        if (Collision.TryGetComponent(out EnemyBase HitEnemy) && !ignoreEnemy)
         {
+            HitEnemy.OnHit(HitDamage);
             ColSuccess = true;
         }
         else if (Collision.TryGetComponent(out PlayerShip _) && !ignorePlayer)
@@ -86,6 +88,11 @@ public class BaseProjectile : MonoBehaviour
         }
 
         Tick();
+    }
+
+    public virtual void Init()
+    {
+
     }
 
     public virtual void Tick()

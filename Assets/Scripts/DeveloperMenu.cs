@@ -80,6 +80,7 @@ public class DeveloperMenu : MonoBehaviour
     void TraverseLevels(int Level)
     {
         KillAllEnemies();
+        GameController.Instance.DestroyAllProjectiles();
         GameController.Instance.ResetAllLevels();
         GameController.CurrentLevel = Level - 1;
         AudioManager.Instance.StopAllMusicLoops();

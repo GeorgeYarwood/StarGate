@@ -120,15 +120,8 @@ public class EnemyBase : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D Collision)
-    {
-        if (Collision.TryGetComponent(out LaserProjectile HitProjectile))
-        {
-            if (!HitProjectile.IgnoreEnemy)
-            {
-                OnHit(HitProjectile.HitDamage);
-            }
-        }
-        else if (Collision.TryGetComponent(out PlayerShip _) && !waitingToDie)
+    {   
+        if (Collision.TryGetComponent(out PlayerShip _) && !waitingToDie)
         {
             PlayerShip.Instance.OnCollisionWithEnemy();
         }
@@ -379,7 +372,7 @@ public class EnemyBase : MonoBehaviour
     public virtual void Init()
     {
         backgroundLayerMask = LayerMask.GetMask(BACKGROUND_LAYER_MASK);
-        ParentToBackground();
+        //ParentToBackground(); Doing this on Init can fail if bg is being repositioned, so just wait until we need to do it later
     }
 
     public virtual void Tick()
