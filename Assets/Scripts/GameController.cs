@@ -288,6 +288,7 @@ public class GameController : MonoBehaviour
     {
         DestroyAllProjectiles();
         PowerUpManager.Instance.EndAllPowerUps();
+        PowerUpManager.Instance.ClearPowerUps();
         currentLevel++;
         PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, CurrentLevel);
         GoToState(levelCompleteState);

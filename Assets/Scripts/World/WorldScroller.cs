@@ -158,8 +158,13 @@ public class WorldScroller : MonoBehaviour
 
     void Update()
     {
+        if (!canRunBackgroundCheck)
+        {
+            return;
+        }
+
         BackgroundDirection DirectionToUpdate;
-        if (!CheckBackgroundInFrame(out DirectionToUpdate) && canRunBackgroundCheck)
+        if (!CheckBackgroundInFrame(out DirectionToUpdate))
         {
             if (SublevelEntrance.Instance.IsInSublevel)
             {

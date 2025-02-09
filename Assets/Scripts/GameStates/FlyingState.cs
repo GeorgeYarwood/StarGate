@@ -375,7 +375,7 @@ public class FlyingState : GameStateBase
         return true;
     }
 
-    public void SpawnEnemies(List<EnemyBase> ListToAddTo, EnemyBase[] EnemyTypes)
+    public void SpawnEnemies(List<EnemyBase> ListToAddTo, EnemyBase[] EnemyTypes, bool CloseToPlayer = false)
     {
         int RandomEnemyType = Random.Range(0, EnemyTypes.Length);
         if (EnemyTypes[RandomEnemyType].OnePerLevel)
@@ -388,7 +388,7 @@ public class FlyingState : GameStateBase
                 }
             }
         }
-        Vector3 SpawnPos = ReturnRandomSpawnPositionInRange();
+        Vector3 SpawnPos = ReturnRandomSpawnPositionInRange(CloseToPlayer);
         if (EnemyTypes[RandomEnemyType].GetType() == typeof(StaticEnemy))
         {
             SpawnPos.y = 0;
@@ -399,19 +399,21 @@ public class FlyingState : GameStateBase
         ListToAddTo.Add(ThisEnemy);
     }
 
-    Vector2 ReturnRandomSpawnPositionInRange()
+    Vector2 ReturnRandomSpawnPositionInRange(bool CloseToPlayer = false)
     {
         float SpawnVal = 0.0f;
         bool LeftSpawn = Convert.ToBoolean(Random.Range(0, 2));
 
+        float MinX = CloseToPlayer ? GameController.GetMapBoundsMinXVal / 2.0f : GameController.GetMapBoundsMinXVal;
+        float MaxX = CloseToPlayer ? GameController.GetMapBoundsMaxXVal / 2.0f : GameController.GetMapBoundsMaxXVal;
         if (LeftSpawn)
         {
-            SpawnVal = Random.Range(GameController.GetMapBoundsMinXVal, PlayerShip.Instance.GetPos.x//<- Use the player's position instead WorldScroller.Instance.GetCurrentCentre()
+            SpawnVal = Random.Range(MinX, PlayerShip.Instance.GetPos.x//<- Use the player's position instead WorldScroller.Instance.GetCurrentCentre()
                 - GameController.GetSpawnAdjustmentXVal);
         }
         else
         {
-            SpawnVal = Random.Range(GameController.GetMapBoundsMaxXVal, PlayerShip.Instance.GetPos.x//WorldScroller.Instance.GetCurrentCentre()
+            SpawnVal = Random.Range(MaxX, PlayerShip.Instance.GetPos.x//WorldScroller.Instance.GetCurrentCentre()
                + GameController.GetSpawnAdjustmentXVal);
         }
 

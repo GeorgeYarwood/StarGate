@@ -81,7 +81,7 @@ public class BossEnemy : MovingEnemy
         while (GetCurrentLevel().EnemiesInScene.Count < (CurrentEnemyCount + AmountToSpawn)) //A little hacky, we just add the enemies to the current level like if we were loading a level
         {
             GameController.Instance.FlyingStateInstance.SpawnEnemies
-                (GetCurrentLevel().EnemiesInScene, enemyTypesToSpawn);
+                (GetCurrentLevel().EnemiesInScene, enemyTypesToSpawn, CloseToPlayer: true);
             yield return null;
         }
     }
