@@ -76,7 +76,8 @@ public class DialoguePanel : MonoBehaviour, IPointerClickHandler
     void Update()
     {
 #if !FOR_MOBILE
-        if (Input.GetButtonDown(InputHolder.SKIP_DIALOGUE_BUTTON) || (ControllerManager.GetInput[(int)ControllerInput.X_BUTTON].Pressed && !ControllerManager.Consumed))
+        if (Input.GetButtonDown(InputHolder.SKIP_DIALOGUE_BUTTON) || (ControllerManager.GetInput[(int)ControllerInput.X_BUTTON].Pressed
+            && !ControllerManager.GetInput[(int)ControllerInput.X_BUTTON].Consumed))
         {
             SkipDialogue();
         }

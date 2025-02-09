@@ -23,6 +23,7 @@ public class FlyingState : GameStateBase
         base.allowCursorVisible = false;
 #endif
         acceptInput = false;
+
         if (GameController.AllLevels.Count == 0)
         {
             Debug.Log(ERROR_MESSAGE);
@@ -109,7 +110,7 @@ public class FlyingState : GameStateBase
     {
         //One-time consuming of 'a' button on state enter
         acceptInput = false;
-        yield return new WaitUntil(() => !ControllerManager.GetInput[(int)ControllerInput.SELECT].Pressed);
+        yield return new WaitUntil(() => !ControllerManager.GetInput[(int)ControllerInput.A_BUTTON].Pressed);
         acceptInput = true;
     }
 
@@ -163,6 +164,9 @@ public class FlyingState : GameStateBase
 
     IEnumerator EndLevel()
     {
+        PlayerShip.Instance.Invincible = true;
+
+        GameController.Instance.DestroyAllProjectiles();
         waitingForStateExit = true;
         LevelObject CurrentLevel = GetCurrentLevel();
 
@@ -231,19 +235,25 @@ public class FlyingState : GameStateBase
         if (Input.GetButtonDown(InputHolder.PAUSE_MENU) || ControllerManager.GetInput[(int)ControllerInput.START].Pressed)
         {
             GameController.Instance.GoToState(GameStates.PAUSE);
-
         }
 
         if (Input.GetButton(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
         {
             PlayerShip.Instance.UpdatePosition(MoveDirection.RIGHT);
         }
-        if ((Input.GetButton(InputHolder.FIRE) || ControllerManager.GetInput[(int)ControllerInput.SELECT].Pressed))
+        if (Input.GetButton(InputHolder.FIRE) || ControllerManager.GetInput[(int)ControllerInput.A_BUTTON].Pressed)
         {
             PlayerShip.Instance.FireProjectile();
         }
-        //Listen for release so we can coast
 
+        if (Input.GetButtonDown(InputHolder.DEPLOY_BOMB) || (ControllerManager.GetInput[(int)ControllerInput.Y_BUTTON].Pressed)
+            && !(ControllerManager.GetInput[(int)ControllerInput.Y_BUTTON].Consumed))
+        {
+            //Fire bomb...
+            AbilityController.Instance.TryFireBomb();
+        }
+        
+        //Listen for release so we can coast
         if (Input.anyKey || ControllerManager.Instance.AnyControllerInput())
         {
             return;

@@ -13,9 +13,11 @@ public enum ControllerInput
     LEFT_BUTTON,
     RIGHT_BUTTON,
     NONE,
-    SELECT,
     START,
-    X_BUTTON
+    X_BUTTON,
+    B_BUTTON,
+    Y_BUTTON,
+    A_BUTTON
 }
 
 public enum CurrentInputMethod
@@ -34,7 +36,7 @@ public class ControllerManager : MonoBehaviour
         get { return instance; }
     }
 
-    static InputButton[] currentInput = new InputButton[8];
+    static InputButton[] currentInput = new InputButton[10];
     public static InputButton[] GetInput
     {
         get { return currentInput; }
@@ -48,11 +50,6 @@ public class ControllerManager : MonoBehaviour
     }
 
     const float WAIT_BETWEEN_INPUTS = 0.25f;
-    static bool consumed = false;
-    static public bool Consumed
-    {
-        get { return consumed; }
-    }
 
     Action switchToKeyboardMouse;
     public Action SwitchToKeyboardMouse
@@ -102,17 +99,32 @@ public class ControllerManager : MonoBehaviour
         currentInput[2] = new(ControllerInput.LEFT_BUTTON);
         currentInput[3] = new(ControllerInput.RIGHT_BUTTON);
         currentInput[4] = new(ControllerInput.NONE);
-        currentInput[5] = new(ControllerInput.SELECT);
-        currentInput[6] = new(ControllerInput.START);
-        currentInput[7] = new(ControllerInput.X_BUTTON);
+        currentInput[5] = new(ControllerInput.START);
+        currentInput[6] = new(ControllerInput.X_BUTTON);
+        currentInput[7] = new(ControllerInput.B_BUTTON);
+        currentInput[8] = new(ControllerInput.Y_BUTTON);
+        currentInput[9] = new(ControllerInput.A_BUTTON);
     }
 
-    IEnumerator ConsumeInput()
+    IEnumerator ConsumeInput(ControllerInput Button)
     {
         yield return new WaitForEndOfFrame();
-        consumed = true; //To preserve compatibilty we always return the current controller input, and it's up to each script to check this value if it wants to respect consumed inputs
+        currentInput[(int)Button].Consumed = true; //To preserve compatibilty we always return the current controller input, and it's up to each script to check this value if it wants to respect consumed inputs
         yield return new WaitForSeconds(WAIT_BETWEEN_INPUTS);
-        consumed = false;
+        currentInput[(int)Button].Consumed = false;
+    }
+
+    public bool AnyConsumed() 
+    {
+        for(int i = 0; i < currentInput.Length; i++)
+        {
+            if (currentInput[i].Consumed)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     void Update()
@@ -125,11 +137,13 @@ public class ControllerManager : MonoBehaviour
         public ControllerInput Map;
         public bool Pressed;
         public bool JustReleased;
+        public bool Consumed;
         public InputButton(ControllerInput NewMap)
         {
             Map = NewMap;
             Pressed = false;
             JustReleased = false;
+            Consumed = false;
         }
     }
 
@@ -220,23 +234,37 @@ public class ControllerManager : MonoBehaviour
             List<ControllerInput> CurrentlyPressed = new List<ControllerInput>();
             if (Input.GetButton(InputHolder.CONTROLLER_A_BUTTON))
             {
-                StartCoroutine(ConsumeInput());
-                currentInput[(int)ControllerInput.SELECT].Pressed = true;
-                CurrentlyPressed.Add(ControllerInput.SELECT);
+                StartCoroutine(ConsumeInput(ControllerInput.A_BUTTON));
+                currentInput[(int)ControllerInput.A_BUTTON].Pressed = true;
+                CurrentlyPressed.Add(ControllerInput.A_BUTTON);
             }
 
-            if (Input.GetButton(InputHolder.CONTROLLER_START_BUTTON))
+            if (Input.GetButton(InputHolder.CONTROLLER_B_BUTTON))
             {
-                StartCoroutine(ConsumeInput());
-                currentInput[(int)ControllerInput.START].Pressed = true;
-                CurrentlyPressed.Add(ControllerInput.START);
+                StartCoroutine(ConsumeInput(ControllerInput.B_BUTTON));
+                currentInput[(int)ControllerInput.B_BUTTON].Pressed = true;
+                CurrentlyPressed.Add(ControllerInput.B_BUTTON);
             }
 
             if (Input.GetButton(InputHolder.CONTROLLER_X_BUTTON))
             {
-                StartCoroutine(ConsumeInput());
+                StartCoroutine(ConsumeInput(ControllerInput.X_BUTTON));
                 currentInput[(int)ControllerInput.X_BUTTON].Pressed = true;
                 CurrentlyPressed.Add(ControllerInput.X_BUTTON);
+            }
+
+            if (Input.GetButton(InputHolder.CONTROLLER_Y_BUTTON))
+            {
+                StartCoroutine(ConsumeInput(ControllerInput.Y_BUTTON));
+                currentInput[(int)ControllerInput.Y_BUTTON].Pressed = true;
+                CurrentlyPressed.Add(ControllerInput.Y_BUTTON);
+            }
+
+            if (Input.GetButton(InputHolder.CONTROLLER_START_BUTTON))
+            {
+                StartCoroutine(ConsumeInput(ControllerInput.START));
+                currentInput[(int)ControllerInput.START].Pressed = true;
+                CurrentlyPressed.Add(ControllerInput.START);
             }
 
             //Button being pressed DOWN
@@ -247,7 +275,7 @@ public class ControllerManager : MonoBehaviour
                 if ((Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0 && !HorizontalPriority)
                     || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) < 0)
                 {
-                    StartCoroutine(ConsumeInput());
+                    StartCoroutine(ConsumeInput(ControllerInput.DOWN_BUTTON));
                     currentInput[(int)ControllerInput.DOWN_BUTTON].Pressed = true;
                     CurrentlyPressed.Add(ControllerInput.DOWN_BUTTON);
                 }
@@ -259,7 +287,7 @@ public class ControllerManager : MonoBehaviour
                 if ((Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0 && !HorizontalPriority)
                     || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) > 0)
                 {
-                    StartCoroutine(ConsumeInput());
+                    StartCoroutine(ConsumeInput(ControllerInput.UP_BUTTON));
                     currentInput[(int)ControllerInput.UP_BUTTON].Pressed = true;
                     CurrentlyPressed.Add(ControllerInput.UP_BUTTON);
                 }
@@ -268,7 +296,7 @@ public class ControllerManager : MonoBehaviour
             if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) > 0
                 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) > 0)
             {
-                StartCoroutine(ConsumeInput());
+                StartCoroutine(ConsumeInput(ControllerInput.RIGHT_BUTTON));
                 currentInput[(int)ControllerInput.RIGHT_BUTTON].Pressed = true;
                 CurrentlyPressed.Add(ControllerInput.RIGHT_BUTTON);
             }
@@ -276,7 +304,7 @@ public class ControllerManager : MonoBehaviour
             if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) < 0
                 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) < 0)
             {
-                StartCoroutine(ConsumeInput());
+                StartCoroutine(ConsumeInput(ControllerInput.LEFT_BUTTON));
                 currentInput[(int)ControllerInput.LEFT_BUTTON].Pressed = true;
                 CurrentlyPressed.Add(ControllerInput.LEFT_BUTTON);
             }
@@ -338,13 +366,7 @@ public class ControllerManager : MonoBehaviour
                 }
             }
 
-            if (!Input.GetButton(InputHolder.CONTROLLER_A_BUTTON))
-            {
-                if (!CurrentlyPressed.Contains(ControllerInput.SELECT))
-                {
-                    currentInput[(int)ControllerInput.SELECT].Pressed = false;
-                }
-            }
+           
 
             if (!Input.GetButton(InputHolder.CONTROLLER_START_BUTTON))
             {
@@ -354,11 +376,35 @@ public class ControllerManager : MonoBehaviour
                 }
             }
 
+            if (!Input.GetButton(InputHolder.CONTROLLER_A_BUTTON))
+            {
+                if (!CurrentlyPressed.Contains(ControllerInput.A_BUTTON))
+                {
+                    currentInput[(int)ControllerInput.A_BUTTON].Pressed = false;
+                }
+            }
+
+            if (!Input.GetButton(InputHolder.CONTROLLER_B_BUTTON))
+            {
+                if (!CurrentlyPressed.Contains(ControllerInput.B_BUTTON))
+                {
+                    currentInput[(int)ControllerInput.B_BUTTON].Pressed = false;
+                }
+            }
+
             if (!Input.GetButton(InputHolder.CONTROLLER_X_BUTTON))
             {
                 if (!CurrentlyPressed.Contains(ControllerInput.X_BUTTON))
                 {
                     currentInput[(int)ControllerInput.X_BUTTON].Pressed = false;
+                }
+            }
+
+            if (!Input.GetButton(InputHolder.CONTROLLER_Y_BUTTON))
+            {
+                if (!CurrentlyPressed.Contains(ControllerInput.Y_BUTTON))
+                {
+                    currentInput[(int)ControllerInput.Y_BUTTON].Pressed = false;
                 }
             }
 
@@ -371,8 +417,8 @@ public class ControllerManager : MonoBehaviour
     {
         return Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) != 0
             || Input.GetAxis(InputHolder.CONTROLLER_JOY_X) != 0 || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) != 0
-            || Input.GetButton(InputHolder.CONTROLLER_A_BUTTON) /*|| Input.GetButton(InputHolder.CONTROLLER_B_BUTTON) Never actually set this one up lmao*/
-            || Input.GetButton(InputHolder.CONTROLLER_X_BUTTON) /* || Input.GetButton(InputHolder.CONTROLLER_Y_BUTTON) or this one*/
+            || Input.GetButton(InputHolder.CONTROLLER_A_BUTTON) || Input.GetButton(InputHolder.CONTROLLER_B_BUTTON) 
+            || Input.GetButton(InputHolder.CONTROLLER_X_BUTTON) || Input.GetButton(InputHolder.CONTROLLER_Y_BUTTON) 
             || Input.GetButton(InputHolder.CONTROLLER_START_BUTTON);
     }
 

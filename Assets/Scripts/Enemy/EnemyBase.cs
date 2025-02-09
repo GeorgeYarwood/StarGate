@@ -38,6 +38,7 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] bool onePerLevel = false;
     [SerializeField] float encounterDistance = 5.0f;    //How close until ON_ENCOUNTER dialogue is triggered
     [SerializeField] BaseProjectile projectile;
+    [SerializeField] AudioClip shotSFX;
 
     public BaseProjectile Projectile
     {
@@ -100,6 +101,11 @@ public class EnemyBase : MonoBehaviour
             if (GameController.Instance.GetCurrentGameState
                 is FlyingState && CanFireAtPlayer())
             {
+                if (shotSFX)
+                {
+                    AudioManager.Instance.PlayAudioClip(shotSFX);
+                }
+
                 LaunchProjectile();
                 yield return new WaitForSeconds(timeBetweenShots);
             }
@@ -165,11 +171,14 @@ public class EnemyBase : MonoBehaviour
         OnDie();
     }
 
-    public virtual void OnDie()
+    public virtual void OnDie(bool Dialog = true)
     {
         GameController.Instance.AddScore(scoreAddition);
         GameController.Instance.FlyingStateInstance.RemoveEnemyFromList(this);
-        HandleDialogue(DialogueQueuePoint.ON_DEATH);
+        if (Dialog)
+        {
+            HandleDialogue(DialogueQueuePoint.ON_DEATH);
+        }
         if (canDropOnDeath.Length > 0)
         {
             PowerUp toDrop = canDropOnDeath[0];

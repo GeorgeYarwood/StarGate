@@ -20,6 +20,7 @@ public class InputHolder : MonoBehaviour
     public const string SPEED_BOOST = "SpeedBoost";
     public const string SKIP_DIALOGUE_BUTTON = "SkipDialogue";
     public const string DEVELOPER_MENU = "DeveloperMenu";
+    public const string DEPLOY_BOMB = "DeployBomb";
 
     //Controller specific
     public const string CONTROLLER_JOY_X = "ControllerJoyX";
@@ -34,6 +35,7 @@ public class InputHolder : MonoBehaviour
 
     //Playerprefs
     public const string LAST_LEVEL = "LastLevel";
+    public const string HELD_BOMBS = "HeldBomds";
     public const string CURRENT_LIVES = "LastLives";
     public const string MUSIC_VOLUME = "MusicVolume";
     public const string SFX_VOLUME = "SfxVolume";

@@ -69,6 +69,13 @@ public class PlayerShip : MonoBehaviour
         get { return transform.position; }
     }
 
+    bool invincible = false;
+    public bool Invincible
+    {
+        get { return invincible; }
+        set { invincible = value; }
+    }
+
     bool debugInvincible = false;
     public bool DebugInvincible
     {
@@ -322,7 +329,7 @@ public class PlayerShip : MonoBehaviour
 
     public void OnCollisionWithEnemy()
     {
-        if (debugInvincible)
+        if (invincible || debugInvincible)
         {
             return;
         }

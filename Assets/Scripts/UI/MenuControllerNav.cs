@@ -83,7 +83,7 @@ public class MenuControllerNav : MonoBehaviour
 
     void TraverseAreas()
     {
-        if (ControllerManager.Consumed)
+        if (ControllerManager.Instance.AnyConsumed())
         {
             return;
         }
@@ -166,7 +166,7 @@ public class MenuControllerNav : MonoBehaviour
                         SwitchToArea(currentAreaIndex + 1);
                     }
                     break;
-                case ControllerInput.SELECT:
+                case ControllerInput.A_BUTTON:
                     InteractWithSelectable();
                     break;
             }

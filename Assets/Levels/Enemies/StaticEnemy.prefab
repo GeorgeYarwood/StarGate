@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd697b3a6751f342abf35a489f07f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: 20
+  enemyHealth: 150
   spriteRenderer: {fileID: 2294187218363598420}
   deathVfx: {fileID: 2486775115207692618}
   hitVfx: {fileID: 6821178246447932882}
@@ -116,6 +116,7 @@ MonoBehaviour:
   onePerLevel: 1
   encounterDistance: 5
   projectile: {fileID: 3192940171559665861, guid: 8067b8952b69a184598240cad5a77ac4, type: 3}
+  shotSFX: {fileID: 8300000, guid: 05b232fe1e71fa548bb7795c7a8821f4, type: 3}
   shootAtPlayer: 1
   thisEnemyType: 0
   timeBetweenShots: 1.5

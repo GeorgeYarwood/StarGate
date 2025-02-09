@@ -76,12 +76,14 @@ public class MainMenuManager : MonoBehaviour, TestInterface
     {
         if (IsContinue)
         {
+            AbilityController.HeldBombs = PlayerPrefs.GetInt(InputHolder.HELD_BOMBS);
             GameController.CurrentLevel = PlayerPrefs.GetInt(InputHolder.LAST_LEVEL);
         }
         else
         {
             GameController.CurrentLevel = 0;
         }
+
         SceneManager.LoadScene(InputHolder.GAME_SCENE);
     }
 

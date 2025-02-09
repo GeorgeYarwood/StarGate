@@ -286,12 +286,13 @@ public class GameController : MonoBehaviour
 
     public void OnLevelComplete()
     {
-        DestroyAllProjectiles();
         PowerUpManager.Instance.EndAllPowerUps();
         PowerUpManager.Instance.ClearPowerUps();
+        AbilityController.Instance.WriteBombCount();
         currentLevel++;
         PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, CurrentLevel);
         GoToState(levelCompleteState);
+        PlayerShip.Instance.Invincible = false;
     }
 
     IEnumerator WaitForDeathVfx()

@@ -87,6 +87,7 @@ MonoBehaviour:
   onePerLevel: 0
   encounterDistance: 5
   projectile: {fileID: 4422580154169399911, guid: 20c946a5d24bf634ebd43ed6b4d6d50b, type: 3}
+  shotSFX: {fileID: 8300000, guid: 675499feb39ff61438ab0d924c427972, type: 3}
   shootAtPlayer: 1
   thisEnemyType: 0
   timeBetweenShots: 15
