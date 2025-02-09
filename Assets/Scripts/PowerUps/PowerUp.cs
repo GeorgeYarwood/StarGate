@@ -34,7 +34,7 @@ public class PowerUp : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D Collision)
     {
-        if (Collision.TryGetComponent(out PlayerShip _))
+        if (Collision.TryGetComponent(out PlayerController _))
         {
             PowerUpManager.Instance.ApplyPowerUp(powerUpType);
             if (onCollectAudio)

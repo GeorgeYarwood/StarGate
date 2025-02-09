@@ -52,9 +52,9 @@ public class BaseProjectile : MonoBehaviour
             HitEnemy.OnHit(HitDamage);
             ColSuccess = true;
         }
-        else if (Collision.TryGetComponent(out PlayerShip _) && !ignorePlayer)
+        else if (Collision.TryGetComponent(out PlayerController _) && !ignorePlayer)
         {
-            PlayerShip.Instance.OnCollisionWithEnemy();
+            GameController.Instance.GetActivePlayerController().OnCollisionWithEnemy();
             ColSuccess = true;
         }
 
@@ -82,7 +82,7 @@ public class BaseProjectile : MonoBehaviour
 
     void Update()
     {
-        if (!gameObject || GameController.Instance.GetCurrentGameState != GameController.Instance.FlyingStateInstance)
+        if (!gameObject || GameController.Instance.GetCurrentGameState is not PlayState)
         {
             return;
         }

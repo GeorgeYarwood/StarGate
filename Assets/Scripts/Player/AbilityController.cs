@@ -79,7 +79,8 @@ public class AbilityController : MonoBehaviour
     {
         //SFX has a delay/build up at start
         yield return new WaitForSeconds(0.85f);
-        Vector2 PlayerPos = PlayerShip.Instance.GetPos;
+        PlayerController PController = GameController.Instance.GetActivePlayerController();
+        Vector2 PlayerPos = PController.GetPos;
 
         if (bombVFX)
         {

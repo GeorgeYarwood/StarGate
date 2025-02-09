@@ -99,7 +99,7 @@ public class EnemyBase : MonoBehaviour
         while (true && !waitingToDie)
         {
             if (GameController.Instance.GetCurrentGameState
-                is FlyingState && CanFireAtPlayer())
+                is PlayState && CanFireAtPlayer())
             {
                 if (shotSFX)
                 {
@@ -127,9 +127,9 @@ public class EnemyBase : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D Collision)
     {   
-        if (Collision.TryGetComponent(out PlayerShip _) && !waitingToDie)
+        if (Collision.TryGetComponent(out PlayerController _) && !waitingToDie)
         {
-            PlayerShip.Instance.OnCollisionWithEnemy();
+            GameController.Instance.GetActivePlayerController().OnCollisionWithEnemy();
         }
     }
 
@@ -237,12 +237,12 @@ public class EnemyBase : MonoBehaviour
 
     void Update()
     {
-        if (GameController.Instance.GetCurrentGameState != GameController.Instance.FlyingStateInstance)
+        if (GameController.Instance.GetCurrentGameState is not PlayState)
         {
-            return; //Only tick enemies in flyingstate
+            return; //Only tick enemies in playstate
         }
 
-        if (Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= encounterDistance
+        if (Vector2.Distance(GameController.Instance.GetActivePlayerController().GetPos, transform.position) <= encounterDistance
             && !hasRunFirstEncounter)
         {
             HandleDialogue(DialogueQueuePoint.ON_ENCOUNTER);

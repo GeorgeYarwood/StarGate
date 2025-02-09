@@ -34,6 +34,7 @@ public class InputHolder : MonoBehaviour
     public const string CONTROLLER_B_BUTTON = "ControllerB";
 
     //Playerprefs
+    public const string SCORE = "Score";
     public const string LAST_LEVEL = "LastLevel";
     public const string HELD_BOMBS = "HeldBomds";
     public const string CURRENT_LIVES = "LastLives";

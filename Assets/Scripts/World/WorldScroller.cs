@@ -129,7 +129,8 @@ public class WorldScroller : MonoBehaviour
             }
         }
 
-        PlayerShip.Instance.ParentToBackground();
+        PlayerController PController = GameController.Instance.GetActivePlayerController();
+        PController.ParentToBackground();
 
         BaseProjectile[] Projectiles = GameController.Instance.GetAllProjectiles();
 
@@ -145,7 +146,7 @@ public class WorldScroller : MonoBehaviour
             Projectiles[p].DetachFromParent();
         }
 
-        PlayerShip.Instance.DetachFromParent();
+        PController.DetachFromParent();
         canRunBackgroundCheck = true;
     }
 

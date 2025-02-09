@@ -16,7 +16,8 @@ public class MovingEnemy : EnemyBase
 
     void TrackPlayer()
     {
-        if (Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= minDistanceToPlayer)
+        PlayerController PController = GameController.Instance.GetActivePlayerController();
+        if (Vector2.Distance(PController.GetPos, transform.position) <= minDistanceToPlayer)
         {
             transform.position = GetNonOverlappingVector();
         }
@@ -26,20 +27,25 @@ public class MovingEnemy : EnemyBase
     {
         BaseProjectile NewProjectile = Instantiate(Projectile, transform.position, Quaternion.identity);
         EnemyProjectile AsEnemyProjectile = (EnemyProjectile)NewProjectile;
+        PlayerController PController = GameController.Instance.GetActivePlayerController();
 
-        AsEnemyProjectile.Target = PlayerShip.Instance.GetPos;
+        AsEnemyProjectile.Target = PController.GetPos;
         SpawnedProjectiles.Add(AsEnemyProjectile);
     }
 
     public override bool CanFireAtPlayer()
     {
-        return Vector2.Distance(PlayerShip.Instance.GetPos, transform.position) <= minShootDistance;
+        PlayerController PController = GameController.Instance.GetActivePlayerController();
+
+        return Vector2.Distance(PController.GetPos, transform.position) <= minShootDistance;
     }
 
     Vector2 GetNonOverlappingVector()
     {
+        PlayerController PController = GameController.Instance.GetActivePlayerController();
+
         Vector2 BaseVector = Vector2.MoveTowards(transform.position,
-                PlayerShip.Instance.GetPos, moveSpeed * Time.deltaTime);
+                PController.GetPos, moveSpeed * Time.deltaTime);
         RaycastHit2D Hit = Physics2D.CircleCast(BaseVector, collisionAvoidRadius, Vector2.zero);
         if (!Hit)
         {

@@ -10,12 +10,13 @@ public class DeveloperMenu : MonoBehaviour
     {
         if (menuOpen)
         {
-            if (GUILayout.Button($"Toggle invincibility ({PlayerShip.Instance.DebugInvincible})"))
+            if (GUILayout.Button($"Toggle invincibility ({PlayerController.DebugInvincible})"))
             {
-                PlayerShip.Instance.DebugInvincible = !PlayerShip.Instance.DebugInvincible;
+                PlayerController.DebugInvincible = !PlayerController.DebugInvincible;
             }
             if (GUILayout.Button("Go to next level"))
             {
+                KillAllEnemies();
                 GameController.Instance.OnLevelComplete();
             }
 

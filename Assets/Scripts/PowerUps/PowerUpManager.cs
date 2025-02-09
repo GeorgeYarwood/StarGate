@@ -63,7 +63,7 @@ public class PowerUpManager : MonoBehaviour
     {
         if(allPowerups.TryGetValue(ThisPowerUp, out PowerUpContainer ThisPowerUpContainer))
         {
-            PlayerShip.Instance.ApplyPowerup(ThisPowerUp, ThisPowerUpContainer);
+            PlayerController.ApplyPowerup(ThisPowerUp, ThisPowerUpContainer);
         }
     }
 
@@ -81,7 +81,7 @@ public class PowerUpManager : MonoBehaviour
     
     public void EndAllPowerUps()
     {
-        PlayerShip.Instance.EndAllPowerups();
+        PlayerController.EndAllPowerups();
     }
 
     public void DropRandomPowerUpAtPosition(Vector2 PositionToSpawn, PowerUp PowerUpToDrop, bool ForceSpawn = false)

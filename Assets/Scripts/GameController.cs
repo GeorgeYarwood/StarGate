@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public enum GameStates 
 { 
@@ -11,7 +12,8 @@ public enum GameStates
     LEVEL_COMPLETE,
     LIFE_LOST,
     DEATH,
-    PAUSE
+    PAUSE,
+    GROUNDED
 }
 
 public class GameController : MonoBehaviour
@@ -46,6 +48,7 @@ public class GameController : MonoBehaviour
     public static int CurrentScore
     {
         get { return currentScore; }
+        set { currentScore = value; }
     }
 
     static int currentLives = 3;
@@ -91,6 +94,7 @@ public class GameController : MonoBehaviour
     [SerializeField] LevelCompleteState levelCompleteState;
     [SerializeField] LifeLostState lifeLostState;
     [SerializeField] PauseGameState pauseGameState;
+    [SerializeField] GroundedState groundedState;
 
 
     [SerializeField] TextMeshProUGUI scoreText;
@@ -135,14 +139,35 @@ public class GameController : MonoBehaviour
             PlayerPrefs.SetInt(InputHolder.CURRENT_LIVES, currentLives);
         }
 
+        //PlayerShip.Instance.SetEnabled(false);
+        PlayerTurret.Instance.SetEnabled(false);
+
         ResetAllLevels();
         ResetPlayerPosition();
-        //Temp until menu/state loading is added
+        //GoToState(groundedState);
         GoToState(flyingState);
+    }
+
+    public PlayerController GetActivePlayerController() 
+    {
+        GameStateBase CurrentState = GetCurrentGameState;
+
+        if (CurrentState is not PlayState)
+        {
+            return null;
+        }
+
+        if (CurrentState is FlyingState) 
+        {
+            return PlayerShip.Instance;
+        }
+
+        return PlayerTurret.Instance;
     }
 
     public void ResetPlayerPosition()
     {
+        PlayerTurret.Instance.transform.position = new(WorldScroller.Instance.GetCurrentCentre(), -4.15f);
         PlayerShip.Instance.transform.position = new(WorldScroller.Instance.GetCurrentCentre(), 0.0f);
     }
 
@@ -226,6 +251,9 @@ public class GameController : MonoBehaviour
             case GameStates.PAUSE:
                 StateToLoad = pauseGameState;
                 break;
+            case GameStates.GROUNDED:
+                StateToLoad = groundedState;
+                break;
         }
 
         if (!StateToLoad)
@@ -291,8 +319,9 @@ public class GameController : MonoBehaviour
         AbilityController.Instance.WriteBombCount();
         currentLevel++;
         PlayerPrefs.SetInt(InputHolder.LAST_LEVEL, CurrentLevel);
+        PlayerPrefs.SetInt(InputHolder.SCORE, currentScore);
         GoToState(levelCompleteState);
-        PlayerShip.Instance.Invincible = false;
+        PlayerController.Invincible = false;
     }
 
     IEnumerator WaitForDeathVfx()
