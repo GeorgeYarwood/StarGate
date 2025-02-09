@@ -81,6 +81,7 @@ public class MainMenuManager : MonoBehaviour, TestInterface
         }
         else
         {
+            AbilityController.HeldBombs = AbilityController.STARTING_BOMBS;
             GameController.CurrentLevel = 0;
         }
 

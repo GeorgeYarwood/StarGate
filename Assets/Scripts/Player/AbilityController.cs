@@ -6,7 +6,7 @@ using UnityEngine;
 public class AbilityController : MonoBehaviour
 {
     const int MAX_BOMBS = 6;
-    const int STARTING_BOMBS = 3;
+    public const int STARTING_BOMBS = 3;
 
     [SerializeField] GameObject[] bombImages = new GameObject[MAX_BOMBS];
     [SerializeField] ParticleSystem bombVFX;
