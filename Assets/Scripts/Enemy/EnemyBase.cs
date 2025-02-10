@@ -12,7 +12,6 @@ public enum EnemyType //Used for comparison checks
 public class EnemyBase : MonoBehaviour
 {
     const float CLEANUP_TIMER = 10.0f; //Will check to see if we're not on a background at this interval and destroy if so
-    const string BACKGROUND_LAYER_MASK = "Background";
     const string WARNING_MESSAGE = "This enemy couldn't find a background to parent to, so has destroyed itself to prevent a softlock! This isn't good!";
 
     [SerializeField] int enemyHealth;
@@ -380,7 +379,7 @@ public class EnemyBase : MonoBehaviour
 
     public virtual void Init()
     {
-        backgroundLayerMask = LayerMask.GetMask(BACKGROUND_LAYER_MASK);
+        backgroundLayerMask = LayerMask.GetMask(InputHolder.BACKGROUND_LAYER_MASK);
         //ParentToBackground(); Doing this on Init can fail if bg is being repositioned, so just wait until we need to do it later
     }
 

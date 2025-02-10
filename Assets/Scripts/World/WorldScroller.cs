@@ -31,6 +31,10 @@ public class WorldScroller : MonoBehaviour
     [SerializeField] SpriteRenderer rightWorldRayOrigin;
 
     bool canRunBackgroundCheck = true;
+    public bool CanRunBackgroundCheck
+    {
+        set { canRunBackgroundCheck = value; }
+    }
     const float BG_CHECK_DELAY = 1.0f;
     const float OUT_OF_RANGE_RESET = 1000.0f; //We reset the world position to 0 so we don't go on forever
 
@@ -38,6 +42,7 @@ public class WorldScroller : MonoBehaviour
     Vector2Int middleWorldInitialPos;
     Vector2Int rightWorldInitialPos;
 
+    int layerMask = -1;
 
     static WorldScroller instance;
     public static WorldScroller Instance
@@ -60,12 +65,14 @@ public class WorldScroller : MonoBehaviour
         leftWorldInitialPos = Vector2Int.RoundToInt(leftWorldSection.transform.position);
         middleWorldInitialPos = Vector2Int.RoundToInt(middleWorldSection.transform.position);
         rightWorldInitialPos = Vector2Int.RoundToInt(rightWorldSection.transform.position);
+
+        layerMask = LayerMask.GetMask(InputHolder.BACKGROUND_LAYER_MASK);
     }
 
     bool CheckBackgroundInFrame(out BackgroundDirection Direction)
     {
-        RaycastHit2D LeftCentre = Physics2D.Raycast(leftWorldRayOrigin.transform.position, leftWorldRayOrigin.transform.forward);
-        RaycastHit2D RightCentre = Physics2D.Raycast(rightWorldRayOrigin.transform.position, rightWorldRayOrigin.transform.forward);
+        RaycastHit2D LeftCentre = Physics2D.Raycast(leftWorldRayOrigin.transform.position, leftWorldRayOrigin.transform.forward, 10.0f, layerMask);
+        RaycastHit2D RightCentre = Physics2D.Raycast(rightWorldRayOrigin.transform.position, rightWorldRayOrigin.transform.forward, 10.0f, layerMask);
 
         if (!LeftCentre.collider)
         {

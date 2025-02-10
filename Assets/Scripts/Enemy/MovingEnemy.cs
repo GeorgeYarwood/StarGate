@@ -19,7 +19,7 @@ public class MovingEnemy : EnemyBase
         PlayerController PController = GameController.Instance.GetActivePlayerController();
         if (Vector2.Distance(PController.GetPos, transform.position) <= minDistanceToPlayer)
         {
-            transform.position = GetNonOverlappingVector();
+            transform.position = GetNonOverlappingVector(PController);
         }
     }
 
@@ -40,12 +40,31 @@ public class MovingEnemy : EnemyBase
         return Vector2.Distance(PController.GetPos, transform.position) <= minShootDistance;
     }
 
-    Vector2 GetNonOverlappingVector()
+    Vector2 GetNonOverlappingVector(PlayerController PController)
     {
-        PlayerController PController = GameController.Instance.GetActivePlayerController();
+        Vector2 Target = PController.GetPos;
+
+        if(PController as PlayerTurret) 
+        {
+            //Position differently when dealing with turret
+            Target.y = 0.0f;
+
+            float Angle = Random.Range(-90.0f, 90.0f) * Mathf.Deg2Rad;
+            float MaxVal = WorldScroller.Instance.MiddleWorldSection.bounds.size.x / 2.0f;
+
+            float X = Random.Range(-MaxVal, MaxVal);
+            //float Y = (Target.y * Mathf.Sin(Angle));
+
+            Target.x = X;
+            //Target.y = Y;
+
+            //return Target;  
+        }
 
         Vector2 BaseVector = Vector2.MoveTowards(transform.position,
-                PController.GetPos, moveSpeed * Time.deltaTime);
+                Target, moveSpeed * Time.deltaTime);
+
+
         RaycastHit2D Hit = Physics2D.CircleCast(BaseVector, collisionAvoidRadius, Vector2.zero);
         if (!Hit)
         {

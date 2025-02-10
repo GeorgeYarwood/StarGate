@@ -6,6 +6,9 @@ using UnityEngine;
 //Holds all the games input buttons, and also scene names and now playerprefs because I'm lazy as fuck
 public class InputHolder : MonoBehaviour
 {
+    //Layermasks
+    public const string BACKGROUND_LAYER_MASK = "Background";
+
     //Scene names
     public const string GAME_SCENE = "GameScene";
     public const string MENU_SCENE = "MainMenu";

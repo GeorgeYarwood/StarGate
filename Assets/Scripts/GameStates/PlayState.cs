@@ -39,9 +39,7 @@ public class PlayState : GameStateBase
         {
             WorldScroller.Instance.ResetToZero(NewLevel: true);
             CameraController.Instance.MatchBackgroundToLevel();
-            GameController.Instance.ResetPlayerPosition();
             LoadLevel(CurrentLevel);
-
         }
         else if (CurrentLevel.IsInitialised && GameController.Instance.LastGameState is not PauseGameState) //Reset spawns if we're already in the level
         {
@@ -283,7 +281,6 @@ public class PlayState : GameStateBase
         {
             WorldColourController.Instance.SetWorldColours(LevelToLoad.StarsColour, LevelToLoad.BackgroundColour, LevelToLoad.ForegroundColour);
         }
-
 
         //Only load in setpeices once
         if (LevelToLoad.SetPiecesInScene.Count == 0 && LevelToLoad.SetPieces.Length > 0)

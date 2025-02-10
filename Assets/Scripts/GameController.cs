@@ -148,35 +148,6 @@ public class GameController : MonoBehaviour
         LoadCurrentLevel();
     }
 
-    //void DisableAllSetPieces()
-    //{
-    //    for (int l = 0; l < AllLevels.Count; l++)
-    //    {
-    //        for(int s = 0; s < AllLevels[l].SetPieces.Length; s++)
-    //        {
-    //            if (!AllLevels[l].SetPieces[s])
-    //            {
-    //                continue;
-    //            }
-
-    //            AllLevels[l].SetPieces[s].SetActive(false);
-    //        }
-
-    //        if (AllLevels[l].HasSublevel)
-    //        {
-    //            for (int s = 0; s < AllLevels[l].SubLevel.SetPieces.Length; s++)
-    //            {
-    //                if (!AllLevels[l].SubLevel.SetPieces[s])
-    //                {
-    //                    continue;
-    //                }
-
-    //                AllLevels[l].SubLevel.SetPieces[s].SetActive(false);
-    //            }
-    //        }
-    //    }
-    //} 
-
     public void LoadCurrentLevel() 
     {
         //Load correct state depending on what the level requests
@@ -197,19 +168,31 @@ public class GameController : MonoBehaviour
 
     public PlayerController GetActivePlayerController() 
     {
-        GameStateBase CurrentState = GetCurrentGameState;
+        //GameStateBase CurrentState = GetCurrentGameState;
 
-        if (CurrentState is not PlayState)
+        //if (CurrentState is not PlayState)
+        //{
+        //    return null;
+        //}
+
+        //if (CurrentState is FlyingState) 
+        //{
+        //    return PlayerShip.Instance;
+        //}
+
+        //return PlayerTurret.Instance;
+
+        LevelObject CurrentLevel = AllLevels[currentLevel];
+
+        switch (CurrentLevel.PlayerType)
         {
-            return null;
+            case PlayerControllerType.SHIP:
+                return PlayerShip.Instance;
+            case PlayerControllerType.TURRET:
+                return PlayerTurret.Instance;
         }
 
-        if (CurrentState is FlyingState) 
-        {
-            return PlayerShip.Instance;
-        }
-
-        return PlayerTurret.Instance;
+        return null;
     }
 
     public void ResetPlayerPosition()
