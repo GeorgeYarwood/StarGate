@@ -144,7 +144,7 @@ MonoBehaviour:
   playerBoostSpeedAdj: 2.5
   playerCoastSpeed: 0.75
   playerCoastTimer: 1.2
-  projectileSpawnModifier: 1.75
+  projectileSpawnModifier: 2
   engineSfx: {fileID: 8300000, guid: e4f1fcbb9b86a9c469b3e1358be0fa7b, type: 3}
 --- !u!61 &8580451008775452946
 BoxCollider2D:

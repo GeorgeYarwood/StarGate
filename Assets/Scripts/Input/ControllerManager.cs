@@ -160,6 +160,18 @@ public class ControllerManager : MonoBehaviour
         Cursor.lockState = GameController.Instance.GetCurrentGameState.AllowCursorVisible ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
+    public void PressButton(ControllerInput Input, bool Consume) 
+    {
+        GetInput[(int)Input].Pressed = true;
+        StartCoroutine(ConsumeInput(Input));
+    }
+
+    public void ReleaseButton(ControllerInput Input)
+    {
+        GetInput[(int)Input].Pressed = false;
+        StartCoroutine(WaitForFrame(Input));
+    }
+
     void OnSwitchToController()
     {
         Cursor.visible = false;

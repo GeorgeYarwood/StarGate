@@ -7,6 +7,8 @@ using UnityEngine.UIElements;
 public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDownHandler, IDragHandler
 {
     [SerializeField] ControllerInput[] toToggle = new ControllerInput[2];
+    [SerializeField] bool listenForDrag = false;
+    [SerializeField] bool consume = false;
 
     bool held = false;
     //Basically a wrapper around the controller class that toggles the bool as if it were a controller
@@ -14,10 +16,9 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
     {
         held = false;
         base.OnPointerUp(EventData);
-        for(int t = 0; t < toToggle.Length; t++)
+        for (int t = 0; t < toToggle.Length; t++)
         {
-            ControllerManager.GetInput[(int)toToggle[t]].Pressed = false;
-            StartCoroutine(ControllerManager.Instance.WaitForFrame(toToggle[t]));
+            ControllerManager.Instance.ReleaseButton(toToggle[t]);
         }
     }
 
@@ -26,9 +27,20 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
         base.OnPointerDown(EventData);
         for (int t = 0; t < toToggle.Length; t++)
         {
-            ControllerManager.GetInput[(int)toToggle[t]].Pressed = true;
+            ControllerManager.Instance.PressButton(toToggle[t], consume);
         }
+
+        if (consume)
+        {
+            return;
+        }
+
         held = true;
+
+        if (!listenForDrag)
+        {
+            return;
+        }
 
         Vector2 NormalisedMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (NormalisedMousePos.y > 1.5f)
@@ -37,7 +49,7 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
             breakOut = false;
             StartCoroutine(ExecuteDrag());
         }
-        else if(NormalisedMousePos.y < -1.5f)
+        else if (NormalisedMousePos.y < -1.5f)
         {
             lastDirection = MoveDirection.DOWN;
             breakOut = false;
@@ -90,7 +102,7 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
     public void OnDrag(PointerEventData EventData)
     {
         Vector2 NormalisedMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if(NormalisedMousePos.y > -1.5f && NormalisedMousePos.y < 1.5f)
+        if (NormalisedMousePos.y > -1.5f && NormalisedMousePos.y < 1.5f)
         {
             breakOut = true;
             return;

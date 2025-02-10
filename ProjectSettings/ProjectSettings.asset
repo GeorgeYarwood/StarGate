@@ -139,7 +139,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 1.2
+  bundleVersion: 1.35
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -255,15 +255,15 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/georg/Documents/Circles/user.keystore
-  AndroidKeyaliasName: circles
+  AndroidKeystoreName: C:/user.keystore
+  AndroidKeyaliasName: 
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
   AndroidIsGame: 1
   AndroidEnableTango: 0
   androidEnableBanner: 1
   androidUseLowAccuracyLocation: 0
-  androidUseCustomKeystore: 1
+  androidUseCustomKeystore: 0
   m_AndroidBanners:
   - width: 320
     height: 180
@@ -703,7 +703,7 @@ PlayerSettings:
   webGLMemoryGeometricGrowthStep: 0.2
   webGLMemoryGeometricGrowthCap: 96
   scriptingDefineSymbols:
-    Android: 
+    Android: FOR_MOBILE
   additionalCompilerArguments:
     Android: []
   platformArchitecture: {}
