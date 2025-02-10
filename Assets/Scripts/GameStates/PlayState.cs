@@ -19,6 +19,7 @@ public class PlayState : GameStateBase
     }
 
     bool waitingForStateExit = false;
+    bool endPUCR = false;
 
     public override void OnStateEnter()
     {
@@ -88,13 +89,6 @@ public class PlayState : GameStateBase
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         waitingForStateExit = false;
-        ClearAllProjectiles();
-        if (GameController.CurrentLevel > 0)
-        {
-            AudioManager.Instance.PlayLoopedAudioClip(
-                GameController.AllLevels[GameController.CurrentLevel - 1].LevelSong,
-                EndLoop: true);
-        }
     }
 
     public void ClearAllProjectiles()
@@ -121,7 +115,7 @@ public class PlayState : GameStateBase
 
     IEnumerator TickPowerups()
     {
-        while (GameController.Instance.GetCurrentGameState == this)
+        while (GameController.Instance.GetCurrentGameState == this && !endPUCR)
         {
             foreach (KeyValuePair<PowerUpType, ActivePowerUp> Entry in PlayerController.HeldPowerups)
             {
@@ -136,6 +130,8 @@ public class PlayState : GameStateBase
             }
             yield return new WaitForSeconds(1.0f);
         }
+
+        endPUCR = false;
     }
 
     public override void Tick()
@@ -186,16 +182,49 @@ public class PlayState : GameStateBase
         }
     }
 
-    public virtual void EndLevel() 
+    public virtual void EndLevel(bool Debug = false)
     {
-        StartCoroutine(AwaitEndLevel());
+        endPUCR = true;
+        waitingForStateExit = true;
+        StartCoroutine(AwaitEndLevel(Debug));
     }
 
-    IEnumerator AwaitEndLevel()
+    IEnumerator AwaitEndLevel(bool Debug)
     {
-        GameController.Instance.DestroyAllProjectiles();
-        waitingForStateExit = true;
         LevelObject CurrentLevel = GetCurrentLevel();
+        AudioManager.Instance.PlayLoopedAudioClip(CurrentLevel.LevelSong, EndLoop: true);
+
+        //Unload all setpieces
+        for (int s = 0; s < CurrentLevel.SetPiecesInScene.Count; s++)
+        {
+            if (!CurrentLevel.SetPiecesInScene[s])
+            {
+                continue;
+            }
+
+            CurrentLevel.SetPiecesInScene[s].SetActive(false);
+        }
+
+        if (CurrentLevel.HasSublevel)
+        {
+            for (int s = 0; s < CurrentLevel.SubLevel.SetPiecesInScene.Count; s++)
+            {
+                if (!CurrentLevel.SubLevel.SetPiecesInScene[s])
+                {
+                    continue;
+                }
+
+                CurrentLevel.SubLevel.SetPiecesInScene[s].SetActive(false);
+            }
+        }
+
+        ClearAllProjectiles();
+        GameController.Instance.DestroyAllProjectiles();
+
+        if (Debug)
+        {
+            yield break;
+        }
 
         yield return new WaitUntil(() => HandleDialogue(DialogueQueuePoint.LEVEL_END, CurrentLevel));
         if (CurrentLevel.SubLevel)
@@ -255,21 +284,41 @@ public class PlayState : GameStateBase
             WorldColourController.Instance.SetWorldColours(LevelToLoad.StarsColour, LevelToLoad.BackgroundColour, LevelToLoad.ForegroundColour);
         }
 
+
+        //Only load in setpeices once
+        if (LevelToLoad.SetPiecesInScene.Count == 0 && LevelToLoad.SetPieces.Length > 0)
+        {
+            for (int s = 0; s < LevelToLoad.SetPieces.Length; s++)
+            {
+                if (!LevelToLoad.SetPieces[s])
+                {
+                    continue;
+                }
+                GameObject NewSP = Instantiate(LevelToLoad.SetPieces[s]);
+                LevelToLoad.SetPiecesInScene.Add(NewSP);
+            }
+        }
+
         LevelObject CurrentLevel = GetCurrentLevel();
 
         if (LevelToLoad.IsInitialised)
         {
-            int MaxIterator;
+            int MaxEnemyIterator;
+            int MaxSetPeiceIterator;
             if (LevelToLoad.IsSubLevel) //We will never load a sublevel directly so we don't need to worry about it being the sublevel of a different level
             {
-                MaxIterator = CurrentLevel.EnemiesInScene.Count;
+                MaxEnemyIterator = CurrentLevel.EnemiesInScene.Count;
+                MaxSetPeiceIterator = CurrentLevel.SetPiecesInScene.Count;
             }
             else
             {
                 //Disable enemies in the level we're LEAVING
-                MaxIterator = CurrentLevel.SubLevel.EnemiesInScene.Count;
+                MaxEnemyIterator = CurrentLevel.SubLevel.EnemiesInScene.Count;
+                MaxSetPeiceIterator = CurrentLevel.SubLevel.SetPiecesInScene.Count;
             }
-            for (int e = 0; e < MaxIterator; e++)
+
+            //Disable enemies in unloading main/sub level
+            for (int e = 0; e < MaxEnemyIterator; e++)
             {
                 if (LevelToLoad.IsSubLevel)
                 {
@@ -288,6 +337,27 @@ public class PlayState : GameStateBase
                     CurrentLevel.SubLevel.EnemiesInScene[e].gameObject.SetActive(false);
                 }
             }
+            for (int s = 0; s < MaxSetPeiceIterator; s++)
+            {
+                if (LevelToLoad.IsSubLevel)
+                {
+                    if (!LevelToLoad.SetPiecesInScene[s])
+                    {
+                        continue;
+                    }
+                    CurrentLevel.SetPiecesInScene[s].gameObject.SetActive(false);
+                }
+                else
+                {
+                    if (!CurrentLevel.SubLevel.SetPiecesInScene[s])
+                    {
+                        continue;
+                    }
+                    CurrentLevel.SubLevel.SetPiecesInScene[s].SetActive(false);
+                }
+            }
+
+
             for (int e = 0; e < LevelToLoad.EnemiesInScene.Count; e++)
             {
                 if (!LevelToLoad.EnemiesInScene[e])
@@ -295,6 +365,14 @@ public class PlayState : GameStateBase
                     continue;
                 }
                 LevelToLoad.EnemiesInScene[e].gameObject.SetActive(true);
+            }
+            for (int s = 0; s < LevelToLoad.SetPiecesInScene.Count; s++)
+            {
+                if (!LevelToLoad.SetPiecesInScene[s])
+                {
+                    continue;
+                }
+                LevelToLoad.SetPiecesInScene[s].SetActive(true);
             }
 
             ResetEnemyPositions();
@@ -312,6 +390,15 @@ public class PlayState : GameStateBase
                         continue;
                     }
                     LevelToLoad.ParentLevel.EnemiesInScene[e].gameObject.SetActive(false);
+                }
+
+                for (int s = 0; s < LevelToLoad.ParentLevel.SetPiecesInScene.Count; s++)
+                {
+                    if (!LevelToLoad.ParentLevel.SetPiecesInScene[s])
+                    {
+                        continue;
+                    }
+                    LevelToLoad.ParentLevel.SetPiecesInScene[s].SetActive(false);
                 }
             }
         }

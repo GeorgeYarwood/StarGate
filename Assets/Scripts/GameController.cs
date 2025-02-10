@@ -129,7 +129,7 @@ public class GameController : MonoBehaviour
             Destroy(this);
         }
 
-        if(CurrentLevel > 0 && PlayerPrefs.HasKey(InputHolder.CURRENT_LIVES)) //Keep compatibility with older prefs
+        if (CurrentLevel > 0 && PlayerPrefs.HasKey(InputHolder.CURRENT_LIVES)) //Keep compatibility with older prefs
         {
             currentLives = PlayerPrefs.GetInt(InputHolder.CURRENT_LIVES);
         }
@@ -139,13 +139,60 @@ public class GameController : MonoBehaviour
             PlayerPrefs.SetInt(InputHolder.CURRENT_LIVES, currentLives);
         }
 
-        //PlayerShip.Instance.SetEnabled(false);
+        PlayerShip.Instance.SetEnabled(false);
         PlayerTurret.Instance.SetEnabled(false);
 
         ResetAllLevels();
         ResetPlayerPosition();
-        //GoToState(groundedState);
-        GoToState(flyingState);
+
+        LoadCurrentLevel();
+    }
+
+    //void DisableAllSetPieces()
+    //{
+    //    for (int l = 0; l < AllLevels.Count; l++)
+    //    {
+    //        for(int s = 0; s < AllLevels[l].SetPieces.Length; s++)
+    //        {
+    //            if (!AllLevels[l].SetPieces[s])
+    //            {
+    //                continue;
+    //            }
+
+    //            AllLevels[l].SetPieces[s].SetActive(false);
+    //        }
+
+    //        if (AllLevels[l].HasSublevel)
+    //        {
+    //            for (int s = 0; s < AllLevels[l].SubLevel.SetPieces.Length; s++)
+    //            {
+    //                if (!AllLevels[l].SubLevel.SetPieces[s])
+    //                {
+    //                    continue;
+    //                }
+
+    //                AllLevels[l].SubLevel.SetPieces[s].SetActive(false);
+    //            }
+    //        }
+    //    }
+    //} 
+
+    public void LoadCurrentLevel() 
+    {
+        //Load correct state depending on what the level requests
+
+        LevelObject CurrentLevel = AllLevels[currentLevel];
+
+        switch (CurrentLevel.PlayerType)
+        {
+            case PlayerControllerType.SHIP:
+                GoToState(flyingState);
+
+                break;
+            case PlayerControllerType.TURRET:
+                GoToState(groundedState);
+                break;
+        }
     }
 
     public PlayerController GetActivePlayerController() 
@@ -178,8 +225,31 @@ public class GameController : MonoBehaviour
         {
             allLevels[l].IsInitialised = false;
             allLevels[l].EnemiesInScene = new List<EnemyBase>();
+            allLevels[l].SetPiecesInScene = new List<GameObject>();
+
+            for (int s = 0; s < allLevels[l].SetPiecesInScene.Count; s++)
+            {
+                if (!allLevels[l].SetPiecesInScene[s])
+                {
+                    continue;
+                }
+
+                Destroy(allLevels[l].SetPiecesInScene[s]);
+            }
+
             if (!allLevels[l].IsSubLevel && allLevels[l].SubLevel)
             {
+                for (int s = 0; s < allLevels[l].SubLevel.SetPiecesInScene.Count; s++)
+                {
+                    if (!allLevels[l].SubLevel.SetPiecesInScene[s])
+                    {
+                        continue;
+                    }
+
+                    Destroy(allLevels[l].SubLevel.SetPiecesInScene[s]);
+                }
+                allLevels[l].SubLevel.SetPiecesInScene = new List<GameObject>();
+
                 allLevels[l].SubLevel.EnemiesInScene = new List<EnemyBase>();
                 allLevels[l].SubLevel.IsInitialised = false;
             }

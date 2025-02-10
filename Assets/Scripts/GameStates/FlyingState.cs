@@ -24,10 +24,10 @@ public class FlyingState : PlayState
         TrackPlayerWithCamera();
     }
 
-    public override void EndLevel()
+    public override void EndLevel(bool Debug = false)
     {
         PlayerShip.Invincible = true;
-        base.EndLevel();
+        base.EndLevel(Debug);
     }
 
     void TrackPlayerWithCamera()

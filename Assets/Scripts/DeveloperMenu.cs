@@ -16,49 +16,48 @@ public class DeveloperMenu : MonoBehaviour
             }
             if (GUILayout.Button("Go to next level"))
             {
-                KillAllEnemies();
-                GameController.Instance.OnLevelComplete();
+                TraverseLevels(GameController.CurrentLevel + 1);
             }
 
             if (GUILayout.Button("Level 1"))
             {
-                TraverseLevels(1);
+                TraverseLevels(0);
             }
             if (GUILayout.Button("Level 2"))
             {
-                TraverseLevels(2);
+                TraverseLevels(1);
             }
             if (GUILayout.Button("Level 3"))
             {
-                TraverseLevels(3);
+                TraverseLevels(2);
             }
             if (GUILayout.Button("Level 4"))
             {
-                TraverseLevels(4);
+                TraverseLevels(3);
             }
             if (GUILayout.Button("Level 5"))
             {
-                TraverseLevels(5);
+                TraverseLevels(4);
             }
             if (GUILayout.Button("Level 6"))
             {
-                TraverseLevels(6);
+                TraverseLevels(5);
             }
             if (GUILayout.Button("Level 7"))
             {
-                TraverseLevels(7);
+                TraverseLevels(6);
             }
             if (GUILayout.Button("Level 8"))
             {
-                TraverseLevels(8);
+                TraverseLevels(7);
             }
             if (GUILayout.Button("Level 9"))
             {
-                TraverseLevels(9);
+                TraverseLevels(8);
             }
             if (GUILayout.Button("Level 10"))
             {
-                TraverseLevels(10);
+                TraverseLevels(9);
             }
         }
     }
@@ -81,11 +80,13 @@ public class DeveloperMenu : MonoBehaviour
     void TraverseLevels(int Level)
     {
         KillAllEnemies();
-        GameController.Instance.DestroyAllProjectiles();
+
+        PlayState PState = GameController.Instance.GetCurrentGameState as PlayState;
+        PState.EndLevel(Debug: true);
+
         GameController.Instance.ResetAllLevels();
-        GameController.CurrentLevel = Level - 1;
-        AudioManager.Instance.StopAllMusicLoops();
-        GameController.Instance.GoToState(GameStates.FLYING);
+        GameController.CurrentLevel = Level;
+        GameController.Instance.LoadCurrentLevel();
     }
 
     void Update()

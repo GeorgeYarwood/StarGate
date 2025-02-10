@@ -9,7 +9,7 @@ public class LevelObject : ScriptableObject
     {
         get { return levelSong; }
     }
-    
+
     [SerializeField] int enemiesPerLevel;
     public int EnemiesPerLevel
     {
@@ -47,20 +47,20 @@ public class LevelObject : ScriptableObject
     [SerializeField] bool hasSublevel = true;
     public bool HasSublevel
     {
-        get { return hasSublevel;}
+        get { return hasSublevel; }
     }
 
     List<EnemyBase> enemiesInScene = new List<EnemyBase>();
     public List<EnemyBase> EnemiesInScene
     {
         get { return enemiesInScene; }
-        set {  enemiesInScene = value; }
+        set { enemiesInScene = value; }
     }
 
     [SerializeField] Dialogue[] levelDialogue = new Dialogue[3];
     public Dialogue[] LevelDialogue
     {
-        get { return levelDialogue;}
+        get { return levelDialogue; }
     }
 
     [SerializeField] Color backgroundColour = Color.black;
@@ -83,5 +83,24 @@ public class LevelObject : ScriptableObject
     public bool UseParentLevelColour
     {
         get { return useParentLevelColour; }
+    }
+
+    [SerializeField] PlayerControllerType playerType = PlayerControllerType.SHIP;
+    public PlayerControllerType PlayerType
+    {
+        get { return playerType; }
+    }
+
+    [SerializeField] GameObject[] setPieces = new GameObject[0];
+    public GameObject[] SetPieces
+    {
+        get { return setPieces; }
+    }
+
+    List<GameObject> setPiecesInScene = new List<GameObject>();
+    public List<GameObject> SetPiecesInScene
+    {
+        get { return setPiecesInScene; }
+        set {  setPiecesInScene = value; }
     }
 }

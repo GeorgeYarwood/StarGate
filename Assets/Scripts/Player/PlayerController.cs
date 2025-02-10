@@ -1,6 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+public enum PlayerControllerType
+{
+    SHIP,
+    TURRET
+}
 public enum MoveDirection
 {
     UP,

@@ -26,3 +26,5 @@ MonoBehaviour:
   starsColour: {r: 1, g: 1, b: 1, a: 2}
   foregroundColour: {r: 1, g: 1, b: 1, a: 2}
   useParentLevelColour: 0
+  playerType: 0
+  setPieces: []

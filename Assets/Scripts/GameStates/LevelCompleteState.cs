@@ -39,7 +39,7 @@ public class LevelCompleteState : GameStateBase
 
     void LoadNextLevel()
     {
-        GameController.Instance.GoToPreviousGameState();
+        GameController.Instance.LoadCurrentLevel();
     }
 
     void ReturnToMenu()
