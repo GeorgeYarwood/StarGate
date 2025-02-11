@@ -41,20 +41,42 @@ public class FlyingState : PlayState
 
         if (Input.GetButton(InputHolder.MOVE_UP) || ControllerManager.GetInput[(int)ControllerInput.UP_BUTTON].Pressed)
         {
-            PlayerShip.Instance.UpdatePosition(MoveDirection.UP);
+            float Amount = 1.0f;
+            if (ControllerManager.GetInput[(int)ControllerInput.UP_BUTTON].Pressed) 
+            {
+                Amount = ControllerManager.GetInput[(int)ControllerInput.UP_BUTTON].AxisAmount;
+            }
+
+            PlayerShip.Instance.UpdatePosition(MoveDirection.UP, Amount);
         }
         if (Input.GetButton(InputHolder.MOVE_DOWN) || ControllerManager.GetInput[(int)ControllerInput.DOWN_BUTTON].Pressed)
         {
-            PlayerShip.Instance.UpdatePosition(MoveDirection.DOWN);
+            float Amount = 1.0f;
+            if (ControllerManager.GetInput[(int)ControllerInput.DOWN_BUTTON].Pressed)
+            {
+                Amount = ControllerManager.GetInput[(int)ControllerInput.DOWN_BUTTON].AxisAmount;
+            }
+            PlayerShip.Instance.UpdatePosition(MoveDirection.DOWN, Amount);
         }
         if (Input.GetButton(InputHolder.MOVE_LEFT) || ControllerManager.GetInput[(int)ControllerInput.LEFT_BUTTON].Pressed) 
-        { 
-            PlayerShip.Instance.UpdatePosition(MoveDirection.LEFT);
+        {
+            float Amount = 1.0f;
+            if (ControllerManager.GetInput[(int)ControllerInput.LEFT_BUTTON].Pressed)
+            {
+                Amount = ControllerManager.GetInput[(int)ControllerInput.LEFT_BUTTON].AxisAmount;
+            }
+            PlayerShip.Instance.UpdatePosition(MoveDirection.LEFT, Amount);
         }
 
         if (Input.GetButton(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
         {
-            PlayerShip.Instance.UpdatePosition(MoveDirection.RIGHT);
+            float Amount = 1.0f;
+            if (ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
+            {
+                Amount = ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].AxisAmount;
+            }
+
+            PlayerShip.Instance.UpdatePosition(MoveDirection.RIGHT, Amount);
         }
         if (Input.GetButton(InputHolder.FIRE) || ControllerManager.GetInput[(int)ControllerInput.A_BUTTON].Pressed)
         {

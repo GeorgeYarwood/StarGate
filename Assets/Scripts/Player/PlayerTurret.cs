@@ -26,7 +26,7 @@ public class PlayerTurret : PlayerController
         base.Init();
     }
 
-    public override void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false)
+    public override void UpdatePosition(MoveDirection ThisDirection, float Speed, bool Coasting = false)
     {
         float ActualSpeed = PlayerMoveSpeed;
 
@@ -45,10 +45,10 @@ public class PlayerTurret : PlayerController
         switch (ThisDirection)
         {
             case MoveDirection.LEFT:
-                transform.Translate(new Vector2(-1.0f, 0.0f) * ActualSpeed * Time.deltaTime);
+                transform.Translate(new Vector2(-1.0f, 0.0f) * (ActualSpeed * Speed) * Time.deltaTime);
                 break;
             case MoveDirection.RIGHT:
-                transform.Translate(new Vector2(1.0f, 0.0f) * ActualSpeed * Time.deltaTime);
+                transform.Translate(new Vector2(1.0f, 0.0f) * (ActualSpeed * Speed) * Time.deltaTime);
                 break;
         }
 

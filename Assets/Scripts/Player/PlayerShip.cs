@@ -30,7 +30,7 @@ public class PlayerShip : PlayerController
         get { return instance; }
     }
 
-    public override void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false)
+    public override void UpdatePosition(MoveDirection ThisDirection, float Speed, bool Coasting = false)
     {
         float ActualSpeed = PlayerMoveSpeed;
 
@@ -51,13 +51,13 @@ public class PlayerShip : PlayerController
         switch (ThisDirection)
         {
             case MoveDirection.UP:
-                transform.Translate(new Vector2(0.0f, 1.0f) * ActualSpeed * Time.deltaTime);
+                transform.Translate(new Vector2(0.0f, 1.0f) * (ActualSpeed * Speed) * Time.deltaTime);
                 break;
             case MoveDirection.DOWN:
-                transform.Translate(new Vector2(0.0f, -1.0f) * ActualSpeed * Time.deltaTime);
+                transform.Translate(new Vector2(0.0f, -1.0f) * (ActualSpeed * Speed) * Time.deltaTime);
                 break;
             case MoveDirection.LEFT:
-                transform.Translate(new Vector2(-1.0f, 0.0f) * ActualSpeed * Time.deltaTime);
+                transform.Translate(new Vector2(-1.0f, 0.0f) * (ActualSpeed * Speed) * Time.deltaTime);
                 if (playerIsFacing != FacingDirection.LEFT)
                 {
                     playerIsFacing = FacingDirection.LEFT;
@@ -65,7 +65,7 @@ public class PlayerShip : PlayerController
                 }
                 break;
             case MoveDirection.RIGHT:
-                transform.Translate(new Vector2(1.0f, 0.0f) * ActualSpeed * Time.deltaTime);
+                transform.Translate(new Vector2(1.0f, 0.0f) * (ActualSpeed * Speed) * Time.deltaTime);
                 if (playerIsFacing != FacingDirection.RIGHT)
                 {
                     playerIsFacing = FacingDirection.RIGHT;

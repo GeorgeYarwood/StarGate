@@ -4,13 +4,18 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDownHandler, IDragHandler
+public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDownHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] ControllerInput[] toToggle = new ControllerInput[2];
     [SerializeField] bool listenForDrag = false;
     [SerializeField] bool consume = false;
 
     bool held = false;
+
+    const float DRAG_THRESHHOLD = 0.1f;
+    const float DIFF_MULT = 2.0f;
+
+    Vector2 dragStartPos;
     //Basically a wrapper around the controller class that toggles the bool as if it were a controller
     public override void OnPointerUp(PointerEventData EventData)
     {
@@ -20,6 +25,14 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
         {
             ControllerManager.Instance.ReleaseButton(toToggle[t]);
         }
+
+        if (!listenForDrag)
+        {
+            return;
+        }
+
+        ControllerManager.Instance.ReleaseButton(ControllerInput.UP_BUTTON);
+        ControllerManager.Instance.ReleaseButton(ControllerInput.DOWN_BUTTON);
     }
 
     public override void OnPointerDown(PointerEventData EventData)
@@ -42,19 +55,15 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
             return;
         }
 
-        Vector2 NormalisedMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (NormalisedMousePos.y > 1.5f)
-        {
-            lastDirection = MoveDirection.UP;
-            breakOut = false;
-            StartCoroutine(ExecuteDrag());
-        }
-        else if (NormalisedMousePos.y < -1.5f)
-        {
-            lastDirection = MoveDirection.DOWN;
-            breakOut = false;
-            StartCoroutine(ExecuteDrag());
-        }
+
+        //if (CurrentMousePos.y > DRAG_THRESHHOLD)
+        //{
+        //    ControllerManager.Instance.PressButton(ControllerInput.UP_BUTTON, consume);
+        //}
+        //else if(CurrentMousePos.y < -DRAG_THRESHHOLD)
+        //{
+        //    ControllerManager.Instance.PressButton(ControllerInput.DOWN_BUTTON, consume);
+        //}
     }
 
     void Update()
@@ -68,66 +77,56 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
         }
     }
 
-    IEnumerator ExecuteDrag()
-    {
-        while (held && !breakOut)
-        {
-            switch (lastDirection)
-            {
-                case MoveDirection.UP:
-                    ControllerManager.GetInput[(int)ControllerInput.UP_BUTTON].Pressed = true;
-                    break;
-                case MoveDirection.DOWN:
-                    ControllerManager.GetInput[(int)ControllerInput.DOWN_BUTTON].Pressed = true;
-                    break;
-            }
-            yield return null;
-        }
-
-        switch (lastDirection)
-        {
-            case MoveDirection.UP:
-                ControllerManager.GetInput[(int)ControllerInput.UP_BUTTON].Pressed = false;
-                StartCoroutine(ControllerManager.Instance.WaitForFrame(ControllerInput.UP_BUTTON));
-                break;
-            case MoveDirection.DOWN:
-                ControllerManager.GetInput[(int)ControllerInput.DOWN_BUTTON].Pressed = false;
-                StartCoroutine(ControllerManager.Instance.WaitForFrame(ControllerInput.DOWN_BUTTON));
-                break;
-        }
-    }
-
-    bool breakOut = false;
     MoveDirection lastDirection;
     public void OnDrag(PointerEventData EventData)
     {
-        Vector2 NormalisedMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (NormalisedMousePos.y > -1.5f && NormalisedMousePos.y < 1.5f)
+        if (!listenForDrag)
         {
-            breakOut = true;
             return;
         }
 
-        if (NormalisedMousePos.y > 1.5f)
+       
+
+
+        Vector2 Delta = EventData.pressPosition - EventData.position;
+        //Delta.Normalize();
+        float YDelta = Mathf.Clamp((Delta.y / Screen.height) * 2.0f, -1.0f, 1.0f);
+       
+        Debug.Log(YDelta);
+
+        if (Mathf.Abs(YDelta) < DRAG_THRESHHOLD)
+        {
+            ControllerManager.Instance.ReleaseButton(ControllerInput.DOWN_BUTTON);
+            ControllerManager.Instance.ReleaseButton(ControllerInput.UP_BUTTON);
+            return;
+        }
+
+        //Debug.Log(Delta.y);
+
+        if (YDelta > 0.0f)
         {
             if (lastDirection != MoveDirection.UP)
             {
-                ControllerManager.GetInput[(int)ControllerInput.DOWN_BUTTON].Pressed = false;
+                ControllerManager.Instance.ReleaseButton(ControllerInput.DOWN_BUTTON);
             }
 
-            lastDirection = MoveDirection.UP;
-            breakOut = false;
-            StartCoroutine(ExecuteDrag());
+            lastDirection = MoveDirection.DOWN;
+            ControllerManager.Instance.PressButton(ControllerInput.DOWN_BUTTON, false, Mathf.Abs(YDelta));
         }
-        else if (NormalisedMousePos.y < -1.5f)
+        else if (YDelta < 0.0f)
         {
             if (lastDirection != MoveDirection.DOWN)
             {
-                ControllerManager.GetInput[(int)ControllerInput.UP_BUTTON].Pressed = false;
+                ControllerManager.Instance.ReleaseButton(ControllerInput.UP_BUTTON);
             }
-            lastDirection = MoveDirection.DOWN;
-            breakOut = false;
-            StartCoroutine(ExecuteDrag());
+
+            lastDirection = MoveDirection.UP;
+            ControllerManager.Instance.PressButton(ControllerInput.UP_BUTTON, false, Mathf.Abs(YDelta));
         }
+    }
+
+    public void OnEndDrag(PointerEventData EventData) 
+    {
+       
     }
 }

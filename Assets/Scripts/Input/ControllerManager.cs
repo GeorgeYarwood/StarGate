@@ -49,7 +49,7 @@ public class ControllerManager : MonoBehaviour
         get { return inputMethod; }
     }
 
-    const float WAIT_BETWEEN_INPUTS = 0.25f;
+    const float WAIT_BETWEEN_INPUTS = 0.05f;
 
     Action switchToKeyboardMouse;
     public Action SwitchToKeyboardMouse
@@ -138,12 +138,16 @@ public class ControllerManager : MonoBehaviour
         public bool Pressed;
         public bool JustReleased;
         public bool Consumed;
+        public float AxisAmount;
+        public bool IgnoreForMenu;
         public InputButton(ControllerInput NewMap)
         {
             Map = NewMap;
             Pressed = false;
             JustReleased = false;
             Consumed = false;
+            AxisAmount = 0.0f;
+            IgnoreForMenu = false;
         }
     }
 
@@ -160,15 +164,21 @@ public class ControllerManager : MonoBehaviour
         Cursor.lockState = GameController.Instance.GetCurrentGameState.AllowCursorVisible ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
-    public void PressButton(ControllerInput Input, bool Consume) 
+    public void PressButton(ControllerInput Input, bool Consume, float AxisAmount = 1.0f) 
     {
         GetInput[(int)Input].Pressed = true;
+        GetInput[(int)Input].AxisAmount = AxisAmount;
+        if (!Consume)
+        {
+            return;
+        }
         StartCoroutine(ConsumeInput(Input));
     }
 
     public void ReleaseButton(ControllerInput Input)
     {
         GetInput[(int)Input].Pressed = false;
+        GetInput[(int)Input].AxisAmount = 0.0f;
         StartCoroutine(WaitForFrame(Input));
     }
 
@@ -230,6 +240,20 @@ public class ControllerManager : MonoBehaviour
         return ToReturn;
     }
 
+    //If JoyInput != 0, set to exact axis float
+    //Else set to 1
+    void SetFloatIfJoy(string JoyInput, ControllerInput Binding) 
+    {
+        float Amount = Input.GetAxis(JoyInput);
+        if(Amount == 0.0f)
+        {
+            currentInput[(int)Binding].AxisAmount = 1.0f;
+            return;
+        }
+
+        currentInput[(int)Binding].AxisAmount = Mathf.Abs(Amount);
+    }
+
     List<ControllerInput> lastInput = new List<ControllerInput>();
     IEnumerator PollController()
     {
@@ -244,6 +268,9 @@ public class ControllerManager : MonoBehaviour
         {
             bool HorizontalPriority = Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_X)) > Mathf.Abs(Input.GetAxis(InputHolder.CONTROLLER_JOY_Y));
             List<ControllerInput> CurrentlyPressed = new List<ControllerInput>();
+
+            //Button being pressed DOWN
+
             if (Input.GetButton(InputHolder.CONTROLLER_A_BUTTON))
             {
                 StartCoroutine(ConsumeInput(ControllerInput.A_BUTTON));
@@ -279,43 +306,52 @@ public class ControllerManager : MonoBehaviour
                 CurrentlyPressed.Add(ControllerInput.START);
             }
 
-            //Button being pressed DOWN
-
-            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0
-                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) < 0)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0.0f
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) < 0.0f)
             {
-                if ((Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0 && !HorizontalPriority)
-                    || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) < 0)
+                if ((Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) > 0.0f)
+                    || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) < 0.0f)
                 {
+                    SetFloatIfJoy(InputHolder.CONTROLLER_JOY_Y, ControllerInput.DOWN_BUTTON);
+
                     StartCoroutine(ConsumeInput(ControllerInput.DOWN_BUTTON));
                     currentInput[(int)ControllerInput.DOWN_BUTTON].Pressed = true;
+                    currentInput[(int)ControllerInput.UP_BUTTON].IgnoreForMenu = HorizontalPriority;
                     CurrentlyPressed.Add(ControllerInput.DOWN_BUTTON);
                 }
             }
 
-            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0
-                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) > 0)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0.0f
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) > 0.0f)
             {
-                if ((Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0 && !HorizontalPriority)
-                    || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) > 0)
+                if ((Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) < 0.0f)
+                    || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) > 0.0f)
                 {
+                    SetFloatIfJoy(InputHolder.CONTROLLER_JOY_Y, ControllerInput.UP_BUTTON);
+
                     StartCoroutine(ConsumeInput(ControllerInput.UP_BUTTON));
                     currentInput[(int)ControllerInput.UP_BUTTON].Pressed = true;
+                    currentInput[(int)ControllerInput.UP_BUTTON].IgnoreForMenu = HorizontalPriority;
+
                     CurrentlyPressed.Add(ControllerInput.UP_BUTTON);
                 }
             }
 
-            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) > 0
-                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) > 0)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) > 0.0f
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) > 0.0f)
             {
+                SetFloatIfJoy(InputHolder.CONTROLLER_JOY_X, ControllerInput.RIGHT_BUTTON);
+
                 StartCoroutine(ConsumeInput(ControllerInput.RIGHT_BUTTON));
                 currentInput[(int)ControllerInput.RIGHT_BUTTON].Pressed = true;
                 CurrentlyPressed.Add(ControllerInput.RIGHT_BUTTON);
             }
 
-            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) < 0
-                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) < 0)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) < 0.0f
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) < 0.0f)
             {
+                SetFloatIfJoy(InputHolder.CONTROLLER_JOY_X, ControllerInput.LEFT_BUTTON);
+
                 StartCoroutine(ConsumeInput(ControllerInput.LEFT_BUTTON));
                 currentInput[(int)ControllerInput.LEFT_BUTTON].Pressed = true;
                 CurrentlyPressed.Add(ControllerInput.LEFT_BUTTON);
@@ -323,12 +359,13 @@ public class ControllerManager : MonoBehaviour
 
             //Button being RELEASED
 
-            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0
-               || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0.0f
+               || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0.0f)
             {
                 if (!CurrentlyPressed.Contains(ControllerInput.DOWN_BUTTON))
                 {
                     currentInput[(int)ControllerInput.DOWN_BUTTON].Pressed = false;
+                    currentInput[(int)ControllerInput.DOWN_BUTTON].AxisAmount = 0.0f;
 
                     if (lastInput.Contains(ControllerInput.DOWN_BUTTON))
                     {
@@ -337,12 +374,14 @@ public class ControllerManager : MonoBehaviour
                 }
             }
 
-            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0
-                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_Y) == 0.0f
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_Y) == 0.0f)
             {
                 if (!CurrentlyPressed.Contains(ControllerInput.UP_BUTTON))
                 {
                     currentInput[(int)ControllerInput.UP_BUTTON].Pressed = false;
+                    currentInput[(int)ControllerInput.UP_BUTTON].AxisAmount = 0.0f;
+
                     if (lastInput.Contains(ControllerInput.UP_BUTTON))
                     {
                         StartCoroutine(WaitForFrame(ControllerInput.UP_BUTTON));
@@ -350,12 +389,14 @@ public class ControllerManager : MonoBehaviour
                 }
             }
 
-            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0
-                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0.0f
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0.0f)
             {
                 if (!CurrentlyPressed.Contains(ControllerInput.RIGHT_BUTTON))
                 {
                     currentInput[(int)ControllerInput.RIGHT_BUTTON].Pressed = false;
+                    currentInput[(int)ControllerInput.RIGHT_BUTTON].AxisAmount = 0.0f;
+
 
                     if (lastInput.Contains(ControllerInput.RIGHT_BUTTON))
                     {
@@ -364,12 +405,13 @@ public class ControllerManager : MonoBehaviour
                 }
             }
 
-            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0
-                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0)
+            if (Input.GetAxis(InputHolder.CONTROLLER_JOY_X) == 0.0f
+                || Input.GetAxis(InputHolder.CONTROLLER_DPAD_X) == 0.0f)
             {
                 if (!CurrentlyPressed.Contains(ControllerInput.LEFT_BUTTON))
                 {
                     currentInput[(int)ControllerInput.LEFT_BUTTON].Pressed = false;
+                    currentInput[(int)ControllerInput.LEFT_BUTTON].AxisAmount = 0.0f;
 
                     if (lastInput.Contains(ControllerInput.LEFT_BUTTON))
                     {
@@ -377,8 +419,6 @@ public class ControllerManager : MonoBehaviour
                     }
                 }
             }
-
-           
 
             if (!Input.GetButton(InputHolder.CONTROLLER_START_BUTTON))
             {

@@ -27,12 +27,22 @@ public class GroundedState : PlayState
 
         if (Input.GetButton(InputHolder.MOVE_LEFT) || ControllerManager.GetInput[(int)ControllerInput.LEFT_BUTTON].Pressed)
         {
-            PlayerTurret.Instance.UpdatePosition(MoveDirection.LEFT);
+            float Amount = 1.0f;
+            if (ControllerManager.GetInput[(int)ControllerInput.LEFT_BUTTON].Pressed)
+            {
+                Amount = ControllerManager.GetInput[(int)ControllerInput.LEFT_BUTTON].AxisAmount;
+            }
+            PlayerTurret.Instance.UpdatePosition(MoveDirection.LEFT, Amount);
         }
 
         if (Input.GetButton(InputHolder.MOVE_RIGHT) || ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
         {
-            PlayerTurret.Instance.UpdatePosition(MoveDirection.RIGHT);
+            float Amount = 1.0f;
+            if (ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].Pressed)
+            {
+                Amount = ControllerManager.GetInput[(int)ControllerInput.RIGHT_BUTTON].AxisAmount;
+            }
+            PlayerTurret.Instance.UpdatePosition(MoveDirection.RIGHT, Amount);
         }
 
         if (Input.GetButton(InputHolder.FIRE) || ControllerManager.GetInput[(int)ControllerInput.A_BUTTON].Pressed)

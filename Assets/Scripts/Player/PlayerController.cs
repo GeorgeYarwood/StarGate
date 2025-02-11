@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour
     {
     }
 
-    public virtual void UpdatePosition(MoveDirection ThisDirection, bool Coasting = false)
+    public virtual void UpdatePosition(MoveDirection ThisDirection, float Speed, bool Coasting = false)
     {
 
     }
@@ -277,7 +277,7 @@ public class PlayerController : MonoBehaviour
         
         while (ThisTimer > 0)
         {
-            UpdatePosition(lastDirection, Coasting: true);
+            UpdatePosition(lastDirection, 1.0f, Coasting: true);
             ThisTimer -= 1.0f * Time.deltaTime;
             yield return null;
 

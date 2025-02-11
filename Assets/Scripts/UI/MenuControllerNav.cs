@@ -90,7 +90,7 @@ public class MenuControllerNav : MonoBehaviour
 
         for(int i = 0; i < ControllerManager.GetInput.Length; i++)
         {
-            if (!ControllerManager.GetInput[i].Pressed)
+            if (!ControllerManager.GetInput[i].Pressed || ControllerManager.GetInput[i].IgnoreForMenu)
             {
                 continue;
             }
