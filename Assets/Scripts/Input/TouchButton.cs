@@ -13,10 +13,11 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
     bool held = false;
 
     const float DRAG_THRESHHOLD = 0.1f;
-    const float DIFF_MULT = 2.0f;
 
-    Vector2 dragStartPos;
-    //Basically a wrapper around the controller class that toggles the bool as if it were a controller
+    const float UP_TAP_THRESHHOLD = 0.65f;
+    const float DOWN_TAP_THRESHHOLD = 0.35f;
+    
+    //A wrapper around the controller class that toggles the bool as if it were a controller
     public override void OnPointerUp(PointerEventData EventData)
     {
         held = false;
@@ -55,15 +56,19 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
             return;
         }
 
+        Vector2 CurrentMousePos = Input.mousePosition;
+        float YPos = Mathf.Clamp(CurrentMousePos.y / Screen.height, -1.0f, 1.0f);
 
-        //if (CurrentMousePos.y > DRAG_THRESHHOLD)
-        //{
-        //    ControllerManager.Instance.PressButton(ControllerInput.UP_BUTTON, consume);
-        //}
-        //else if(CurrentMousePos.y < -DRAG_THRESHHOLD)
-        //{
-        //    ControllerManager.Instance.PressButton(ControllerInput.DOWN_BUTTON, consume);
-        //}
+        if (YPos >= UP_TAP_THRESHHOLD)
+        {
+            ControllerManager.Instance.PressButton(ControllerInput.UP_BUTTON, consume);
+            lastDirection = MoveDirection.UP;
+        }
+        else if (YPos <= DOWN_TAP_THRESHHOLD)
+        {
+            ControllerManager.Instance.PressButton(ControllerInput.DOWN_BUTTON, consume);
+            lastDirection = MoveDirection.DOWN;
+        }
     }
 
     void Update()
@@ -84,9 +89,6 @@ public class TouchButton : UnityEngine.UI.Button, IPointerUpHandler, IPointerDow
         {
             return;
         }
-
-       
-
 
         Vector2 Delta = EventData.pressPosition - EventData.position;
         //Delta.Normalize();
